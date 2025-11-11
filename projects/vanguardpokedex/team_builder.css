@@ -75,6 +75,7 @@ body:has(.modal-open) {
   max-width: 2000px;
   margin-left: auto;
   margin-right: auto;
+  z-index: -1;
 }
 #page-heading.section-title:after {
   font-size: 2rem;
