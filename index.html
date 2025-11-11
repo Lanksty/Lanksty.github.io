@@ -26,8 +26,8 @@
                   <img :src="mon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
                     class="member-sprite" />
                     <div>
-                      <img :src="`./resources/images/types/${mon.Type1.toLowerCase()}.png`" alt="" />
-                      <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toLowerCase()}.png`" alt="" />
+                      <img :src="`./resources/images/types/${mon.Type1.toUpperCase()}.png`" alt="" />
+                      <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
                     </div>
                 </div>
 
@@ -71,8 +71,8 @@
                 <tbody>
                   <tr>
                     <td class="cell type-cell">
-                      <img :src="`./resources/images/types/${mon.Type1.toLowerCase()}.png`" alt="" />
-                      <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toLowerCase()}.png`" alt="" />
+                      <img :src="`./resources/images/types/${mon.Type1.toUpperCase()}.png`" alt="" />
+                      <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
                     </td>
                     <td class="cell">{{ getAbilityByName(mon.SelectedAbility)?.Name }}</td>
                     <td class="cell">{{ mon.HeldItem?.Name || 'None' }}</td>
@@ -113,8 +113,8 @@
 
                 <div class="member-details text-center">
                   <p><span :class="viewPokemon.Type1.toLowerCase()" class="type"> <img
-                        :src="`./resources/images/types/${viewPokemon.Type1.toLowerCase()}.png`" alt="" />{{ viewPokemon.Type1 }}</span><span v-if="viewPokemon.Type2"> / <span :class="viewPokemon.Type2.toLowerCase()" class="type"> <img
-                          :src="`./resources/images/types/${viewPokemon.Type2.toLowerCase()}.png`" alt="" />{{ viewPokemon.Type2 }}</span></span></p>
+                        :src="`./resources/images/types/${viewPokemon.Type1.toUpperCase()}.png`" alt="" />{{ viewPokemon.Type1 }}</span><span v-if="viewPokemon.Type2"> / <span :class="viewPokemon.Type2.toLowerCase()" class="type"> <img
+                          :src="`./resources/images/types/${viewPokemon.Type2.toUpperCase()}.png`" alt="" />{{ viewPokemon.Type2 }}</span></span></p>
                 
                   <table class="member-table">
                     <thead>
@@ -546,8 +546,8 @@
                     {{ poke.Name }}
                   </td>
                   <td class="cell type-cell text-center">
-                    <img v-if="poke.Type1" :src="`./resources/images/types/${poke.Type1.toLowerCase()}.png`" alt="" />
-                    <img v-if="poke.Type2" :src="`./resources/images/types/${poke.Type2.toLowerCase()}.png`" alt="" />
+                    <img v-if="poke.Type1" :src="`./resources/images/types/${poke.Type1.toUpperCase()}.png`" alt="" />
+                    <img v-if="poke.Type2" :src="`./resources/images/types/${poke.Type2.toUpperCase()}.png`" alt="" />
                   </td>
                   <td class="cell cell-text">{{ poke.AbilitiesList.join(', ') }}</td>
                   <td class="cell text-center">{{ poke.Stats.hp }}</td>
@@ -721,8 +721,8 @@
                       <img :src="pokemon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
                         class="member-sprite" />
                         <p><span :class="pokemon.Type1.toLowerCase()" class="type"> <img
-                        :src="`./resources/images/types/${pokemon.Type1.toLowerCase()}.png`" alt="" />{{ pokemon.Type1 }}</span><span v-if="pokemon.Type2"> / <span :class="pokemon.Type2.toLowerCase()" class="type"> <img
-                          :src="`./resources/images/types/${pokemon.Type2.toLowerCase()}.png`" alt="" />{{ pokemon.Type2 }}</span></span></p>
+                        :src="`./resources/images/types/${pokemon.Type1.toUpperCase()}.png`" alt="" />{{ pokemon.Type1 }}</span><span v-if="pokemon.Type2"> / <span :class="pokemon.Type2.toLowerCase()" class="type"> <img
+                          :src="`./resources/images/types/${pokemon.Type2.toUpperCase()}.png`" alt="" />{{ pokemon.Type2 }}</span></span></p>
                     </div>
                     <div class="flex-grow-1 text-nowrap">
                       <div class="item-container" data-content="HP">
@@ -861,8 +861,8 @@
                           style="width: 200px; height: 200px" />
                           <div> {{ form.FormName }} Form</div>
                           <p><span :class="form.Type1?.toLowerCase()" class="type"> <img
-                          :src="`./resources/images/types/${form.Type1?.toLowerCase()}.png`" alt="" />{{ form.Type1 }}</span><span v-if="form.Type2"> / <span :class="form.Type2?.toLowerCase()" class="type"> <img
-                            :src="`./resources/images/types/${form.Type2?.toLowerCase()}.png`" alt="" />{{ form.Type2 }}</span></span></p>
+                          :src="`./resources/images/types/${form.Type1?.toUpperCase()}.png`" alt="" />{{ form.Type1 }}</span><span v-if="form.Type2"> / <span :class="form.Type2?.toLowerCase()" class="type"> <img
+                            :src="`./resources/images/types/${form.Type2?.toUpperCase()}.png`" alt="" />{{ form.Type2 }}</span></span></p>
                       </div>
                       <div class="flex-grow-1 text-nowrap">
                         <div class="item-container" data-content="HP">
@@ -898,8 +898,8 @@
                             class="evolution-sprite" style="max-height: 100px"/>
                           <p>{{ evo?.Name?.toTitleCase() }}</p>
                           <span>
-                            <img v-if="evo.Type1" :src="`./resources/images/types/${evo?.Type1?.toLowerCase()}.png`" alt="" style="width: 30px; height: 30px;"/>
-                            <img v-if="evo.Type2" :src="`./resources/images/types/${evo?.Type2?.toLowerCase()}.png`" alt="" style="width: 30px; height: 30px;"/>
+                            <img v-if="evo.Type1" :src="`./resources/images/types/${evo?.Type1?.toUpperCase()}.png`" alt="" style="width: 30px; height: 30px;"/>
+                            <img v-if="evo.Type2" :src="`./resources/images/types/${evo?.Type2?.toUpperCase()}.png`" alt="" style="width: 30px; height: 30px;"/>
                           </span>
                         </div>
                         <div v-if="evo != null && evo.EvolveData.length" class="mx-3 d-flex flex-column align-items-center"> 

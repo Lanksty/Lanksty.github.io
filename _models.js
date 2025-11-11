@@ -325,7 +325,7 @@ class Move {
     constructor(data) {
         Object.assign(this, data);
 
-        this.Sprite = `./resources/images/moves/${data.Category}.png`;
+        this.Sprite = `./resources/images/moves/${data.Category.toUpperCase()}.png`;
     }
 }
 
