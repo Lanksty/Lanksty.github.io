@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html> 
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="team_builder.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </head>
+    <body>
+      <div id="app" class="app-container" v-cloak >
+        <h1 style="text-align:center" id="page-heading" class="section-title" data-content="Pokemon Vanguard Team Builder"></h1>
+        <div id="main">
+
+
+          <!-- Team Sidebar -->
+          <div class="team-sidebar-container hide-md" v-if="(currentlyViewing != null && tabView === 'team') || tabView === 'typeEffectiveness' || tabView === 'moveCoverage'">
+            <div v-for="(mon, index) in teamBuilder.teamList" :key="index" class="team-member" @click="toggleViewingPokemon(mon)" :class="{ 'active': viewPokemon === mon }">
+                <button @click.stop="teamBuilder.removePokemon(mon)" class="close-btn btn"><i class="bi-trash text-danger"></i></button>
+
+                <div class="member-header">
+                  <img :src="mon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
+                    class="member-sprite" />
+                    <div>
+                      <img :src="`./resources/images/types/${mon.Type1.toUpperCase()}.png`" alt="" />
+                      <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
+                    </div>
+                </div>
+
+            </div>
+            <div v-if="teamBuilder.teamList.length < 6" class="team-member">
+              <div class="empty-slot" @click="searching = true">
+                <i class="bi-plus" style="font-size: 2em"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Container -->
+          <div class="team-container-wrapper" v-if="!currentlyViewing && tabView === 'team'">
+            <div v-for="mon in teamBuilder.teamList" class="team-member" @click="toggleViewingPokemon(mon)">
+              <div class="member-header">
+                <img :src="mon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
+                class="member-sprite" />
+                <h3 class="member-name">
+                  <strong>{{ mon.Name.toTitleCase()}}</strong>
+                </h3>
+              </div>
+              <div class="member-moves">
+                  <div class="move" v-for="(move, index) in mon.SelectedMoves" :key="index">{{ move.Name }}</div>
+                  <div class="move" v-for="n in 4 - mon.SelectedMoves.length" :key="n" class="empty-move">---</div>
+              </div>
+              <table class="member-table">
+                <thead>
+                  <tr>
+                    <th class="cell" style="width: 100px; max-width: 100px;">Type</th>
+                    <th class="cell" style="width: 200px; max-width: 200px;">Ability</th>
+                    <th class="cell" style="width: 200px; max-width: 200px;">Item</th>
+                    <th class="cell" style="width: 80px; max-width: 80px;">HP</th>
+                    <th class="cell" style="width: 100px; max-width: 100px;">Attack</th>
+                    <th class="cell" style="width: 100px; max-width: 100px;">Defense</th>
+                    <th class="cell" style="width: 110px; max-width: 110px;">Sp. Atk</th>
+                    <th class="cell" style="width: 110px; max-width: 110px;">Sp. Def</th>
+                    <th class="cell" style="width: 100px; max-width: 100px;">Speed</th>
+                    <th class="cell"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="cell type-cell">
+                      <img :src="`./resources/images/types/${mon.Type1.toUpperCase()}.png`" alt="" />
+                      <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
+                    </td>
+                    <td class="cell">{{ getAbilityByName(mon.SelectedAbility)?.Name }}</td>
+                    <td class="cell">{{ mon.HeldItem?.Name || 'None' }}</td>
+                    <td class="cell">{{ mon.Stats.hp }}</td>
+                    <td class="cell">{{ mon.Stats.atk }}</td>
+                    <td class="cell">{{ mon.Stats.def }}</td>
+                    <td class="cell">{{ mon.Stats.spa }}</td>
+                    <td class="cell">{{ mon.Stats.spd }}</td>
+                    <td class="cell">{{ mon.Stats.spe }}</td>
+                    <td class="cell"></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="d-flex flex-grow-1 justify-content-end">
+                <button @click.stop="teamBuilder.removePokemon(mon)" class="btn btn-lg text-danger"><i class="bi bi-trash"></i></button>
+              </div>
+            </div>
+
+            <div v-if="teamBuilder.teamList.length < 6" v-for="n in 6 - teamBuilder.teamList.length" :key="n"class="team-member">
+              <div class="empty-slot" @click="searching = true">
+                <p>Add Pokemon</p>
+              </div>
+            </div>
+            
+
+          </div>
+
+          <!-- Currently Viewing -->
+          <div id="currently-viewing" v-if="currentlyViewing">
+                <!-- <button @click="toggleViewingPokemon(viewPokemon)" class="close-btn">X</button> -->
+            <div class="team-member" v-if="viewPokemon">
+              <div class="member-header">
+                <img :src="viewPokemon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
+                  class="member-sprite" />
+                <h3 class="member-name">
+                  <strong>{{ viewPokemon.Name.toTitleCase() }}</strong>
+                </h3>
+
+                <div class="member-details text-center">
+                  <p><span :class="viewPokemon.Type1.toLowerCase()" class="type"> <img
+                        :src="`./resources/images/types/${viewPokemon.Type1.toUpperCase()}.png`" alt="" />{{ viewPokemon.Type1 }}</span><span v-if="viewPokemon.Type2"> / <span :class="viewPokemon.Type2.toLowerCase()" class="type"> <img
+                          :src="`./resources/images/types/${viewPokemon.Type2.toUpperCase()}.png`" alt="" />{{ viewPokemon.Type2 }}</span></span></p>
+                
+                  <table class="member-table">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th class="cell" style="width: 80px; max-width: 80px;">HP</th>
+                        <th class="cell" style="width: 100px; max-width: 100px;">Attack</th>
+                        <th class="cell" style="width: 100px; max-width: 100px;">Defense</th>
+                        <th class="cell" style="width: 110px; max-width: 110px;">Sp.A</th>
+                        <th class="cell" style="width: 110px; max-width: 110px;">Sp.D</th>
+                        <th class="cell" style="width: 100px; max-width: 100px;">Speed</th>
+                        <th class="cell"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="cell" style="text-align: left; font-weight: bold;">Base</td>
+                        <td class="cell">{{ viewPokemon.Stats.hp }}</td>
+                        <td class="cell">{{ viewPokemon.Stats.atk }}</td>
+                        <td class="cell">{{ viewPokemon.Stats.def }}</td>
+                        <td class="cell">{{ viewPokemon.Stats.spa }}</td>
+                        <td class="cell">{{ viewPokemon.Stats.spd }}</td>
+                        <td class="cell">{{ viewPokemon.Stats.spe }}</td>
+                        <td class="cell"></td>
+                      </tr>
+                      <tr>
+                        <td class="cell" style="text-align: left; font-weight: bold;">Ivs</td>
+                        <td class="cell"><select v-model="viewPokemon.Ivs.hp" class="form-select" style="width: 80px">
+                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select></td>
+                        <td class="cell"><select v-model="viewPokemon.Ivs.atk" class="form-select" style="width: 80px">
+                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select></td>
+                        <td class="cell"><select v-model="viewPokemon.Ivs.def" class="form-select" style="width: 80px">
+                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select></td>
+                        <td class="cell"><select v-model="viewPokemon.Ivs.spa" class="form-select" style="width: 80px">
+                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select></td>
+                        <td class="cell"><select v-model="viewPokemon.Ivs.spd" class="form-select" style="width: 80px">
+                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select></td>
+                        <td class="cell"><select v-model="viewPokemon.Ivs.spe" class="form-select" style="width: 80px">
+                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select></td>
+                      </tr>
+                      <tr :class="{ 'has-error': viewPokemon.TotalEvs() > 510 }">
+                        <td class="cell" style="text-align: left; font-weight: bold;">Evs</td>
+                        <td class="cell">
+                          <select v-model="viewPokemon.Evs.hp" class="form-select" style="width: 80px">
+                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.hp))" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select>
+                        </td>
+                        <td class="cell">
+                          <select v-model="viewPokemon.Evs.atk" class="form-select" style="width: 80px">
+                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.atk))" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select>
+                        </td>
+                        <td class="cell">
+                          <select v-model="viewPokemon.Evs.def" class="form-select" style="width: 80px">
+                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.def))" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select>
+                        </td>
+                        <td class="cell">
+                          <select v-model="viewPokemon.Evs.spa" class="form-select" style="width: 80px">
+                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.spa))" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select>
+                        </td>
+                        <td class="cell">
+                          <select v-model="viewPokemon.Evs.spd" class="form-select" style="width: 80px">
+                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.spd))" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select>
+                        </td>
+                        <td class="cell">
+                          <select v-model="viewPokemon.Evs.spe" class="form-select" style="width: 80px">
+                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.spe))" :key="n-1" :value="n-1">{{ n-1 }}</option>
+                          </select>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="cell" style="text-align: left; font-weight: bold;">Final</td>
+                        <td class="cell">{{ viewPokemon.GetStatCalc().hp }}</td>
+                        <td class="cell" :class="{'text-danger': viewPokemon.Nature?.decreased_stat === 'attack', 'text-success': viewPokemon.Nature?.increased_stat === 'attack'}">{{ viewPokemon.GetStatCalc().atk }}</td>
+                        <td class="cell" :class="{'text-danger': viewPokemon.Nature?.decreased_stat === 'defense', 'text-success': viewPokemon.Nature?.increased_stat === 'defense'}">{{ viewPokemon.GetStatCalc().def }}</td>
+                        <td class="cell" :class="{'text-danger': viewPokemon.Nature?.decreased_stat === 'sp_atk', 'text-success': viewPokemon.Nature?.increased_stat === 'sp_atk'}">{{ viewPokemon.GetStatCalc().spa }}</td>
+                        <td class="cell" :class="{'text-danger': viewPokemon.Nature?.decreased_stat === 'sp_def', 'text-success': viewPokemon.Nature?.increased_stat === 'sp_def'}">{{ viewPokemon.GetStatCalc().spd }}</td>
+                        <td class="cell" :class="{'text-danger': viewPokemon.Nature?.decreased_stat === 'speed', 'text-success': viewPokemon.Nature?.increased_stat === 'speed'}">{{ viewPokemon.GetStatCalc().spe }}</td>
+                        <td class="cell"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+              </div>
+              
+              <div class="move-select">
+                <div class="member-moves mb-3">
+                  <table>
+                    <thead>
+                      <tr>
+                          <th class="cell" style="width: 50px">
+                            Name
+                          </th>
+                          <th class="cell type-cell" width="50px">
+                            Type
+                          </th>
+                          <th class="cell" width="50px">
+                            Power
+                          </th>
+                          <th class="cell" width="50px">
+                            Accuracy
+                          </th>
+                          <th class="cell" width="50px">
+                            Category
+                          </th>
+                          <th class="cell">
+                            Description
+                          </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="(move, index) in viewPokemon.SelectedMoves" :key="index" class="move"  @click="viewPokemon.RemoveMove(move);">
+                          <td class="cell cell-text">{{ move.Name.toTitleCase() }}</td>
+                          <td class="cell">
+                            <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
+                          </td>
+                          <td class="cell">{{ move.Power || '--' }}</td>
+                          <td class="cell">{{ move.Accuracy || '--' }}</td>
+                          <td class="cell">
+                            <img :src="move.Sprite" alt="" />
+                          </td>
+                          <td class="cell cell-text"> <span> {{ move.Description }}</span></td>
+                      </tr> 
+                       <tr class="move empty-move" v-for="n in 4 - viewPokemon.SelectedMoves.length" :key="n"><td>---</td><td>---</td><td>---</td><td>---</td><td>---</td><td class="cell cell-text">{{ 'Empty Move' }}</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="move-list-header btn-group">
+                  <button class="btn btn-primary" type="button" @click="moveListTab = 'levelup'" :class="{'active': moveListTab == 'levelup'}">Level Up</button>
+                  <button class="btn btn-primary" type="button" @click="moveListTab = 'tmhm'" :class="{'active': moveListTab == 'tmhm'}">TM/HM</button>
+                  <button class="btn btn-primary" type="button" @click="moveListTab = 'egg'" :class="{'active': moveListTab == 'egg'}">Egg Moves</button>
+                </div>
+                <div class="member-move-list">
+                  <div >
+                    <table>
+                      <thead>
+                        <tr>
+                          <th class="cell" style="width: 50px">
+                            <a href="javascript:void(0)" @click="setSortingMethod('Name')">Name
+                              <i :class="chevronClass('Name')"></i>
+                            </a>
+                          </th>
+                          <th class="cell" v-if="moveListTab === 'levelup'" style="width: 5rem">
+                            <a href="javascript:void(0)" @click="setSortingMethod('LevelLearned')">Level
+                              <i :class="chevronClass('LevelLearned')"></i>
+                            </a>
+                          </th>
+                          <th class="cell type-cell" style="width: 5rem">
+                            <a href="javascript:void(0)" @click="setSortingMethod('Type')">Type
+                              <i :class="chevronClass('Type')"></i>
+                            </a>
+                          </th>
+                          <th class="cell" style="width: 6.5rem">
+                            <a href="javascript:void(0)" @click="setSortingMethod('Category')">Category
+                              <i :class="chevronClass('Category')"></i>
+                            </a>
+                          </th>
+                          <th class="cell" style="width: 5rem">
+                            <a href="javascript:void(0)" @click="setSortingMethod('Power')">Power
+                              <i :class="chevronClass('Power')"></i>
+                            </a>
+                          </th>
+                          <th class="cell" style="width: 6.5rem">
+                            <a href="javascript:void(0)" @click="setSortingMethod('Accuracy')">Accuracy
+                              <i :class="chevronClass('Accuracy')"></i>
+                            </a>
+                          </th>
+                          <th class="cell cell-text">
+                            Description
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody class="move-list" v-if="moveListTab === 'levelup'">
+                        <tr class="move" v-for="(move, index) in sortList(viewPokemon.MoveList)" :key="index" @click="viewPokemon.AddMove(move);">
+                          <td class="cell">{{ move.Name.toTitleCase() }}</td>
+                          <td class="cell" style="text-align: center;">{{ move.LevelLearned || '---' }}</td>
+                          <td class="cell" style="text-align: center;">
+                            <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
+                          </td>
+                          <td class="cell" style="text-align: center;">
+                            <img :src="move.Sprite" alt="" />
+                          </td>
+                          <td class="cell" style="text-align: center;">{{ move.Power || '--' }}</td>
+                          <td class="cell" style="text-align: center;">{{ move.Accuracy || '--' }}</td>
+                          <td class="cell"> <span>{{ move.Description }}</span> </td>
+                        </tr>
+                      </tbody>
+                      <tbody class="move-list" v-if="moveListTab === 'tmhm'">
+                        <tr class="move" v-for="(move, index) in sortList(viewPokemon.TMMoves)" :key="index" @click="viewPokemon.AddMove(move);">
+                          <td class="cell">{{ move.Name.toTitleCase() }}</td>
+                          <td class="cell" style="text-align: center;">
+                            <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
+                          </td>
+                          <td class="cell" style="text-align: center;">
+                            <img :src="move.Sprite" alt="" />
+                          </td>
+                          <td class="cell" style="text-align: center;">{{ move.Power || '--' }}</td>
+                          <td class="cell" style="text-align: center;">{{ move.Accuracy || '--' }}</td>
+                          <td class="cell cell-text"> <span>{{ move.Description }}</span> </td>
+                        </tr>
+                      </tbody>
+                      <tbody class="move-list" v-if="moveListTab === 'egg'">
+                        <tr class="move" v-for="(move, index) in sortList(getEggMoves(viewPokemon))" :key="index" @click="viewPokemon.AddMove(move);">
+                          <td class="cell">{{ move.Name.toTitleCase() }}</td>
+                          <td class="cell" style="text-align: center;">
+                            <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
+                          </td>
+                          <td class="cell" style="text-align: center;">
+                            <img :src="move.Sprite" alt="" />
+                          </td>
+                          <td class="cell" style="text-align: center;">{{ move.Power || '--' }}</td>
+                          <td class="cell" style="text-align: center;">{{ move.Accuracy || '--' }}</td>
+                          <td class="cell cell-text"> <span>{{ move.Description }}</span> </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="pokemon-details">
+                <div class="section-title" data-content="Weaknesses & Resistances">
+                </div>
+                <table class="type-effectiveness mb-2" style="margin:auto;">
+                  <thead>
+                    <tr>
+                      <th v-for="(type, index) in types" class="cell type-cell type" :key="index" :class="type.Name.toLowerCase()"><img
+                          :src="type.Sprite" alt="" /></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td v-for="(type, index) in types" class="cell" :key="index"
+                        :class="{ 'weak': viewPokemon.FindMatchup(type.Name) > 1, 'resist': viewPokemon.FindMatchup(type.Name) < 1, 'immune': viewPokemon.FindMatchup(type.Name) === 0 }">
+                        {{ viewPokemon.FindMatchup(type.Name) === 0 ? '---' : viewPokemon.FindMatchup(type.Name) < 0.5 ? '¼' : viewPokemon.FindMatchup(type.Name) < 1 ? '½' :
+                          viewPokemon.FindMatchup(type.Name) || 0 || '---' }} </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="input-group mb-2">
+                  <span class="input-group-text">Ability:</span>
+                  <select v-model="viewPokemon.SelectedAbility" @change="teamBuilder.abilityChangeCallback(viewPokemon)"
+                    class="form-select" :title="getAbilityByName(viewPokemon.SelectedAbility)?.Description || ''">
+                    <option v-for="(ability, index) in viewPokemon.AbilitiesList" :key="index" :value="ability" class="ability-select"
+                      :title="getAbilityByName(ability)?.Description || ''">
+                      {{ getAbilityByName(ability)?.Name }}</option>
+                  </select>
+                </div>
+                <div class="input-group mb-2">
+                  <span class="input-group-text">Nature:</span>
+                  <select v-model="viewPokemon.Nature" @change="teamBuilder.saveTeam()"
+                    class="form-select" 
+                    :title="viewPokemon.Nature?.description || ''"
+                    placeholder="Select a nature">
+                    <option v-for="nature in natures" :key="nature.id" :value="nature" class="nature-select"
+                      :title="nature.description || ''">
+                      {{ nature.name }} {{ nature.increased_stat != null ? '(+ ' + nature.increased_stat + ',  - ' + nature.decreased_stat + ')' : '-' }}</option>
+                  </select>
+                </div>
+                <search-dropdown :items="allItems" item-label="Name" v-model="viewPokemon.HeldItem" placeholder="Search for item"
+                  :max-selections="1" :on-update="function() { teamBuilder.saveTeam(); }" label-text="Held Item:"
+                  :clearable="true" location="top" dropdown-height="20rem"></search-dropdown>
+              </div>
+
+          </div>
+        </div>
+
+        <!-- Type Effectiveness tab -->
+        <div id="type-effectiveness" v-if="tabView === 'typeEffectiveness'">
+          <div class="team-effectiveness">
+              <table>
+                <thead>
+                  <tr style="text-align: center;">
+                    <th class="cell total">Type</th> 
+                    <th class="cell" v-for="(mon, index) in teamBuilder.filteredTeam" :key="index">
+                      <div class="pkm-cell" v-if="mon">
+                        <img :src="mon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt="" class="member-sprite"/> 
+                        <span>{{ mon.Name }}</span>
+                      </div>
+                      <div v-else class="pkm-cell">---</div>
+                    </th>
+                    <th class="cell total" style="width: 50px;">x2</th>
+                    <th class="cell total" style="width: 50px;">½</th>
+                    <th class="cell total" style="width: 50px;">x0</th>
+                    <th class="cell total" style="width: 50px;">Total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="[key, value] in teamBuilder.TeamEffectiveness" :key="key" style="text-align: center;">
+                    <td :class="key.toLowerCase()" class="type cell" :title="key"><img :src="`./resources/images/types/${key}.png`" alt="" /></td>
+                    <td class="cell" v-for="(mon, index) in teamBuilder.filteredTeam" :key="index">
+                      <div v-if="mon" :class="{ 'weak': mon.FindMatchup(key) > 1, 'resist': mon.FindMatchup(key) < 1, 'immune': mon.FindMatchup(key) === 0 }">{{ mon.FindMatchup(key) || 0 || '---' }}</div>
+                      <div v-else>---</div>
+                    </td>
+                    <td class="cell total" :style="{ 'font-weight': value.weaknesses > 0 ? 'bold' : ''}">{{ value.weaknesses }}</td>
+                    <td class="cell total" :style="{ 'font-weight': value.resistances > 0 ? 'bold' : ''}">{{ value.resistances }}</td>
+                    <td class="cell total" :style="{ 'font-weight': value.immunities > 0 ? 'bold' : ''}">{{ value.immunities }}</td>
+                    <td class="cell total" :style="{ 'font-weight': value.total > 0 ? 'bold' : ''}">{{ value.weaknesses - value.resistances - value.immunities }}</td>
+  
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+        </div>
+
+        <!-- Move Coverage -->
+         <div id="move-effectiveness" v-if="tabView === 'moveCoverage'">
+          <div class="move-coverage">
+              <table>
+                <thead>
+                  <tr style="text-align: center;">
+                    <th class="cell total">Type</th>
+                    <th class="cell" v-for="(mon, index) in teamBuilder.filteredTeam" :key="index">
+                      <div class="pkm-cell" v-if="mon">
+                        <img :src="mon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt="" class="member-sprite"/> 
+                        <span>{{ mon.Name }}</span>
+                      </div>
+                      <div v-else class="pkm-cell">---</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="type in types" :key="type.Name" style="text-align: center;">
+                    <td :class="type.Name.toLowerCase()" class="type cell" :title="type.Name"><img :src="`./resources/images/types/${type.Name}.png`" alt="" /></td>
+                    <td class="cell" v-for="(mon, index) in teamBuilder.filteredTeam" :key="index">
+                      <div v-if="getMoveEffectiveness(mon).superEffectiveAgainst.has(type.Name)">
+                        <span class="weak">Super Effective</span>
+                      </div>
+                      <div v-else-if="getMoveEffectiveness(mon).neutral.has(type.Name)">
+                        <span class="neutral">Neutral</span>
+                      </div>
+                      <div v-else-if="getMoveEffectiveness(mon).resistedBy.has(type.Name)">
+                        <span class="resist">Not Very Effective</span>
+                      </div>
+                      <div v-else-if="getMoveEffectiveness(mon).unaffectedBy.has(type.Name)">
+                        <span class="immune">No Effect</span>
+                      </div>
+                      <div v-else>---</div>
+                    </td>
+                </tbody>
+              </table>
+            </div> 
+         </div>
+        <!-- All pokemon view tab -->
+        <div id="all-pokemon" v-if="tabView === 'allPokemon'">
+          <div class="all-pokemon-header">
+            <div class="search">
+              <div class="input-group d-flex">
+                <button type="button" class="btn btn-primary" onclick="document.querySelector('#filters-collapse').classList.toggle('show')">Filters</button>
+                <input type="text" class="form-control border-primary" v-model="searchQuery" placeholder="Search Pokémon by Name" autocomplete="off"/>
+                <button type="button" class="btn btn-outline-primary" @click="clearSearch">Clear</button>
+              </div>
+            </div>
+            <div class="collapse" id="filters-collapse">
+              <search-dropdown :items="types" item-label="Name" v-model="typeFilter" placeholder="Filter by Type" :max-selections="2" :has-badges="true" :clearable="true" dropdown-height="30rem"></search-dropdown>
+              <search-dropdown :items="types" item-label="Name" v-model="resistedByFilter" placeholder="Filter by Resisted Type" :max-selections="4" :has-badges="true" :clearable="true" dropdown-height="30rem"></search-dropdown>
+              <search-dropdown :items="types" item-label="Name" v-model="effectiveTypeFilter" placeholder="Filter by supereffective stab" :max-selections="4" :has-badges="true" :clearable="true" dropdown-height="30rem"></search-dropdown>
+              <search-dropdown :items="allAbilities" item-label="Name" v-model="abilityFilter" placeholder="Filter by Ability" :max-selections="3" :has-badges="true" :clearable="true" dropdown-height="30rem"></search-dropdown>
+              <search-dropdown :items="allMoves" item-label="Name" v-model="moveFilter" placeholder="Filter by Move" :max-selections="4" :has-badges="true" :clearable="true" dropdown-height="30rem"></search-dropdown>
+            </div>
+          </div>
+          <div class="pokemon-list">
+            <table class="w-100">
+              <thead>
+                <tr>
+                  <th class="cell text-center" width="50px">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Number')">No.</a>
+                  </th>
+                  <th width="120px"></th>
+                  <th class="cell" width="50px">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Name')">Name
+                    <i :class="chevronClass('Name')"></i>
+                  </a></th>
+                  <th class="cell text-center" width="100px">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Type1')">Type
+                      <i :class="chevronClass('Type1')"></i>
+                    </a>
+                  </th>
+                  <th class="cell" width="500px">Abilities</th>
+                  <th class="cell text-center">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Stats', 'hp')">HP
+                      <i :class="chevronClass('hp')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Stats', 'atk')">Atk
+                      <i :class="chevronClass('atk')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Stats', 'def')">Def
+                      <i :class="chevronClass('def')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Stats', 'spa')">SpA
+                      <i :class="chevronClass('spa')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Stats', 'spd')">SpD
+                      <i :class="chevronClass('spd')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Stats', 'spe')">Spe
+                      <i :class="chevronClass('spe')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center">BST</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(poke, index) in sortList(filteredPokemon)" :key="index" class="pokemon" @click="pokedexView = poke.InternalName">
+                  <td class="cell text-center">{{ '#' + allPokemon.indexOf(poke) }}</td>
+                  <td class="cell sprite-cell">
+                    <img :src="poke.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" class="list-sprite" /> 
+                  </td>
+                  <td class="cell cell-text">
+                    {{ poke.Name }}
+                  </td>
+                  <td class="cell type-cell text-center">
+                    <img v-if="poke.Type1" :src="`./resources/images/types/${poke.Type1.toUpperCase()}.png`" alt="" />
+                    <img v-if="poke.Type2" :src="`./resources/images/types/${poke.Type2.toUpperCase()}.png`" alt="" />
+                  </td>
+                  <td class="cell cell-text">{{ poke.AbilitiesList.join(', ') }}</td>
+                  <td class="cell text-center">{{ poke.Stats.hp }}</td>
+                  <td class="cell text-center">{{ poke.Stats.atk }}</td>
+                  <td class="cell text-center">{{ poke.Stats.def }}</td>
+                  <td class="cell text-center">{{ poke.Stats.spa }}</td>
+                  <td class="cell text-center">{{ poke.Stats.spd }}</td>
+                  <td class="cell text-center">{{ poke.Stats.spe }}</td>
+                  <td class="cell text-center">{{ poke.GetBaseStatTotal() }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- All Abilities tab -->
+        <div id="all-abilities" v-if="tabView === 'allAbilities'">
+          <div class="all-abilities-header">
+            <div class="search">
+            </div>
+            <div class="collapse show" id="filters-collapse">
+              <search-dropdown :items="allAbilities" item-label="Name" v-model="abilityFilter" placeholder="Search for ability" :max-selections="3" :has-badges="true" :clearable="true"></search-dropdown>
+            </div>
+          </div>
+          <div class="ability-list">
+            <table class="w-100">
+              <thead>
+                <tr>
+                  <th class="cell" width="50px"></th>
+                  <th class="cell" width="200px">Name</th>
+                  <th class="cell">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(ability, index) in filteredAbilities" :key="index" class="ability" @click="showPokemonInSearch(ability, 'ability')">
+                  <td class="cell">{{ index + 1 }}</td>
+                  <td class="cell cell-text">{{ ability.Name.toTitleCase() }}</td>
+                  <td class="cell cell-text">{{ ability.Description }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- All Moves tab -->
+        <div id="all-moves" v-if="tabView === 'allMoves'">
+          <div class="all-moves-header">
+            <div class="search">
+            </div>
+            <div class="collapse show" id="filters-collapse">
+              <search-dropdown :items="allMoves" item-label="Name" v-model="moveFilter" placeholder="Search for move" :max-selections="3" :has-badges="true" :clearable="true"></search-dropdown>
+              <search-dropdown :items="types" item-label="Name" v-model="moveTypeFilter" placeholder="Filter by Type" :max-selections="2" :has-badges="true" :clearable="true"></search-dropdown>
+            </div>
+          </div>
+          <div class="move-list">
+            <table class="w-100">
+              <thead>
+                <tr>
+                  <th class="cell" width="200px">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Name')">Name
+                      <i :class="chevronClass('Name')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center" width="80px">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Type')">Type
+                      <i :class="chevronClass('Type')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center" width="100px">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Category')">Category
+                      <i :class="chevronClass('Category')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center" width="80px">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Power')">Power
+                      <i :class="chevronClass('Power')"></i>
+                    </a>
+                  </th>
+                  <th class="cell text-center" width="110px">
+                    <a href="javascript:void(0)" @click="setSortingMethod('Accuracy')">Accuracy
+                      <i :class="chevronClass('Accuracy')"></i>
+                    </a>
+                  </th>
+                  <th class="cell">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(move, index) in sortList(filteredMoves)" :key="index" class="move" @click="showPokemonInSearch(move, 'move')">
+                  <td class="cell cell-text">{{ move.Name.toTitleCase() }}</td>
+                  <td class="cell text-center">
+                    <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
+                  </td>
+                  <td class="cell text-center">
+                    <img :src="`./resources/images/moves/${move.Category}.png`" alt="" />
+                  </td>
+                  <td class="cell text-center">{{ move.Power || '--' }}</td>
+                  <td class="cell text-center">{{ move.Accuracy || '--' }}</td>
+                  <td class="cell cell-text">{{ move.Description }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="type-chart" v-if="tabView === 'typeChart'">
+          <div class="type-chart-table-container">
+            <table class="type-chart-table text-center">
+              <thead>
+                <tr>
+                  <th class="cell">Types</th>
+                  <th class="cell type-cell type" v-for="type in types" :key="type.Name" :class="type.Name.toLowerCase()"><img :src="type.Sprite" alt=""></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="attackingType in types" :key="attackingType.Name">
+                  <td :class="attackingType.Name.toLowerCase()" class="type cell" :title="attackingType.Name"><img :src="attackingType.Sprite" alt="" /></td>
+                  <td v-for="defendingType in types" :key="defendingType.Name" class="cell type-cell"
+                    :class="{ 'weak': defendingType.GetTypeEffectiveness(attackingType) > 1, 'resist': defendingType.GetTypeEffectiveness(attackingType) < 1, 'immune': defendingType.GetTypeEffectiveness(attackingType) === 0 }">
+                    {{ defendingType.GetTypeEffectiveness(attackingType) === 0 ? '---' : defendingType.GetTypeEffectiveness(attackingType) < 0.5 ? '¼' : defendingType.GetTypeEffectiveness(attackingType) < 1 ? '½' :
+                      defendingType.GetTypeEffectiveness(attackingType) || 0 || '---' }}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Modals -->
+
+        <div id="search-modal" class="modal" :class="{ 'modal-open': searching && !pokedexView}" @click.self="searching = false">
+          <div class="pokemon-search-container" >
+            <h2>Search Pokémon</h2>
+            <button @click="searching = false" class="close-btn">X</button>
+            <div class="results-container">
+              <div class="search-container">
+                <input type="text" class="form-control" v-model="searchQuery" placeholder="Search Pokémon by Name" autocomplete="off"/>
+                <search-dropdown :items="types" item-label="Name" v-model="typeFilter" placeholder="Filter by Type" :max-selections="2" :has-badges="true"></search-dropdown>
+                <button @click="clearSearch()" class="btn btn-outline-secondary" style="max-height: 37px;">Clear</button>
+              </div>
+              <ul class="search-results">
+                <li v-for="poke in filteredPokemon" :key="poke.id" @click="pokedexView = poke.InternalName;" class="result">
+                  <img :src="poke.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" class="search-sprite"/> {{ poke.Name }}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pokémon View Modal -->
+        <div id="view-pokemon-modal" class="modal" :class="{ 'modal-open': pokedexView }" @click.self="pokedexView = ''">
+          <div class="modal-content" v-if="pokemon">
+            <h3 class="member-name">
+              <strong>{{ pokemon?.Name?.toTitleCase() }}</strong>
+              <button @click="addToTeam(pokemon)" class="ms-3 btn"><i class="bi-plus me-1"></i> Add to Team</button>
+            </h3>
+            <button @click="pokedexView = ''" class="close-btn">X</button>
+            <div class="pokemon-details">
+              <div class="btn-group">
+                <button class="btn btn-primary" type="button" @click="pokedexTab = 'info'" :class="{'active': pokedexTab == 'info'}">Info</button>
+                <button class="btn btn-primary" type="button" @click="pokedexTab = 'evolutions'" :class="{'active': pokedexTab == 'evolutions'}">Evolutions</button>
+                <button class="btn btn-primary" type="button" @click="pokedexTab = 'moves'" :class="{'active': pokedexTab == 'moves'}">Moves</button>
+                <button class="btn btn-primary" type="button" @click="pokedexTab = 'tm_moves'" :class="{'active': pokedexTab == 'tm_moves'}">TM Moves</button>
+                <button class="btn btn-primary" type="button" @click="pokedexTab = 'egg_moves'" :class="{'active': pokedexTab == 'egg_moves'}">Egg Moves</button>
+              </div>
+              <div class="tab-content pokedex-info pokemon-details" v-if="pokedexTab === 'info'">
+
+                <div class="header">
+                  <div class="d-flex align-items-center w-100">
+                    <div class="d-flex flex-column align-items-center flex-grow-1">
+                      <img :src="pokemon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
+                        class="member-sprite" />
+                        <p><span :class="pokemon.Type1.toLowerCase()" class="type"> <img
+                        :src="`./resources/images/types/${pokemon.Type1.toUpperCase()}.png`" alt="" />{{ pokemon.Type1 }}</span><span v-if="pokemon.Type2"> / <span :class="pokemon.Type2.toLowerCase()" class="type"> <img
+                          :src="`./resources/images/types/${pokemon.Type2.toUpperCase()}.png`" alt="" />{{ pokemon.Type2 }}</span></span></p>
+                    </div>
+                    <div class="flex-grow-1 text-nowrap">
+                      <div class="item-container" data-content="HP">
+                          <span>{{ pokemon.Stats.hp }}</span><span class="stat-bar" :style="{ width: ( pokemon.Stats.hp /  1.5) + '%', 'background-color': getStatBarColor(pokemon.Stats.hp) }"></span>
+                      </div>
+                      <div class="item-container" data-content="Atk">
+                          <span>{{ pokemon.Stats.atk }}</span><span class="stat-bar" :style="{ width: (pokemon.Stats.atk / 1.5) + '%', 'background-color': getStatBarColor(pokemon.Stats.atk) }"></span>
+                      </div>
+                      <div class="item-container" data-content="Def">
+                          <span>{{ pokemon.Stats.def }}</span><span class="stat-bar" :style="{ width: (pokemon.Stats.def / 1.5) + '%', 'background-color': getStatBarColor(pokemon.Stats.def) }"></span>
+                      </div>
+                      <div class="item-container" data-content="Sp.A">
+                          <span>{{ pokemon.Stats.spa }}</span><span class="stat-bar" :style="{ width: (pokemon.Stats.spa / 1.5) + '%', 'background-color': getStatBarColor(pokemon.Stats.spa) }"></span>
+                      </div>
+                        <div class="item-container" data-content="Sp.D">
+                          <span>{{ pokemon.Stats.spd }}</span><span class="stat-bar" :style="{ width: (pokemon.Stats.spd / 1.5) + '%', 'background-color': getStatBarColor(pokemon.Stats.spd) }"></span>
+                      </div>
+                      <div class="item-container" data-content="Spe">
+                          <span>{{ pokemon.Stats.spe }}</span><span class="stat-bar" :style="{ width: (pokemon.Stats.spe / 1.5) + '%', 'background-color': getStatBarColor(pokemon.Stats.spe) }"></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pokemon-details">
+                  <div class="section-title" data-content="Weaknesses & Resistances">
+                  </div>
+                  <table class="type-effectiveness">
+                    <thead>
+                      <tr>
+                        <th v-for="(type, index) in types" class="cell type-cell type" :key="index" :class="type.Name.toLowerCase()"><img :src="type.Sprite" alt="" /></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td v-for="(type, index) in types" class="cell" :key="index" :class="{ 'weak': pokemon.FindMatchup(type.Name) > 1, 'resist': pokemon.FindMatchup(type.Name) < 1, 'immune': pokemon.FindMatchup(type.Name) === 0 }">
+                            {{ pokemon.FindMatchup(type.Name) === 0 ? '---' : pokemon.FindMatchup(type.Name) < 0.5 ? '¼' : pokemon.FindMatchup(type.Name) < 1 ? '½' : pokemon.FindMatchup(type.Name) || 0 || '---' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <div class="section-title" data-content="Stab Effectiveness">
+                  </div>
+                  <table class="type-effectiveness">
+                    <thead>
+                      <tr>
+                        <th v-for="(type, index) in types" class="cell type-cell type" :key="index" :class="type.Name.toLowerCase()"><img :src="type.Sprite" alt="" /></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td v-for="(type, index) in types" class="cell" :key="index" :class="{ 'weak': pokemon.FindStabMatchup(type) > 1, 'resist': pokemon.FindStabMatchup(type) < 1, 'immune': pokemon.FindStabMatchup(type) === 0 }">
+                            {{ pokemon.FindStabMatchup(type) === 0 ? '---' : pokemon.FindStabMatchup(type) < 0.5 ? '¼' : pokemon.FindStabMatchup(type) < 1 ? '½' : pokemon.FindStabMatchup(type) || 0 || '---' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                
+                  <div class="Abilities">
+                    <div class="section-title" data-content="Abilities">
+                    </div>
+                    <div class="ability-list">
+                      <div v-for="(ability, index) in pokemon.AbilitiesList.map(a => getAbilityByName(a))" :key="index" class="ability">
+                        <strong>{{ ability?.Name }}</strong>
+                        <p>{{ ability?.Description }}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div class="section-title" data-content="Pokedex Information">
+                    </div>
+                    <div class="pokedex-info">
+                      <strong>Height</strong>
+                      <p> {{ pokemon.Height }} m</p>
+                      <strong>Weight</strong>
+                      <p> {{ pokemon.Weight }} kg</p>
+                      <strong>Locations</strong>
+                      <p> {{ pokemon.Encounters.length ? pokemon.Encounters.join(', ') : 'Not found in the wild' }}</p>
+                      <strong>Egg Group</strong>
+                      <p> {{ pokemon.Compatibility }} </p>
+                      <strong>Pokedex Entry</strong>
+                      <p> {{ pokemon.Pokedex }}</p>
+                    </div>
+                  </div>
+                  <!-- <div>
+                    <strong>Locations</strong>
+                    <p> {{ pokemon.Encounters.length ? pokemon.Encounters.join(', ') : 'Not found in the wild' }}</p>
+                    <strong>Weight</strong>
+                    <p> {{ pokemon.Weight }} kg</p>
+                    <strong>Height</strong>
+                    <p> {{ pokemon.Height }} m</p>
+                    <strong>Pokedex Entry</strong>
+                    <p> {{ pokemon.Pokedex }}</p>
+                  </div> -->
+                </div>
+
+
+              </div>
+
+              <div class="tab-content pokedex-moves" v-if="pokedexTab === 'moves'">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th class="cell" style="width: 50px">Name</th>
+                      <th class="cell text-center" style="width: 5rem">Level</th>
+                      <th class="cell type-cell text-center" style="width: 5rem">Type</th>
+                      <th class="cell text-center" style="width: 6.5rem">Category</th>
+                      <th class="cell text-center" style="width: 5rem">Power</th>
+                      <th class="cell text-center" style="width: 6.5rem">Accuracy</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="move" v-for="(move, index) in sortList(pokemon.MoveList)" :key="index" :title="move.Description">
+                      <td class="cell">{{ move?.Name?.toTitleCase() }}</td>
+                      <td class="cell text-center">{{ move?.LevelLearned || '---' }}</td>
+                      <td class="cell text-center">
+                        <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
+                      </td>
+                      <td class="cell text-center">
+                        <img :src="move.Sprite" alt="" />
+                      </td>
+                      <td class="cell text-center">{{ move?.Power || '--' }}</td>
+                      <td class="cell text-center">{{ move?.Accuracy || '--' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-content pokedex-evolutions" v-if="pokedexTab === 'evolutions'">
+                <div v-if="pokemon.Forms" class="pokemon-forms header">
+                  <div v-for="(form, index) in pokemon.FormsList" :key="index" class="w-100">
+                    <div class="d-flex align-items-center w-100">
+                      <div class="d-flex flex-column align-items-center flex-grow-1">
+                        <img :src="form.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
+                          class="member-sprite"
+                          style="width: 200px; height: 200px" />
+                          <div> {{ form.FormName }} Form</div>
+                          <p><span :class="form.Type1?.toLowerCase()" class="type"> <img
+                          :src="`./resources/images/types/${form.Type1?.toUpperCase()}.png`" alt="" />{{ form.Type1 }}</span><span v-if="form.Type2"> / <span :class="form.Type2?.toLowerCase()" class="type"> <img
+                            :src="`./resources/images/types/${form.Type2?.toUpperCase()}.png`" alt="" />{{ form.Type2 }}</span></span></p>
+                      </div>
+                      <div class="flex-grow-1 text-nowrap">
+                        <div class="item-container" data-content="HP">
+                            <span>{{ form.Stats?.hp }}</span><span class="stat-bar" :style="{ width: ( form.Stats?.hp /  1.5) + '%', 'background-color': getStatBarColor(form.Stats?.hp) }"></span>
+                        </div>
+                        <div class="item-container" data-content="Atk">
+                            <span>{{ form.Stats?.atk }}</span><span class="stat-bar" :style="{ width: (form.Stats?.atk / 1.5) + '%', 'background-color': getStatBarColor(form.Stats?.atk) }"></span>
+                        </div>
+                        <div class="item-container" data-content="Def">
+                            <span>{{ form.Stats?.def }}</span><span class="stat-bar" :style="{ width: (form.Stats?.def / 1.5) + '%', 'background-color': getStatBarColor(form.Stats?.def) }"></span>
+                        </div>
+                        <div class="item-container" data-content="Sp.A">
+                            <span>{{ form.Stats?.spa }}</span><span class="stat-bar" :style="{ width: (form.Stats?.spa / 1.5) + '%', 'background-color': getStatBarColor(form.Stats?.spa) }"></span>
+                        </div>
+                          <div class="item-container" data-content="Sp.D">
+                            <span>{{ form.Stats?.spd }}</span><span class="stat-bar" :style="{ width: (form.Stats?.spd / 1.5) + '%', 'background-color': getStatBarColor(form.Stats?.spd) }"></span>
+                        </div>
+                        <div class="item-container" data-content="Spe">
+                            <span>{{ form.Stats?.spe }}</span><span class="stat-bar" :style="{ width: (form.Stats?.spe / 1.5) + '%', 'background-color': getStatBarColor(form.Stats?.spe) }"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="evolutions mt-4">
+                  <div class="section-title" data-content="Evolutions">
+                  </div>
+                  <div class="d-flex flex-column" v-if="pokemon.EvolutionLine">
+                    <div v-for="(evoChain, index) in buildEvolutionChain(pokemon)" :key="index" class="evolution d-flex flex-wrap justify-content-center align-items-center">
+                      <div v-for="(evo, evoIndex) in evoChain" :key="evoIndex" class="d-flex">
+                        <div class="d-flex flex-column align-items-center evolution" @click="pokedexView = evo.InternalName" v-if="evo != null">
+                          <img :src="evo.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
+                            class="evolution-sprite" style="max-height: 100px"/>
+                          <p>{{ evo?.Name?.toTitleCase() }}</p>
+                          <span>
+                            <img v-if="evo.Type1" :src="`./resources/images/types/${evo?.Type1?.toUpperCase()}.png`" alt="" style="width: 30px; height: 30px;"/>
+                            <img v-if="evo.Type2" :src="`./resources/images/types/${evo?.Type2?.toUpperCase()}.png`" alt="" style="width: 30px; height: 30px;"/>
+                          </span>
+                        </div>
+                        <div v-if="evo != null && evo.EvolveData.length" class="mx-3 d-flex flex-column align-items-center"> 
+                          <div> {{ evo?.EvolveMethod[evoChain[evoIndex + 1]?.InternalName] }}</div>
+                          <div style="font-size: 2rem"><i class="bi-arrow-right"></i> </div>
+                          <div> {{ evo?.EvolvesAt[evoChain[evoIndex + 1]?.InternalName] }}</div>
+                        </div>
+                      </div>
+                      <br />
+                    </div>
+                  </div>
+                  <div v-else class="fst-italic">
+                    <p>This Pokémon does not evolve</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="tab-content pokedex-tm-moves" v-if="pokedexTab === 'tm_moves'">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th class="cell" style="width: 50px">Name</th>
+                      <th class="cell type-cell text-center" style="width: 5rem">Type</th>
+                      <th class="cell text-center" style="width: 6.5rem">Category</th>
+                      <th class="cell text-center" style="width: 5rem">Power</th>
+                      <th class="cell text-center" style="width: 6.5rem">Accuracy</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="move" v-for="(move, index) in sortList(pokemon.TMMoves)" :key="index">
+                      <td class="cell">{{ move?.Name?.toTitleCase() }}</td>
+                      <td class="cell text-center">
+                        <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
+                      </td>
+                      <td class="cell text-center">
+                        <img :src="move.Sprite" alt="" />
+                      </td>
+                      <td class="cell text-center">{{ move?.Power || '--' }}</td>
+                      <td class="cell text-center">{{ move?.Accuracy || '--' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-content pokedex-egg-moves" v-if="pokedexTab === 'egg_moves'">
+                <table class="w-100">
+                  <thead>
+                    <tr>
+                      <th class="cell" style="width: 50px">Name</th>
+                      <th class="cell type-cell text-center" style="width: 5rem">Type</th>
+                      <th class="cell text-center" style="width: 6.5rem">Category</th>
+                      <th class="cell text-center" style="width: 5rem">Power</th>
+                      <th class="cell text-center" style="width: 6.5rem">Accuracy</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr class="move" v-for="(move, index) in sortList(getEggMoves(pokemon))" :key="index" :title="move.Description">
+                      <td class="cell">{{ move?.Name.toTitleCase() }}</td>
+                      <td class="cell text-center">
+                        <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
+                      </td>
+                      <td class="cell text-center">
+                        <img :src="move.Sprite" alt="" />
+                      </td>
+                      <td class="cell text-center">{{ move?.Power || '--' }}</td>
+                      <td class="cell text-center">{{ move?.Accuracy || '--' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>  
+          </div>
+        </div>
+        
+      </div>
+      
+      <div class="footer">
+        <div class="navigation d-flex justify-content-center align-items-center w-100">
+          <span class="btn-group">
+            <button type="button" class="btn btn-primary" @click="setTabView('team')" :class="{ active: tabView === 'team' }"><i class="bi-window-sidebar me-2"></i> My Team</button>
+            <button type="button" class="btn btn-primary" @click="setTabView('typeEffectiveness')" :class="{ active: tabView === 'typeEffectiveness' }"><i class="bi-table me-2"></i> Team Effectiveness</button>
+            <button type="button" class="btn btn-primary" @click="setTabView('moveCoverage')" :class="{ active: tabView === 'moveCoverage' }"><i class="bi-shield-check me-2"></i> Move Coverage</button>
+            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi-journal-text me-2"></i> PokeDex
+            </button>
+            <ul class="dropdown-menu">
+              <li>
+              <button type="button" class="dropdown-item" @click="setTabView('allPokemon')" :class="{ active: tabView === 'allPokemon' }"><i class="bi-journal-text me-2"></i> Pokemon</button>
+              </li>
+              <li>
+              <button type="button" class="dropdown-item" @click="setTabView('allAbilities')" :class="{ active: tabView === 'allAbilities' }"><i class="bi-journal-text me-2"></i> AbilityDex</button>
+              </li>
+              <li>
+              <button type="button" class="dropdown-item" @click="setTabView('allMoves')" :class="{ active: tabView === 'allMoves' }"><i class="bi-journal-text me-2"></i> MoveDex</button>
+              </li>
+              <li>
+              <button type="button" class="dropdown-item" @click="setTabView('typeChart')" :class="{ active: tabView === 'typeChart' }"><i class="bi-table me-2"></i> Type Chart</button>
+              </li>
+            </ul>
+             <!-- <button type="button" class="btn btn-primary" @click="setTabView('allItems')" :class="{ active: tabView === 'allItems' }">All Items</button> -->
+          </span>
+        </div>
+      </div>
+      </div>
+
+      <script src="_extensions.js"></script>
+
+      <script type="importmap">
+        {
+          "imports": {
+            "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+          }
+        }
+      </script>
+      <script type="module" src="./team_builder.js"></script>
+    </body>
+
+</html>
