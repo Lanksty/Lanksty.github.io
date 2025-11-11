@@ -86,8 +86,6 @@ Small, well-scoped PRs are easier to review (fix one dataset or bug per PR).
 
 ## License & credits
 
-This repository currently does not include a LICENSE file. If you plan to publish or accept contributions, add an appropriate license (for example, MIT) to make usage and contributions clear.
-
 Credits
 - UI powered by Vue 3 (importmap)
-- Data and images are stored in `resources/` (local dataset)
+- Data and images are stored in `resources/` (local dataset) are sourced from Pokemon Vanguard (all credits to the creators and their respective licenses)
