@@ -13,7 +13,7 @@
     </head>
     <body>
       <div id="app" class="app-container" v-cloak >
-        <h1 style="text-align:center" id="page-heading" class="section-title" data-content="Pokemon Vanguard Team Builder"></h1>
+        <h1 style="text-align:center" id="page-heading" class="section-title" data-content="Pokémon Vanguard Team Builder"></h1>
 
         <div class="header-nav mt-5">
           <div class="navigation d-flex justify-content-center align-items-center w-100">
@@ -26,7 +26,7 @@
               </button>
               <ul class="dropdown-menu">
                 <li>
-                <button type="button" class="dropdown-item" @click="setTabView('allPokemon')" :class="{ active: tabView === 'allPokemon' }"><i class="bi-journal-text me-2"></i> Pokemon</button>
+                <button type="button" class="dropdown-item" @click="setTabView('allPokemon')" :class="{ active: tabView === 'allPokemon' }"><i class="bi-journal-text me-2"></i> Pokémon</button>
                 </li>
                 <li>
                 <button type="button" class="dropdown-item" @click="setTabView('allAbilities')" :class="{ active: tabView === 'allAbilities' }"><i class="bi-journal-text me-2"></i> AbilityDex</button>
@@ -123,7 +123,7 @@
 
             <div v-if="teamBuilder.teamList.length < 6" v-for="n in 6 - teamBuilder.teamList.length" :key="n"class="team-member">
               <div class="empty-slot" @click="searching = true">
-                <p>Add Pokemon</p>
+                <p>Add Pokémon</p>
               </div>
             </div>
             
