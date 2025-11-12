@@ -1,41 +1,60 @@
 :root {
   --dark-type-color: #333;
+  --dark-type-color-light: #33333326;
   --dark-type-text-color: #fff;
-  --psychcic-type-color: #f8b3ff;
+  --psychic-type-color: #f8b3ff;
+  --psychic-type-color-light: #f8b3ff26;
   --psychic-type-text-color: #000;
   --fairy-type-color: #ffb3ff;
+  --fairy-type-color-light: #ffb3ff26;
   --fairy-type-text-color: #000;
   --normal-type-color: #ccc;
+  --normal-type-color-light: #cccccc26;
   --normal-type-text-color: #000;
   --fighting-type-color: #ff8080;
+  --fighting-type-color-light: #ff808026;
   --fighting-type-text-color: #000;
   --flying-type-color: #cce0ff;
+  --flying-type-color-light: #cce0ff26;
   --flying-type-text-color: #000;
   --poison-type-color: #e066ff;
+  --poison-type-color-light: #e066ff26;
   --poison-type-text-color: #000;
   --ground-type-color: #ffcc80;
+  --ground-type-color-light: #ffcc8026;
   --ground-type-text-color: #000;
   --rock-type-color: #d2b48c;
+  --rock-type-color-light: #d2b48c26;
   --rock-type-text-color: #000;
   --bug-type-color: #cce6c6;
+  --bug-type-color-light: #cce6c626;
   --bug-type-text-color: #000;
   --ghost-type-color: #b3b3ff;
+  --ghost-type-color-light: #b3b3ff26;
   --ghost-type-text-color: #000;
   --steel-type-color: #e6e6e6;
+  --steel-type-color-light: #e6e6e626;
   --steel-type-text-color: #000;
   --fire-type-color: #ffb3b3;
+  --fire-type-color-light: #ffb3b326;
   --fire-type-text-color: #000;
   --water-type-color: #b3d1ff;
+  --water-type-color-light: #b3d1ff26;
   --water-type-text-color: #000;
   --grass-type-color: #b3ffb3;
+  --grass-type-color-light: #b3ffb326;
   --grass-type-text-color: #000;
   --electric-type-color: #ffffb3;
+  --electric-type-color-light: #ffffb326;
   --electric-type-text-color: #000;
   --ice-type-color: #b3ffff;
+  --ice-type-color-light: #b3ffff26;
   --ice-type-text-color: #000;
   --dragon-type-color: #bbb3ff;
+  --dragon-type-color-light: #bbb3ff26;
   --dragon-type-text-color: #000;
   --sound-type-color: #b3fff2;
+  --sound-type-color-light: #b3fff226;
   --sound-type-text-color: #000;
 }
 
@@ -318,6 +337,13 @@ body:has(.modal-open) {
   margin: 0;
   text-align: left;
 }
+.team-member .member-name a {
+  text-decoration: none;
+  color: inherit;
+}
+.team-member .member-name a:hover {
+  text-decoration: underline;
+}
 
 .ability-select {
   width: 100%;
@@ -362,6 +388,16 @@ body:has(.modal-open) {
   overflow: hidden;
   height: 100%;
   grid-column: 1/3;
+  --primary-color: #f0f0f0;
+  --secondary-color: #f0f0f0;
+}
+.team-container-wrapper .team-member {
+  background: linear-gradient(white, white) padding-box, linear-gradient(to right, var(--primary-color), var(--secondary-color)) border-box; /* Gradient for border */
+  border-radius: 10px;
+  border: 4px solid transparent;
+}
+.team-container-wrapper .team-member:hover {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .team-container-wrapper .team-member {
@@ -591,7 +627,7 @@ body:has(.modal-open) {
   text-decoration: underline;
 }
 
-.team-sidebar-container .team-member:not(:has(.empty-slot)).active, .team-sidebar-container .team-member:not(:has(.empty-slot)):hover, .team-container-wrapper .team-member:not(:has(.empty-slot)).active, .team-container-wrapper .team-member:not(:has(.empty-slot)):hover {
+.team-sidebar-container .team-member:not(:has(.empty-slot)).active, .team-sidebar-container .team-member:not(:has(.empty-slot)):hover {
   outline: 3px solid #006ae4;
 }
 
@@ -770,6 +806,11 @@ body:has(.modal-open) {
   width: 100%;
   overflow-y: auto;
   position: relative;
+  --primary-color: #ffffff;
+  --secondary-color: #ffffff;
+}
+#all-pokemon .pokemon-list .pokemon, #all-pokemon .ability-list .pokemon, #all-pokemon .move-list .pokemon, #all-abilities .pokemon-list .pokemon, #all-abilities .ability-list .pokemon, #all-abilities .move-list .pokemon, #all-moves .pokemon-list .pokemon, #all-moves .ability-list .pokemon, #all-moves .move-list .pokemon {
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
 }
 #all-pokemon .pokemon-list table thead, #all-pokemon .ability-list table thead, #all-pokemon .move-list table thead, #all-abilities .pokemon-list table thead, #all-abilities .ability-list table thead, #all-abilities .move-list table thead, #all-moves .pokemon-list table thead, #all-moves .ability-list table thead, #all-moves .move-list table thead {
   position: sticky;
