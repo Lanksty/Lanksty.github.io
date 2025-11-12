@@ -194,8 +194,8 @@ export class Pokemon {
             console.error('Move list data is not available.');
             return [];
         }
-        let eggMoveList = moveList.filter(mv => this.EggMoves.includes(mv.Name));
-        this.EggMovesList = eggMoveList.map(mv => new Move(mv));
+        let eggMoveList = moveList.filter(mv => this.EggMoves?.includes(mv.Name));
+        this.EggMovesList = eggMoveList?.map(mv => new Move(mv));
         return this.EggMovesList;
     }
 
@@ -265,7 +265,7 @@ export class Pokemon {
     }
 
     GetEvolutions(pokemonList) {
-        let evolutions = this.EvolutionLine.split(',') || [];
+        let evolutions = this.EvolutionLine?.split(',') || [];
         evolutions = evolutions.map(evoName => {
             let name = evoName.replace(/\(.*?\)/g, '').trim();
             return pokemonList.find(p => p.InternalName === name);
