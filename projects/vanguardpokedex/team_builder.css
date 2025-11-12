@@ -402,6 +402,9 @@ body:has(.modal-open) {
 .team-container-wrapper .team-member:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
+.team-container-wrapper .team-member .member-header {
+  overflow: unset;
+}
 
 .team-container-wrapper .team-member {
   width: 100%;
@@ -985,6 +988,11 @@ body:has(.modal-open) {
   transform: translate(25%, -50%) rotate(-90deg);
   font-weight: bold;
   font-size: 1.3rem;
+}
+
+::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+          appearance: none;
 }
 
 @media (max-width: 1600px) {

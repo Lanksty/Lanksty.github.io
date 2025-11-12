@@ -395,6 +395,10 @@ body:has(.modal-open) {
         &:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
+
+        .member-header {
+            overflow: unset;
+        }
     }
 }
 
@@ -1090,6 +1094,10 @@ body:has(.modal-open) {
             font-size: 1.3rem;
         }
     }
+}
+
+::-webkit-inner-spin-button {
+    appearance: none;
 }
 
 //

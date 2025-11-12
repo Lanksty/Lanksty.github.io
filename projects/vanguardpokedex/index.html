@@ -89,6 +89,7 @@
                     <th class="cell" style="width: 100px; max-width: 100px;">Type</th>
                     <th class="cell" style="min-width: 100px; max-width: 200px;">Ability</th>
                     <th class="cell" style="min-width: 100px; max-width: 200px;">Item</th>
+                    <th class="cell"></th>
                     <th class="cell" style="width: 80px; max-width: 80px;">HP</th>
                     <th class="cell" style="width: 100px; max-width: 100px;">Attack</th>
                     <th class="cell" style="width: 100px; max-width: 100px;">Defense</th>
@@ -106,6 +107,7 @@
                     </td>
                     <td class="cell">{{ getAbilityByName(mon.SelectedAbility)?.Name }}</td>
                     <td class="cell">{{ mon.HeldItem?.Name || 'None' }}</td>
+                    <td class="cell fw-bold"></td>
                     <td class="cell">{{ mon.Stats.hp }}</td>
                     <td class="cell">{{ mon.Stats.atk }}</td>
                     <td class="cell">{{ mon.Stats.def }}</td>
@@ -118,6 +120,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td class="cell fst-italic">Lvl {{ mon.Level }}:</td>
                     <td class="cell">{{ mon.GetStatCalc().hp }}</td>
                     <td class="cell">{{ mon.GetStatCalc().atk }}</td>
                     <td class="cell">{{ mon.GetStatCalc().def }}</td>
@@ -183,56 +186,152 @@
                       </tr>
                       <tr>
                         <td class="cell" style="text-align: left; font-weight: bold;">Ivs</td>
-                        <td class="cell"><select v-model="viewPokemon.Ivs.hp" class="form-select" style="width: 80px">
-                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select></td>
-                        <td class="cell"><select v-model="viewPokemon.Ivs.atk" class="form-select" style="width: 80px">
-                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select></td>
-                        <td class="cell"><select v-model="viewPokemon.Ivs.def" class="form-select" style="width: 80px">
-                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select></td>
-                        <td class="cell"><select v-model="viewPokemon.Ivs.spa" class="form-select" style="width: 80px">
-                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select></td>
-                        <td class="cell"><select v-model="viewPokemon.Ivs.spd" class="form-select" style="width: 80px">
-                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select></td>
-                        <td class="cell"><select v-model="viewPokemon.Ivs.spe" class="form-select" style="width: 80px">
-                            <option v-for="n in 32" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select></td>
+                        <td class="cell">
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.hp" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="31" v-model.number="viewPokemon.Ivs.hp" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ 31 }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="cell">
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.atk" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="31" v-model.number="viewPokemon.Ivs.atk" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ 31 }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="cell">
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.def" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="31" v-model.number="viewPokemon.Ivs.def" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ 31 }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="cell">
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spa" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="31" v-model.number="viewPokemon.Ivs.spa" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ 31 }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="cell">
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spd" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="31" v-model.number="viewPokemon.Ivs.spd" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ 31 }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                        <td class="cell">
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spe" max="31" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="31" v-model.number="viewPokemon.Ivs.spe" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ 31 }}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
                       </tr>
                       <tr :class="{ 'has-error': viewPokemon.TotalEvs() > 510 }">
                         <td class="cell" style="text-align: left; font-weight: bold;">Evs</td>
                         <td class="cell">
-                          <select v-model="viewPokemon.Evs.hp" class="form-select" style="width: 80px">
-                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.hp))" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select>
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.hp" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.hp))" v-model.number="viewPokemon.Evs.hp" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.hp)) }}</span>
+                              </div>
+                            </div>
+                          </div>
                         </td>
                         <td class="cell">
-                          <select v-model="viewPokemon.Evs.atk" class="form-select" style="width: 80px">
-                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.atk))" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select>
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.atk" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.atk))" v-model.number="viewPokemon.Evs.atk" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.atk)) }}</span>
+                              </div>
+                            </div>
+                          </div>
                         </td>
                         <td class="cell">
-                          <select v-model="viewPokemon.Evs.def" class="form-select" style="width: 80px">
-                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.def))" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select>
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.def" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.def))" v-model.number="viewPokemon.Evs.def" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.def)) }}</span>
+                              </div>
+                            </div>
+                          </div>
                         </td>
                         <td class="cell">
-                          <select v-model="viewPokemon.Evs.spa" class="form-select" style="width: 80px">
-                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.spa))" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select>
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spa" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.spa))" v-model.number="viewPokemon.Evs.spa" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.spa)) }}</span>
+                              </div>
+                            </div>
+                          </div>
                         </td>
                         <td class="cell">
-                          <select v-model="viewPokemon.Evs.spd" class="form-select" style="width: 80px">
-                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.spd))" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select>
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spd" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.spd))" v-model.number="viewPokemon.Evs.spd" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.spd)) }}</span>
+                              </div>
+                            </div>
+                          </div>
                         </td>
                         <td class="cell">
-                          <select v-model="viewPokemon.Evs.spe" class="form-select" style="width: 80px">
-                            <option v-for="n in Math.min(253, (511 - viewPokemon.TotalEvs() + viewPokemon.Evs.spe))" :key="n-1" :value="n-1">{{ n-1 }}</option>
-                          </select>
+                          <div class="">
+                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spe" />
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <div class="input-group d-flex px-4">
+                                <span>0</span>
+                                <input type="range" min="0" :max="Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.spe))" v-model.number="viewPokemon.Evs.spe" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs.spe)) }}</span>
+                              </div>
+                            </div>
+                          </div>
                         </td>
                       </tr>
                       <tr style="background: #ffffff;
