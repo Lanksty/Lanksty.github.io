@@ -580,7 +580,7 @@
               </thead>
               <tbody>
                 <tr v-for="(poke, index) in sortList(filteredPokemon)" :key="index" class="pokemon" @click="pokedexView = poke.InternalName" :style="{'--primary-color': `var(--${poke.Type1?.toLowerCase()}-type-color-light)`, '--secondary-color': poke.Type2 ? `var(--${poke.Type2?.toLowerCase()}-type-color-light)` : `var(--${poke.Type1?.toLowerCase()}-type-color-light)` }">
-                  <td class="cell text-center">{{ '#' + allPokemon.indexOf(poke) }}</td>
+                  <td class="cell text-center">{{ '#' + (allPokemon.indexOf(poke) + 1) }}</td>
                   <td class="cell sprite-cell">
                     <img :src="poke.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" class="list-sprite" /> 
                   </td>
