@@ -71,7 +71,7 @@ class TeamBuilder {
       let list = TMList.filter(tm => pokemon.TutorMoves?.includes(tm.Move) );
       list = moveList.filter(mv => list.some(t => t.Move === mv.Name));
       
-      pokemon.TMMoves = pokemon.ParseTMMoves(list);
+      pokemon.ParseTMMoves(list);
     }
 
     if (this.teamList.length < 6) {
@@ -171,6 +171,9 @@ const app = createApp({
     const resistedByFilter = ref([]);
     const effectiveTypeFilter = ref([]);
     const moveCategoryFilter = ref([]);
+    const includeEggMoves = ref(false);
+    const includeTMMoves = ref(false);
+
     const moveCategories = reactive([
       { Name: "Physical" },
       { Name: "Special" },
@@ -205,7 +208,28 @@ const app = createApp({
 
       // Filter by moves
       if(moveFilter.value.length > 0) {
-        filtered = filtered.filter(p => moveFilter.value.every(mv => p.Moves.includes(mv.Name)));
+        filtered = filtered.filter(p => moveFilter.value.every(mv => {
+          if(!includeEggMoves.value && !includeTMMoves.value) {
+            return p.Moves.includes(mv.Name);
+          }
+
+          let hasMove = p.Moves.includes(mv.Name);
+          if(!hasMove && includeEggMoves.value) {
+            if(!p.EggMovesList || p.EggMovesList.length === 0) {
+              p.EggMovesList = getEggMoves(p);
+            }
+            hasMove = p.EggMovesList?.some(em => em.Name === mv.Name);
+          }
+          if(!hasMove && includeTMMoves.value) {
+            if(!p.TMMoves || p.TMMoves.length === 0) {
+              let list = TMList.filter(tm => p.TutorMoves?.includes(tm.Move) );
+              list = moveList.filter(mv => list.some(t => t.Move === mv.Name));
+              p.ParseTMMoves(list);
+            }
+            hasMove = p.TMMoves?.some(tm => tm.Name === mv.Name);
+          }
+          return hasMove;
+        }));
       }
 
       // Filter by types that the Pokémon resists
@@ -355,7 +379,7 @@ const app = createApp({
       if(!pokemon.TMMoves || pokemon.TMMoves.length === 0) {
         let list = TMList.filter(tm => pokemon.TutorMoves?.includes(tm.Move) );
         list = moveList.filter(mv => list.some(t => t.Move === mv.Name));
-        pokemon.TMMoves = pokemon.ParseTMMoves(list);
+        pokemon.ParseTMMoves(list);
       }
 
       console.log("Viewing Pokémon:", pokemon);
@@ -591,7 +615,9 @@ const app = createApp({
       buildEvolutionChain,
       natures,
       resistedByFilter,
-      effectiveTypeFilter
+      effectiveTypeFilter,
+      includeEggMoves,
+      includeTMMoves
     };
   }
 });

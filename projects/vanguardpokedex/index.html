@@ -624,6 +624,13 @@
               <search-dropdown :items="types" item-label="Name" v-model="effectiveTypeFilter" placeholder="Filter by supereffective stab" :max-selections="4" :has-badges="true" :clearable="true" dropdown-height="30rem"></search-dropdown>
               <search-dropdown :items="allAbilities" item-label="Name" v-model="abilityFilter" placeholder="Filter by Ability" :max-selections="3" :has-badges="true" :clearable="true" dropdown-height="30rem"></search-dropdown>
               <search-dropdown :items="allMoves" item-label="Name" v-model="moveFilter" placeholder="Filter by Move" :max-selections="4" :has-badges="true" :clearable="true" dropdown-height="30rem"></search-dropdown>
+              <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+                <input type="checkbox" class="btn-check" id="btncheck1" autocomplete="off" v-model="includeTMMoves">
+                <label class="btn btn-outline-primary" for="btncheck1">Include TM Moves</label>
+
+                <input type="checkbox" class="btn-check" id="btncheck2" autocomplete="off" v-model="includeEggMoves">
+                <label class="btn btn-outline-primary" for="btncheck2">Include Egg Moves</label>
+              </div>
             </div>
           </div>
           <div class="pokemon-list">

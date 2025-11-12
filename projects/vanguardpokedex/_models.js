@@ -184,12 +184,12 @@ export class Pokemon {
     }
 
     ParseTMMoves(TMList) {
-        return TMList.map(tm => new Move(tm));
+        this.TMMoves = TMList.map(tm => new Move(tm));
+        return this.TMMoves;
     }
 
     GetEggMoves(moveList) {
         moveList = moveList ?? fetchMoveData(); // If not parsed in then fetch it
-        console.log("Getting egg moves for", this.Name, this.EggMovesList);
         if (!moveList) {
             console.error('Move list data is not available.');
             return [];
