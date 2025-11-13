@@ -386,7 +386,7 @@ body:has(.modal-open) {
     --primary-color: #f0f0f0;
     --secondary-color: #f0f0f0;
 
-        .team-member {
+    .team-member {
         background: linear-gradient(white, white) padding-box, /* Solid background for content */
                     linear-gradient(to right, var(--primary-color), var(--secondary-color)) border-box; /* Gradient for border */
         border-radius: 10px;
@@ -399,6 +399,10 @@ body:has(.modal-open) {
         .member-header {
             overflow: unset;
         }
+    }
+
+    .cell {
+        text-wrap: nowrap;
     }
 }
 
@@ -432,7 +436,7 @@ body:has(.modal-open) {
     grid-template-columns: repeat(2, 1fr);
     gap: 5px;
     align-content: center;
-    max-width: 300px;
+    width: max-content;
 }
 
 .member-moves .move {

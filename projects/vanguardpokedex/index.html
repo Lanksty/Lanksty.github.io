@@ -89,6 +89,23 @@
                     <th class="cell" style="width: 100px; max-width: 100px;">Type</th>
                     <th class="cell" style="min-width: 100px; max-width: 200px;">Ability</th>
                     <th class="cell" style="min-width: 100px; max-width: 200px;">Item</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="cell type-cell">
+                      <img :src="`./resources/images/types/${mon.Type1.toUpperCase()}.png`" alt="" />
+                      <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
+                    </td>
+                    <td class="cell">{{ getAbilityByName(mon.SelectedAbility)?.Name }}</td>
+                    <td class="cell">{{ mon.HeldItem?.Name || 'None' }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <table class="member-table">
+                <thead>
+                  <tr>
+
                     <th class="cell"></th>
                     <th class="cell" style="width: 80px; max-width: 80px;">HP</th>
                     <th class="cell" style="width: 100px; max-width: 100px;">Attack</th>
@@ -101,12 +118,6 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="cell type-cell">
-                      <img :src="`./resources/images/types/${mon.Type1.toUpperCase()}.png`" alt="" />
-                      <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
-                    </td>
-                    <td class="cell">{{ getAbilityByName(mon.SelectedAbility)?.Name }}</td>
-                    <td class="cell">{{ mon.HeldItem?.Name || 'None' }}</td>
                     <td class="cell fw-bold"></td>
                     <td class="cell">{{ mon.Stats.hp }}</td>
                     <td class="cell">{{ mon.Stats.atk }}</td>
@@ -117,10 +128,7 @@
                     <td class="cell"></td>
                   </tr>
                   <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td class="cell fst-italic">Lvl {{ mon.Level }}:</td>
+                    <td class="cell fst-italic" style="text-wrap: nowrap">Lvl {{ mon.Level }}:</td>
                     <td class="cell">{{ mon.GetStatCalc().hp }}</td>
                     <td class="cell">{{ mon.GetStatCalc().atk }}</td>
                     <td class="cell">{{ mon.GetStatCalc().def }}</td>

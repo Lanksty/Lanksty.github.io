@@ -405,6 +405,9 @@ body:has(.modal-open) {
 .team-container-wrapper .team-member .member-header {
   overflow: unset;
 }
+.team-container-wrapper .cell {
+  text-wrap: nowrap;
+}
 
 .team-container-wrapper .team-member {
   width: 100%;
@@ -436,7 +439,8 @@ body:has(.modal-open) {
   grid-template-columns: repeat(2, 1fr);
   gap: 5px;
   align-content: center;
-  max-width: 300px;
+  width: -moz-max-content;
+  width: max-content;
 }
 
 .member-moves .move {
