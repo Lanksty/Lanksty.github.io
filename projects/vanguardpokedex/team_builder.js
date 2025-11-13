@@ -567,11 +567,9 @@ const app = createApp({
           teamBuilder.saveTeam();
         }, { deep: true });
         watch(newVal.Evs, (evs) => {
-          console.log("EVs changed for", newVal.Name, evs);
           teamBuilder.saveTeam();
         }, { deep: true });
         watch(newVal.Ivs, (ivs) => {
-          console.log("IVs changed for", newVal.Name, ivs);
           teamBuilder.saveTeam();
         }, { deep: true });
       } 
