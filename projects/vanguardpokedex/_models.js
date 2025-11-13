@@ -1,4 +1,5 @@
 const config = await getConfigData();
+const natureData = await fetchNatureData();
 
 const hasExtensions = window.extensionsLoaded || false;
 if (!hasExtensions) {
@@ -39,7 +40,7 @@ export class Pokemon {
         this.Evs = data.Evs ?? { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }; // Set default EVs if not provided
         this.Ivs = data.Ivs ?? { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 }; // Set default IVs if not provided
         this.Level = data.Level ?? 50; // Default level to 50 if not provided
-        this.Nature = data.Nature ?? {name: "Hardy"}; // Default nature if not provided
+        this.Nature = this.ParseNatureData(data.Nature) || null; // Parse nature data
 
         this.EvolvesInto = [];
         this.EvolvesAt = {};
@@ -316,6 +317,15 @@ export class Pokemon {
         return stats;
     }
 
+    ParseNatureData(nature) {
+        if(nature instanceof String) {
+            let nature = natureData.find(n => n.name.toLowerCase() === nature.toLowerCase());
+        }
+
+        this.Nature = nature || { name: "Hardy" }; // Default nature if not found
+        return this.Nature;
+    }
+
     Clone() {
         return new Pokemon({ ...this }, this.id);
     }
@@ -362,6 +372,93 @@ class Type {
     }
 }
 
+
+// TrainerDex is the main model that holds all data for trainers and their pokemon
+// Takes all data and organizes it into TrainerModels, allows for searching and filtering through all trainers
+export class TrainerDex {
+    constructor(TrainerList, PokemonList, MoveList, ItemList) {
+        this.AllPokemon = PokemonList;
+        this.AllTrainers = TrainerList;
+        this.AllMoves = MoveList;
+        this.AllItems = ItemList;
+        this.Trainers = [];
+
+        this.ParseTrainerData();
+
+        // Search
+        this.TrainerSearchQuery = '';
+    }
+
+    ParseTrainerData() {
+        let TrainerGroups = {}; // Object to collect all versions of a trainer
+        
+        this.AllTrainers.forEach(trainerData => {
+            let name = trainerData.Name;
+            if (!TrainerGroups[name]) {
+                TrainerGroups[name] = [];
+            }
+            TrainerGroups[name].push(trainerData);
+        });
+
+        this.Trainers = Object.values(TrainerGroups).map(trainerArray => new TrainerModel(trainerArray)); // Create TrainerModel for each group
+        return this.Trainers;
+    }
+
+    GetTrainerByName(name) {
+        return this.Trainers.find(t => t.Name.toLowerCase() === name.toLowerCase()) || null;
+    }
+
+    GetAllTrainers() {
+        return this.Trainers;
+    }
+}
+
+// Trainers have multiple versions based on difficulty or progress in the game
+// Each version has a different set of pokemon
+// Trainer model takes a list of the same trainer with different versions and stores each versions data
+class TrainerModel {
+    constructor(trainerArray) {
+        if(trainerArray.length === 0) {
+            throw new Error('Trainer array is empty.');
+        }
+
+        this.Name = trainerArray[0].Name;
+        this.Type = trainerArray[0].Type;
+        this.TrainerCount = trainerArray.length;
+        this.Versions = trainerArray.map(t => new Trainer(t));
+        this.SelectedVersionIndex = 0;
+        this.SelectedVersion = () => this.Versions[this.SelectedVersionIndex];
+
+        this.Sprite = `./resources/images/trainers/${this.Type}.png`;
+        this.AlternateSprite = './resources/images/trainers/GENERIC.png';
+    }
+
+    GetTrainer(versionIndex) {
+        if(versionIndex < 0 || versionIndex >= this.Versions.length) {
+            console.warn('Invalid trainer version index. Returning first version.');
+            return this.Versions[0];
+        }
+
+        return this.Versions[versionIndex];
+    }
+
+    // Short alias for GetTrainer
+    Version(versionIndex) {
+        return this.GetTrainer(versionIndex);
+    }
+
+    GetAllVersions() {
+        return this.Versions;
+    }
+
+    // Takes list of all pokemon, moves, and items to assign full data to each trainer's pokemon
+    AssignPokemonToVersions(pokemonList, moveList, itemList) {
+        this.Versions.forEach(version => {
+            version.CretePokemonList(pokemonList, moveList, itemList);
+        });
+    }
+}
+
 class Trainer {
     constructor(data) {
         Object.assign(this, data);
@@ -369,6 +466,47 @@ class Trainer {
         if(data.PokemonList) {
             this.PokemonList = data.PokemonList.map(p => new Pokemon(p));
         }
+
+        this.Sprite = `./resources/images/trainers/${data.Type}.png`;
+        this.AlternateSprite = './resources/images/trainers/GENERIC.png';
+    }
+
+    // Create list for the trainer based on pokemon data as trainer data does not have full pokemon info
+    CretePokemonList(pokemonList, moveList, itemList) {
+        let pokemon = this.Pokemon;
+        if(!pokemon || pokemon.length === 0) {
+            console.warn('No Pokémon data provided for trainer.');
+            return [];
+        }
+
+        this.PokemonList = pokemon.map(mon => {
+            let pData = pokemonList.find(p => p.InternalName === mon.Name);
+            let newPokemon = {...mon};
+            if (!pData) return;
+
+            Object.assign(newPokemon, pData);
+
+            if(mon.AbilityIndex) {
+                newPokemon.SelectedAbility = newPokemon.AbilitiesList[mon.AbilityIndex];
+            }
+
+            if(mon.Moves && moveList) {
+                newPokemon.SelectedMoves = mon.Moves.map(move => {
+                    return moveList.find(mv => mv.Name === move);
+                })
+            }
+
+            if(mon.SelectedItem && itemList) {
+                let itemData = itemList.find(it => it.Name === mon.SelectedItem || it.InternalName === mon.SelectedItem);
+                if(itemData) {
+                    newPokemon.HeldItem = new Item(itemData);
+                }
+            }
+
+            return new Pokemon(newPokemon);
+        });
+
+        return this.PokemonList;
     }
 }
 
