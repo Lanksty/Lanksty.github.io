@@ -404,6 +404,10 @@ body:has(.modal-open) {
     .cell {
         text-wrap: nowrap;
     }
+
+    .member-moves {
+        width: max-content;
+    }
 }
 
 .team-container-wrapper .team-member {
@@ -436,7 +440,6 @@ body:has(.modal-open) {
     grid-template-columns: repeat(2, 1fr);
     gap: 5px;
     align-content: center;
-    width: max-content;
 }
 
 .member-moves .move {
