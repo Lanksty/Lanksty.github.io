@@ -191,6 +191,14 @@ const app = createApp({
     });
     const pokedexTab = ref("info");
 
+    // Check URL params for pokemon to view
+    let urlParams = new URLSearchParams(window.location.search);
+    let pokemonParam = urlParams.get('pokemon');
+    if(pokemonParam) {
+        pokedexView.value = pokemonParam;
+    }
+
+    // Filter for mons based on search and selected filters in pokedex
     const filteredPokemon = computed(() => {
       let filtered = allPokemon.filter(p => p.Name.toLowerCase().includes(searchQuery.value.toLowerCase()));
 
@@ -365,9 +373,25 @@ const app = createApp({
 
     const pokemon = computed(() => {
       console.log("Pokedex view changed to:", pokedexView.value);
-      if (pokedexView.value === "" || pokedexView.value === null) return null;
+
+      if (pokedexView.value === "" || pokedexView.value === null) {
+        // Reset URL param if no mon selected
+        const url = new URL(window.location);
+        url.searchParams.delete('pokemon');
+        window.history.replaceState({}, '', url.toString());
+        
+        return null;
+      }
+
       let pokemon = allPokemon.find(p => p.InternalName === pokedexView.value);
-      if(!pokemon) return null;
+      if(!pokemon) {
+        // Reset URL param if no mon is found
+        const url = new URL(window.location);
+        url.searchParams.delete('pokemon');
+        window.history.replaceState({}, '', url.toString())
+        
+        return null;
+      }
 
       if(!pokemon.TypeMatchups) {
         pokemon.GetTypeMatchups(typeChart); // Fetch and populate type matchups if not already done
@@ -384,6 +408,12 @@ const app = createApp({
 
       console.log("Viewing Pokémon:", pokemon);
       pokedexTab.value = "info";
+
+      // Set url params to pokemon
+      const url = new URL(window.location);
+      url.searchParams.set('pokemon', pokemon.InternalName);
+      window.history.replaceState({}, '', url.toString());
+
       return pokemon;
     });
 
