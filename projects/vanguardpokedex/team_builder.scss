@@ -437,7 +437,7 @@ body:has(.modal-open) {
 .member-moves {
     flex-grow: 1;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(175px, 1fr));
     gap: 5px;
     align-content: center;
 }
