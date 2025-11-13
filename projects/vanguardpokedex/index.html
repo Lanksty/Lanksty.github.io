@@ -71,7 +71,7 @@
 
           <!-- Team Container -->
           <div class="team-container-wrapper" v-if="!currentlyViewing && tabView === 'team'">
-            <div v-for="mon in teamBuilder.teamList" class="team-member" @click="toggleViewingPokemon(mon)" :style="{'--primary-color': `var(--${mon.Type1.toLowerCase()}-type-color)`, '--secondary-color': mon.Type2 ? `var(--${mon.Type2.toLowerCase()}-type-color)` : `var(--${mon.Type1.toLowerCase()}-type-color)`}">
+            <div v-for="mon in teamBuilder.teamList" class="team-member" @click="toggleViewingPokemon(mon)" :style="getPokemonTypeStyle(mon)">
               <div class="member-header">
                 <img :src="mon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
                 class="member-sprite" />
@@ -157,7 +157,7 @@
           <div id="currently-viewing" v-if="currentlyViewing">
                 <!-- <button @click="toggleViewingPokemon(viewPokemon)" class="close-btn">X</button> -->
             <div class="team-member" v-if="viewPokemon">
-              <div class="member-header">
+              <div class="member-header" :style="getPokemonTypeStyle(viewPokemon, true)">
                 <img :src="viewPokemon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
                   class="member-sprite" />
                 <h3 class="member-name">
@@ -694,7 +694,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(poke, index) in sortList(filteredPokemon)" :key="index" class="pokemon" @click="pokedexView = poke.InternalName" :style="{'--primary-color': `var(--${poke.Type1?.toLowerCase()}-type-color-light)`, '--secondary-color': poke.Type2 ? `var(--${poke.Type2?.toLowerCase()}-type-color-light)` : `var(--${poke.Type1?.toLowerCase()}-type-color-light)` }">
+                <tr v-for="(poke, index) in sortList(filteredPokemon)" :key="index" class="pokemon" @click="pokedexView = poke.InternalName" :style="getPokemonTypeStyle(poke, true)">
                   <td class="cell text-center">{{ '#' + (allPokemon.indexOf(poke) + 1) }}</td>
                   <td class="cell sprite-cell">
                     <img :src="poke.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" class="list-sprite" /> 

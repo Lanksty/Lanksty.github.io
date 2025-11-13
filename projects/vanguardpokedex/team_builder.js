@@ -300,6 +300,20 @@ const app = createApp({
       moveFilter.value = [];
     };
 
+    const getPokemonTypeStyle = (pokemon, isLight = false) => {
+      let suffix = isLight ? "-type-color-light" : "-type-color";
+      if(!pokemon || !pokemon.Types || pokemon.Types.length === 0) {
+        return {
+          '--primary-color': `var(--normal${suffix})`,
+          '--secondary-color': `var(--normal${suffix})`
+        }
+      }
+      return {
+        '--primary-color': `var(--${pokemon.Types[0]?.toLowerCase()}${suffix})`,
+        '--secondary-color': pokemon.Types[1] ? `var(--${pokemon.Types[1]?.toLowerCase()}${suffix})` : `var(--${pokemon.Types[0]?.toLowerCase()}${suffix})`
+      }
+    }
+
     const viewPokemon = computed(() => {
       if(currentlyViewing.value === null) return null;
       return teamBuilder.teamList.find(p => p.InternalName === currentlyViewing.value) || null;
@@ -659,6 +673,7 @@ const app = createApp({
       includeEggMoves,
       includeTMMoves,
       pageTitle,
+      getPokemonTypeStyle
     };
   }
 });
