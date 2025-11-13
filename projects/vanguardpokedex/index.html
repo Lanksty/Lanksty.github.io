@@ -700,13 +700,13 @@
                     <img :src="poke.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" class="list-sprite" /> 
                   </td>
                   <td class="cell cell-text">
-                    {{ poke.Name }}
+                    {{ poke.Name?.toTitleCase() }}
                   </td>
                   <td class="cell type-cell text-center">
                     <img v-if="poke.Type1" :src="`./resources/images/types/${poke.Type1.toUpperCase()}.png`" alt="" />
                     <img v-if="poke.Type2" :src="`./resources/images/types/${poke.Type2.toUpperCase()}.png`" alt="" />
                   </td>
-                  <td class="cell cell-text">{{ poke.AbilitiesList.join(', ') }}</td>
+                  <td class="cell cell-text">{{ poke.AbilitiesList?.map(a => getAbilityByName(a)?.Name).join(', ')}}</td>
                   <td class="cell text-center">{{ poke.Stats.hp }}</td>
                   <td class="cell text-center">{{ poke.Stats.atk }}</td>
                   <td class="cell text-center">{{ poke.Stats.def }}</td>
