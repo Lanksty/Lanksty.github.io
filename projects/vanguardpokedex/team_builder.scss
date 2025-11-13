@@ -398,6 +398,10 @@ body:has(.modal-open) {
 
         .member-header {
             overflow: unset;
+
+        }
+        .member-name {
+            text-wrap: nowrap;
         }
     }
 

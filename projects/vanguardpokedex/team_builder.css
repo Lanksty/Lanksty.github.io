@@ -405,6 +405,9 @@ body:has(.modal-open) {
 .team-container-wrapper .team-member .member-header {
   overflow: unset;
 }
+.team-container-wrapper .team-member .member-name {
+  text-wrap: nowrap;
+}
 .team-container-wrapper .cell {
   text-wrap: nowrap;
 }
