@@ -466,6 +466,8 @@ const app = createApp({
       tabView.value = tabName;
       sortingMethod.method = "number";
       sortingMethod.ascending = true;
+
+      document.querySelector(".header-nav .dropdown-menu").classList.remove("show");
     }
 
     const showPokemonInSearch = (filter, filterType) => {
