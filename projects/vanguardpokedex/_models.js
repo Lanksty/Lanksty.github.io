@@ -362,6 +362,21 @@ class Type {
     }
 }
 
+class Trainer {
+    constructor(data) {
+        Object.assign(this, data);
+
+        if(data.PokemonList) {
+            this.PokemonList = data.PokemonList.map(p => new Pokemon(p));
+        }
+    }
+}
+
+
+//
+/// Helper/Data fetching functions
+//
+
 export function ParsePokemonList(pokemonList, moveList = null) {
     return pokemonList.map((p, index) => {
         return new Pokemon(p, index, moveList);
