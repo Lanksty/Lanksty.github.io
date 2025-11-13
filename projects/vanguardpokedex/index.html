@@ -800,7 +800,7 @@
                     <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
                   </td>
                   <td class="cell text-center">
-                    <img :src="`./resources/images/moves/${move.Category}.png`" alt="" />
+                    <img :src="`./resources/images/moves/${move.Category.toUpperCase()}.png`" alt="" />
                   </td>
                   <td class="cell text-center">{{ move.Power || '--' }}</td>
                   <td class="cell text-center">{{ move.Accuracy || '--' }}</td>
