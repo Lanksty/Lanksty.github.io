@@ -823,7 +823,7 @@ body:has(.modal-open) {
     }
 }
 
-#all-pokemon, #all-abilities, #all-moves {
+#all-pokemon, #all-abilities, #all-moves, #trainer-dex {
     grid-column: 1 / 3;
     padding: 25px;
     display: grid;
@@ -1098,6 +1098,52 @@ body:has(.modal-open) {
 
 ::-webkit-inner-spin-button {
     appearance: none;
+}
+
+.trainer-dex-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    overflow: auto;
+
+    .trainer-card {
+        width: 150px;
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: white;
+        border-radius: 10px;
+        border: 1px solid #6c757d;
+        position: relative;
+
+        img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .trainer-name {
+            margin-top: 10px;
+            font-weight: 100;
+            font-style: italic;
+            text-align: center;
+            font-size: 0.7rem;
+            opacity: 0.8;
+        }
+
+        .badge {
+            position: absolute;
+            bottom: 0;
+            transform: translateY(50%);
+        }
+
+        &:hover {
+            cursor: pointer;
+            box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+        }
+    }
 }
 
 //

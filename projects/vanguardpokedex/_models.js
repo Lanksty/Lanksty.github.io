@@ -37,8 +37,8 @@ export class Pokemon {
         this.TMMoves = (data.TMMoves || []).map(m => new Move(m)); // List of TM moves available to this Pokémon
         this.EvolveData = data.Evolutions?.split(',').map(e => e.trim()) ?? []; // List of possible evolutions
         this.EggMovesList = data.EggMovesList ? data.EggMovesList.map(m => new Move(m)) : []; // List of egg moves available to this Pokémon
-        this.Evs = data.Evs ?? { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }; // Set default EVs if not provided
-        this.Ivs = data.Ivs ?? { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 }; // Set default IVs if not provided
+        this.EVs = data.EVs ?? { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 }; // Set default EVs if not provided
+        this.IVs = data.IVs ?? { hp: 31, atk: 31, def: 31, spa: 31, spd: 31, spe: 31 }; // Set default IVs if not provided
         this.Level = data.Level ?? 50; // Default level to 50 if not provided
         this.Nature = this.ParseNatureData(data.Nature) || null; // Parse nature data
 
@@ -60,8 +60,8 @@ export class Pokemon {
             this.EvolvesAt[this.EvolveData[i] || null] = this.EvolveData[i + 2] || null;
         }
 
-        this.TotalEvs = function() {
-            return Object.values(this.Evs).reduce((a, b) => a + b, 0);
+        this.TotalEVs = function() {
+            return Object.values(this.EVs).reduce((a, b) => a + b, 0);
         };
     }
 
@@ -296,8 +296,8 @@ export class Pokemon {
         const stats = {};
 
         for (const [stat, base] of Object.entries(this.Stats)) {
-            const iv = this.Ivs[stat] || 0;
-            const ev = this.Evs[stat] || 0;
+            const iv = this.IVs[stat] || 0;
+            const ev = this.EVs[stat] || 0;
             if (stat === 'hp') {
                 stats[stat] = Math.floor(((2 * base + iv + (ev / 4)) * level / 100) + level + 10);
             } else {
@@ -382,25 +382,32 @@ export class TrainerDex {
         this.AllMoves = MoveList;
         this.AllItems = ItemList;
         this.Trainers = [];
+        this.SelectedTrainer = null;
+    }
 
-        this.ParseTrainerData();
-
-        // Search
-        this.TrainerSearchQuery = '';
+    AssignLists(TrainerList, PokemonList, MoveList, ItemList) {
+        this.AllPokemon = PokemonList;
+        this.AllTrainers = TrainerList;
+        this.AllMoves = MoveList;
+        this.AllItems = ItemList;
     }
 
     ParseTrainerData() {
         let TrainerGroups = {}; // Object to collect all versions of a trainer
         
         this.AllTrainers.forEach(trainerData => {
-            let name = trainerData.Name;
+            let name = trainerData.Name + '_' + trainerData.Type; // Unique key for each trainer based on name and type
             if (!TrainerGroups[name]) {
                 TrainerGroups[name] = [];
             }
             TrainerGroups[name].push(trainerData);
         });
 
-        this.Trainers = Object.values(TrainerGroups).map(trainerArray => new TrainerModel(trainerArray)); // Create TrainerModel for each group
+        this.Trainers = Object.values(TrainerGroups).map(trainerArray => {
+            trainerArray = trainerArray.sort((a, b) => a.Version - b.Version); // Sort by version number
+            let trainerModel = new TrainerModel(trainerArray); // Create TrainerModel for each group
+            return trainerModel;
+        });
         return this.Trainers;
     }
 
@@ -408,8 +415,19 @@ export class TrainerDex {
         return this.Trainers.find(t => t.Name.toLowerCase() === name.toLowerCase()) || null;
     }
 
+    SearchTrainers(query) {
+        query = query.normalizeName();
+        return this.Trainers.filter(t => t.Name.normalizeName().includes(query));
+    }
+
     GetAllTrainers() {
         return this.Trainers;
+    }
+
+    SelectTrainer(trainer) {
+        trainer.AssignPokemonToVersions(this.AllPokemon, this.AllMoves, this.AllItems);
+        this.SelectedTrainer = trainer;
+        console.log('Selected trainer:', trainer);
     }
 }
 
@@ -451,6 +469,17 @@ class TrainerModel {
         return this.Versions;
     }
 
+    // Get highest level pokemon in the specified trainer version
+    GetTrainerLevel(index) {
+        let version = this.GetTrainer(index);
+        if (!version || !version.PokemonList || version.PokemonList.length === 0) {
+            console.warn('No Pokémon data available for this trainer version.');
+            return null;
+        }
+
+        return version.PokemonList.reduce((max, p) => p.Level > max ? p.Level : max, 0); // Max level among trainers mons
+    }
+
     // Takes list of all pokemon, moves, and items to assign full data to each trainer's pokemon
     AssignPokemonToVersions(pokemonList, moveList, itemList) {
         this.Versions.forEach(version => {
@@ -473,6 +502,10 @@ class Trainer {
 
     // Create list for the trainer based on pokemon data as trainer data does not have full pokemon info
     CretePokemonList(pokemonList, moveList, itemList) {
+        if (this.PokemonList && this.PokemonList.length > 0) {
+            return this.PokemonList; // Already created
+        }
+
         let pokemon = this.Pokemon;
         if(!pokemon || pokemon.length === 0) {
             console.warn('No Pokémon data provided for trainer.');
@@ -480,14 +513,18 @@ class Trainer {
         }
 
         this.PokemonList = pokemon.map(mon => {
-            let pData = pokemonList.find(p => p.InternalName === mon.Name);
+            let pData = {...pokemonList.find(p => p.InternalName === mon.Name)};
             let newPokemon = {...mon};
             if (!pData) return;
 
+            Object.assign(pData, mon); // Override base data with trainer-specific data
             Object.assign(newPokemon, pData);
 
             if(mon.AbilityIndex) {
                 newPokemon.SelectedAbility = newPokemon.AbilitiesList[mon.AbilityIndex];
+            }
+            else {
+                newPokemon.SelectedAbility = newPokemon.AbilitiesList[0];
             }
 
             if(mon.Moves && moveList) {
@@ -502,8 +539,14 @@ class Trainer {
                     newPokemon.HeldItem = new Item(itemData);
                 }
             }
+            
+            newPokemon = new Pokemon(newPokemon);
+            if(newPokemon.SelectedMoves.length === 0 && !mon.Moves && moveList) { // If no moves specified, get last 4 moves learned up to current level
+                let moves = newPokemon.GetMoves(moveList).filter(mv => mv.LevelLearned <= (mon.Level)).sort((a, b) => a.LevelLearned - b.LevelLearned);
+                newPokemon.SelectedMoves = moves.slice(-4); // Last 4 moves learned up to current level
+            }
 
-            return new Pokemon(newPokemon);
+            return newPokemon;
         });
 
         return this.PokemonList;
@@ -595,6 +638,16 @@ export function fetchNatureData() {
     .then(data => data)
     .catch(error => {
         console.error('Error fetching nature data:', error);
+        return [];
+    });
+}
+
+export function fetchTrainerData() {
+    return fetch('./resources/data/trainers.json')
+    .then(response => response.json())
+    .then(data => data)
+    .catch(error => {
+        console.error('Error fetching trainer data:', error);
         return [];
     });
 }

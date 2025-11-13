@@ -1,5 +1,5 @@
-String.prototype.toTitleCase = function() {
-  return this.toLowerCase().split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+String.prototype.toTitleCase = function(characterSplitter = ' ', joinByCharacter = ' ') {
+  return this.toLowerCase().split(characterSplitter).map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(joinByCharacter);
 }
 
 String.prototype.FromCaseToSpace = function() {

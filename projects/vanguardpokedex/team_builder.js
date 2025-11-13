@@ -27,6 +27,8 @@ const TMList = itemList
     }
   });
 
+  const trainerList = await pkmn.fetchTrainerData();
+
 class TeamBuilder {
   constructor() {
     let savedTeam = localStorage.getItem('savedTeam');
@@ -173,6 +175,7 @@ const app = createApp({
     const moveCategoryFilter = ref([]);
     const includeEggMoves = ref(false);
     const includeTMMoves = ref(false);
+    var trainerDex = reactive(new pkmn.TrainerDex()); // Initialise once mounted
 
     const moveCategories = reactive([
       { Name: "Physical" },
@@ -303,6 +306,11 @@ const app = createApp({
     const viewPokemon = computed(() => {
       if(currentlyViewing.value === null) return null;
       return teamBuilder.teamList.find(p => p.InternalName === currentlyViewing.value) || null;
+    });
+
+    const searchQueryTrainers = ref("");
+    const filteredTrainers = computed(() => {
+      return trainerDex.SearchTrainers(searchQueryTrainers.value);
     });
 
     const getAbilityByName = (name) => {
@@ -578,10 +586,10 @@ const app = createApp({
           console.log("Selected moves changed for", newVal.Name, moves);
           teamBuilder.saveTeam();
         }, { deep: true });
-        watch(newVal.Evs, (evs) => {
+        watch(newVal.EVs, (evs) => {
           teamBuilder.saveTeam();
         }, { deep: true });
-        watch(newVal.Ivs, (ivs) => {
+        watch(newVal.IVs, (ivs) => {
           teamBuilder.saveTeam();
         }, { deep: true });
       } 
@@ -610,6 +618,9 @@ const app = createApp({
       natures.push(...await naturesList);
 
       console.log(types);
+      trainerDex.AssignLists(trainerList, allPokemon, allMoves, allItems);
+      await trainerDex.ParseTrainerData();
+      console.log("TrainerDex initialized:", trainerDex);
     });
 
 
@@ -659,6 +670,9 @@ const app = createApp({
       includeEggMoves,
       includeTMMoves,
       pageTitle,
+      trainerDex,
+      searchQueryTrainers,
+      filteredTrainers
     };
   }
 });

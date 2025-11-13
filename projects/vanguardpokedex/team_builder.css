@@ -770,24 +770,24 @@ body:has(.modal-open) {
   padding: 10px 0px;
 }
 
-#all-pokemon, #all-abilities, #all-moves {
+#all-pokemon, #all-abilities, #all-moves, #trainer-dex {
   grid-column: 1/3;
   padding: 25px;
   display: grid;
   grid-template-rows: auto 1fr;
   overflow: hidden;
 }
-#all-pokemon .all-pokemon-header, #all-pokemon .all-abilities-header, #all-abilities .all-pokemon-header, #all-abilities .all-abilities-header, #all-moves .all-pokemon-header, #all-moves .all-abilities-header {
+#all-pokemon .all-pokemon-header, #all-pokemon .all-abilities-header, #all-abilities .all-pokemon-header, #all-abilities .all-abilities-header, #all-moves .all-pokemon-header, #all-moves .all-abilities-header, #trainer-dex .all-pokemon-header, #trainer-dex .all-abilities-header {
   border-bottom: 2px solid #ccc;
 }
-#all-pokemon .search, #all-abilities .search, #all-moves .search {
+#all-pokemon .search, #all-abilities .search, #all-moves .search, #trainer-dex .search {
   width: 100%;
   max-width: 800px;
   margin: 0 auto 20px auto;
   display: flex;
   justify-content: center;
 }
-#all-pokemon #filters-collapse, #all-abilities #filters-collapse, #all-moves #filters-collapse {
+#all-pokemon #filters-collapse, #all-abilities #filters-collapse, #all-moves #filters-collapse, #trainer-dex #filters-collapse {
   max-width: 800px;
   margin: 0 auto 20px auto;
   border: 1px solid #006ae4;
@@ -795,7 +795,7 @@ body:has(.modal-open) {
   border-radius: 10px;
   position: relative;
 }
-#all-pokemon #filters-collapse:after, #all-abilities #filters-collapse:after, #all-moves #filters-collapse:after {
+#all-pokemon #filters-collapse:after, #all-abilities #filters-collapse:after, #all-moves #filters-collapse:after, #trainer-dex #filters-collapse:after {
   content: "Filters";
   position: absolute;
   left: -40px;
@@ -807,7 +807,7 @@ body:has(.modal-open) {
   color: #006ae4;
   font-weight: bold;
 }
-#all-pokemon .pokemon-list, #all-pokemon .ability-list, #all-pokemon .move-list, #all-abilities .pokemon-list, #all-abilities .ability-list, #all-abilities .move-list, #all-moves .pokemon-list, #all-moves .ability-list, #all-moves .move-list {
+#all-pokemon .pokemon-list, #all-pokemon .ability-list, #all-pokemon .move-list, #all-abilities .pokemon-list, #all-abilities .ability-list, #all-abilities .move-list, #all-moves .pokemon-list, #all-moves .ability-list, #all-moves .move-list, #trainer-dex .pokemon-list, #trainer-dex .ability-list, #trainer-dex .move-list {
   height: 100%;
   width: 100%;
   overflow-y: auto;
@@ -815,23 +815,23 @@ body:has(.modal-open) {
   --primary-color: #ffffff;
   --secondary-color: #ffffff;
 }
-#all-pokemon .pokemon-list .pokemon, #all-pokemon .ability-list .pokemon, #all-pokemon .move-list .pokemon, #all-abilities .pokemon-list .pokemon, #all-abilities .ability-list .pokemon, #all-abilities .move-list .pokemon, #all-moves .pokemon-list .pokemon, #all-moves .ability-list .pokemon, #all-moves .move-list .pokemon {
+#all-pokemon .pokemon-list .pokemon, #all-pokemon .ability-list .pokemon, #all-pokemon .move-list .pokemon, #all-abilities .pokemon-list .pokemon, #all-abilities .ability-list .pokemon, #all-abilities .move-list .pokemon, #all-moves .pokemon-list .pokemon, #all-moves .ability-list .pokemon, #all-moves .move-list .pokemon, #trainer-dex .pokemon-list .pokemon, #trainer-dex .ability-list .pokemon, #trainer-dex .move-list .pokemon {
   background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
 }
-#all-pokemon .pokemon-list table thead, #all-pokemon .ability-list table thead, #all-pokemon .move-list table thead, #all-abilities .pokemon-list table thead, #all-abilities .ability-list table thead, #all-abilities .move-list table thead, #all-moves .pokemon-list table thead, #all-moves .ability-list table thead, #all-moves .move-list table thead {
+#all-pokemon .pokemon-list table thead, #all-pokemon .ability-list table thead, #all-pokemon .move-list table thead, #all-abilities .pokemon-list table thead, #all-abilities .ability-list table thead, #all-abilities .move-list table thead, #all-moves .pokemon-list table thead, #all-moves .ability-list table thead, #all-moves .move-list table thead, #trainer-dex .pokemon-list table thead, #trainer-dex .ability-list table thead, #trainer-dex .move-list table thead {
   position: sticky;
   top: 0;
   background: #fafafa;
   z-index: 1;
 }
-#all-pokemon .pokemon-list table tbody tr, #all-pokemon .ability-list table tbody tr, #all-pokemon .move-list table tbody tr, #all-abilities .pokemon-list table tbody tr, #all-abilities .ability-list table tbody tr, #all-abilities .move-list table tbody tr, #all-moves .pokemon-list table tbody tr, #all-moves .ability-list table tbody tr, #all-moves .move-list table tbody tr {
+#all-pokemon .pokemon-list table tbody tr, #all-pokemon .ability-list table tbody tr, #all-pokemon .move-list table tbody tr, #all-abilities .pokemon-list table tbody tr, #all-abilities .ability-list table tbody tr, #all-abilities .move-list table tbody tr, #all-moves .pokemon-list table tbody tr, #all-moves .ability-list table tbody tr, #all-moves .move-list table tbody tr, #trainer-dex .pokemon-list table tbody tr, #trainer-dex .ability-list table tbody tr, #trainer-dex .move-list table tbody tr {
   border-bottom: 1px solid #ccc;
 }
-#all-pokemon .pokemon-list table tbody tr:hover, #all-pokemon .ability-list table tbody tr:hover, #all-pokemon .move-list table tbody tr:hover, #all-abilities .pokemon-list table tbody tr:hover, #all-abilities .ability-list table tbody tr:hover, #all-abilities .move-list table tbody tr:hover, #all-moves .pokemon-list table tbody tr:hover, #all-moves .ability-list table tbody tr:hover, #all-moves .move-list table tbody tr:hover {
+#all-pokemon .pokemon-list table tbody tr:hover, #all-pokemon .ability-list table tbody tr:hover, #all-pokemon .move-list table tbody tr:hover, #all-abilities .pokemon-list table tbody tr:hover, #all-abilities .ability-list table tbody tr:hover, #all-abilities .move-list table tbody tr:hover, #all-moves .pokemon-list table tbody tr:hover, #all-moves .ability-list table tbody tr:hover, #all-moves .move-list table tbody tr:hover, #trainer-dex .pokemon-list table tbody tr:hover, #trainer-dex .ability-list table tbody tr:hover, #trainer-dex .move-list table tbody tr:hover {
   background-color: #f0f0f0;
   cursor: pointer;
 }
-#all-pokemon .pokemon-list table .cell.sprite-cell img, #all-pokemon .ability-list table .cell.sprite-cell img, #all-pokemon .move-list table .cell.sprite-cell img, #all-abilities .pokemon-list table .cell.sprite-cell img, #all-abilities .ability-list table .cell.sprite-cell img, #all-abilities .move-list table .cell.sprite-cell img, #all-moves .pokemon-list table .cell.sprite-cell img, #all-moves .ability-list table .cell.sprite-cell img, #all-moves .move-list table .cell.sprite-cell img {
+#all-pokemon .pokemon-list table .cell.sprite-cell img, #all-pokemon .ability-list table .cell.sprite-cell img, #all-pokemon .move-list table .cell.sprite-cell img, #all-abilities .pokemon-list table .cell.sprite-cell img, #all-abilities .ability-list table .cell.sprite-cell img, #all-abilities .move-list table .cell.sprite-cell img, #all-moves .pokemon-list table .cell.sprite-cell img, #all-moves .ability-list table .cell.sprite-cell img, #all-moves .move-list table .cell.sprite-cell img, #trainer-dex .pokemon-list table .cell.sprite-cell img, #trainer-dex .ability-list table .cell.sprite-cell img, #trainer-dex .move-list table .cell.sprite-cell img {
   width: 100px;
   height: 100px;
 }
@@ -993,6 +993,47 @@ body:has(.modal-open) {
 ::-webkit-inner-spin-button {
   -webkit-appearance: none;
           appearance: none;
+}
+
+.trainer-dex-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  overflow: auto;
+}
+.trainer-dex-list .trainer-card {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #6c757d;
+  position: relative;
+}
+.trainer-dex-list .trainer-card img {
+  width: 100px;
+  height: 100px;
+}
+.trainer-dex-list .trainer-card .trainer-name {
+  margin-top: 10px;
+  font-weight: 100;
+  font-style: italic;
+  text-align: center;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+.trainer-dex-list .trainer-card .badge {
+  position: absolute;
+  bottom: 0;
+  transform: translateY(50%);
+}
+.trainer-dex-list .trainer-card:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 1600px) {
