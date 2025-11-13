@@ -562,6 +562,16 @@ const app = createApp({
       }
     }
 
+    const pageTitle = computed(() => {
+      let title = "Vanguard Pokédex";
+      let currentTab = tabView.value;
+
+      if(currentTab === "team") {
+        return title + " - Team Builder";
+      }
+      else return currentTab.FromCaseToSpace();
+    });
+
     watch(viewPokemon, (newVal) => {
       if(newVal != null && newVal.Name) {
         watch(newVal.SelectedMoves, (moves) => {
@@ -647,7 +657,8 @@ const app = createApp({
       resistedByFilter,
       effectiveTypeFilter,
       includeEggMoves,
-      includeTMMoves
+      includeTMMoves,
+      pageTitle,
     };
   }
 });
