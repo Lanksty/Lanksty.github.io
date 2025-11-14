@@ -105,6 +105,15 @@
                     }
                 }
             } 
+
+            .no-team-message {
+                cursor: pointer;
+                flex-grow: 1;
+
+                &:hover {
+                    background-color: #fafafa;
+                }
+            }
         }
 
         .resource-list {

@@ -83,6 +83,13 @@
 #dashboard-tab .dashboard-container .team-summary tbody tr .cell {
   padding: 20px 5px;
 }
+#dashboard-tab .dashboard-container .team-summary .no-team-message {
+  cursor: pointer;
+  flex-grow: 1;
+}
+#dashboard-tab .dashboard-container .team-summary .no-team-message:hover {
+  background-color: #fafafa;
+}
 #dashboard-tab .dashboard-container .resource-list a {
   text-decoration: none;
   color: inherit;

@@ -57,7 +57,7 @@
                   <h4><i class="bi-people-fill me-2"></i> My Team</h4>
                   <button type="button" class="btn" @click="setTabView('team')"> Go to Team <i class="bi-arrow-right"></i></button>
                 </div>
-                <div class="dashboard-item-content flex-grow-1">
+                <div class="dashboard-item-content flex-grow-1" v-if="teamBuilder.teamList.length > 0">
                   <table class="table team-overview-table">
                     <thead>
                       <tr>
@@ -82,10 +82,14 @@
                           <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
                         </td>
                         <td class="cell">{{ getAbilityByName(mon.SelectedAbility)?.Name }}</td>
-                        
                       </tr>
                     </tbody>
                   </table>
+
+                </div>
+                <div v-if="teamBuilder.teamList.length === 0" class="no-team-message d-flex flex-column align-items-center text-center" @click="searching = true">
+                  <i class="bi-people-fill" style="font-size: 4em; opacity: 0.3;"></i>
+                  <p class="mt-3" style="opacity: 0.5; font-size: 1.2em;">No Pokémon in team. Click here to begin adding Pokémon to your team!</p>
                 </div>
               </div>
               <div class="dashboard-item" data-height="3" data-width="2">

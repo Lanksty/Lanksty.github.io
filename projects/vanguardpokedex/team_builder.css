@@ -172,7 +172,7 @@ body:has(.modal-open) {
 }
 
 .search-results .result:hover {
-  background-color: #fafcff;
+  background-color: #dbdbdb;
 }
 
 .search-sprite {
