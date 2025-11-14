@@ -293,11 +293,14 @@
                     </tbody>
                   </table>
                 </div>
-                <div class="move-list-header btn-group">
-                  <button class="btn btn-primary" type="button" @click="moveListTab = 'levelup'" :class="{'active': moveListTab == 'levelup'}">Level Up</button>
-                  <button class="btn btn-primary" type="button" @click="moveListTab = 'tmhm'" :class="{'active': moveListTab == 'tmhm'}">TM/HM</button>
-                  <button class="btn btn-primary" type="button" @click="moveListTab = 'egg'" :class="{'active': moveListTab == 'egg'}">Egg Moves</button>
-                </div>
+                <span class="d-flex">
+                  <div class="move-list-header btn-group">
+                    <button class="btn btn-primary" type="button" @click="moveListTab = 'levelup'" :class="{'active': moveListTab == 'levelup'}">Level Up</button>
+                    <button class="btn btn-primary" type="button" @click="moveListTab = 'tmhm'" :class="{'active': moveListTab == 'tmhm'}">TM/HM</button>
+                    <button class="btn btn-primary" type="button" @click="moveListTab = 'egg'" :class="{'active': moveListTab == 'egg'}">Egg Moves</button>
+                  </div>
+                  <input type="text" class="form-control ms-2" placeholder="Search Moves" v-model="currentlyViewingMoveSearchQuery" style="width: 200px; margin-left: auto;" />
+                </span>
                 <div class="member-move-list">
                   <div >
                     <table>
@@ -308,27 +311,27 @@
                               <i :class="chevronClass('Name')"></i>
                             </a>
                           </th>
-                          <th class="cell" v-if="moveListTab === 'levelup'" style="width: 5rem">
+                          <th class="cell text-center" v-if="moveListTab === 'levelup'" style="width: 5rem">
                             <a href="javascript:void(0)" @click="setSortingMethod('LevelLearned')">Level
                               <i :class="chevronClass('LevelLearned')"></i>
                             </a>
                           </th>
-                          <th class="cell type-cell" style="width: 5rem">
+                          <th class="cell type-cell text-center" style="width: 5rem">
                             <a href="javascript:void(0)" @click="setSortingMethod('Type')">Type
                               <i :class="chevronClass('Type')"></i>
                             </a>
                           </th>
-                          <th class="cell" style="width: 6.5rem">
+                          <th class="cell text-center" style="width: 6.5rem">
                             <a href="javascript:void(0)" @click="setSortingMethod('Category')">Category
                               <i :class="chevronClass('Category')"></i>
                             </a>
                           </th>
-                          <th class="cell" style="width: 5rem">
+                          <th class="cell text-center" style="width: 5rem">
                             <a href="javascript:void(0)" @click="setSortingMethod('Power')">Power
                               <i :class="chevronClass('Power')"></i>
                             </a>
                           </th>
-                          <th class="cell" style="width: 6.5rem">
+                          <th class="cell text-center" style="width: 6.5rem">
                             <a href="javascript:void(0)" @click="setSortingMethod('Accuracy')">Accuracy
                               <i :class="chevronClass('Accuracy')"></i>
                             </a>
@@ -339,7 +342,7 @@
                         </tr>
                       </thead>
                       <tbody class="move-list" v-if="moveListTab === 'levelup'">
-                        <tr class="move" v-for="(move, index) in sortList(viewPokemon.MoveList)" :key="index" @click="viewPokemon.AddMove(move);">
+                        <tr class="move" v-for="(move, index) in filterCurrentlyViewingMoveList(sortList(viewPokemon.MoveList))" :key="index" @click="viewPokemon.AddMove(move);">
                           <td class="cell">{{ move.Name.toTitleCase() }}</td>
                           <td class="cell" style="text-align: center;">{{ move.LevelLearned || '---' }}</td>
                           <td class="cell" style="text-align: center;">
@@ -354,7 +357,7 @@
                         </tr>
                       </tbody>
                       <tbody class="move-list" v-if="moveListTab === 'tmhm'">
-                        <tr class="move" v-for="(move, index) in sortList(viewPokemon.TMMoves)" :key="index" @click="viewPokemon.AddMove(move);">
+                        <tr class="move" v-for="(move, index) in filterCurrentlyViewingMoveList(sortList(viewPokemon.TMMoves))" :key="index" @click="viewPokemon.AddMove(move);">
                           <td class="cell">{{ move.Name.toTitleCase() }}</td>
                           <td class="cell" style="text-align: center;">
                             <img :src="`./resources/images/types/${move.Type}.png`" alt="" />
@@ -368,7 +371,7 @@
                         </tr>
                       </tbody>
                       <tbody class="move-list" v-if="moveListTab === 'egg'">
-                        <tr class="move" v-for="(move, index) in sortList(getEggMoves(viewPokemon))" :key="index" @click="viewPokemon.AddMove(move);">
+                        <tr class="move" v-for="(move, index) in filterCurrentlyViewingMoveList(sortList(getEggMoves(viewPokemon)))" :key="index" @click="viewPokemon.AddMove(move);">
                           <td class="cell">{{ move.Name.toTitleCase() }}</td>
                           <td class="cell" style="text-align: center;">
                             <img :src="`./resources/images/types/${move.Type}.png`" alt="" />

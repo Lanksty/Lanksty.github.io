@@ -190,6 +190,7 @@ const app = createApp({
       ascending: true
     });
     const pokedexTab = ref("info");
+    const currentlyViewingMoveSearchQuery = ref("");
 
     // Check URL params for pokemon to view
     let urlParams = new URLSearchParams(window.location.search);
@@ -331,6 +332,13 @@ const app = createApp({
         currentlyViewing.value = pokemon.InternalName;
         tabView.value = "team";
       }
+    }
+
+    const filterCurrentlyViewingMoveList = (moveList) => {
+      if(!currentlyViewingMoveSearchQuery.value || currentlyViewingMoveSearchQuery.value.length === 0) {
+        return moveList;
+      }
+      return moveList.filter(mv => mv.Name.toLowerCase().includes(currentlyViewingMoveSearchQuery.value.toLowerCase()));
     }
 
     const buildEvolutionChain = (pokemon) => {
@@ -674,7 +682,9 @@ const app = createApp({
       includeEggMoves,
       includeTMMoves,
       pageTitle,
-      getPokemonTypeStyle
+      getPokemonTypeStyle,
+      filterCurrentlyViewingMoveList,
+      currentlyViewingMoveSearchQuery
     };
   }
 });
