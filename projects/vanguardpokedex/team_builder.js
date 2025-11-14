@@ -883,8 +883,6 @@ app.component('search-dropdown', comp.SearchDropdown);
 // Apache Echart directive for app
 app.directive('chart', {
   beforeMount(el, binding, vnode, prevVnode) {
-    console.log('Directive bound:', binding.value);
-
     const myChart = echarts.init(el);
     const options = binding.value.options;
     myChart.setOption(options);
@@ -898,35 +896,28 @@ app.directive('chart', {
 
     myChart.resize();
 
-    console.log('Echart options on mount:', options);
   },
 
   mounted(el, binding) {
-    console.log('Element mounted');
     el._echart_instance.resize();
   },
 
   beforeUpdate(el, binding) {
-    console.log('Before update');
   },
 
   updated(el, binding) {
-    console.log('Element updated:', binding.value);
     el.style.backgroundColor = binding.value || 'yellow';
     const options = binding.value.options;
     const myChart = el._echart_instance;
     myChart.setOption(options);
 
     myChart.resize();
-    console.log('Echart options:', options);
   },
 
   beforeUnmount(el, binding) {
-    console.log('Before unmount');
   },
 
   unmounted(el, binding) {
-    console.log('Directive unbound');
   }
 });
 
