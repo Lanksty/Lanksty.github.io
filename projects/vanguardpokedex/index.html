@@ -503,7 +503,7 @@
               </div>
               <div class="pokemon-details">
                 <div class="input-group mb-2">
-                  <span class="input-group-text" style="width: 100px">Ability</span>
+                  <span class="input-group-text" style="width: 95px">Ability</span>
                   <select v-model="viewPokemon.SelectedAbility" @change="teamBuilder.abilityChangeCallback(viewPokemon)"
                     class="form-select" :title="getAbilityByName(viewPokemon.SelectedAbility)?.Description || ''">
                     <option v-for="(ability, index) in viewPokemon.AbilitiesList" :key="index" :value="ability" class="ability-select"
@@ -512,7 +512,7 @@
                   </select>
                 </div>
                 <div class="input-group mb-2">
-                  <span class="input-group-text" style="width: 100px">Nature</span>
+                  <span class="input-group-text" style="width: 95px">Nature</span>
                   <select v-model="viewPokemon.Nature" @change="teamBuilder.saveTeam()"
                     class="form-select" 
                     :title="viewPokemon.Nature?.description || ''"
