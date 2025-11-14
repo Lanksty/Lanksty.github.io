@@ -6,9 +6,11 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="team_builder.css">
+        <link rel="stylesheet" href="dashboard.css">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js"></script>
         <title>Vanguard Pokedex | Team Builder</title>
     </head>
     <body>
@@ -18,6 +20,7 @@
         <div class="header-nav mt-5">
           <div class="navigation d-flex justify-content-center align-items-center w-100">
             <span class="btn-group">
+              <button type="button" class="btn btn-primary" @click="setTabView('dashboard')" :class="{ active: tabView === 'dashboard' }"><i class="bi-house me-2"></i> Dashboard</button>
               <button type="button" class="btn btn-primary" @click="setTabView('team')" :class="{ active: tabView === 'team' }"><i class="bi-window-sidebar me-2"></i> My Team</button>
               <button type="button" class="btn btn-primary" @click="setTabView('typeEffectiveness')" :class="{ active: tabView === 'typeEffectiveness' }"><i class="bi-table me-2"></i> Team Weaknesses</button>
               <button type="button" class="btn btn-primary" @click="setTabView('moveCoverage')" :class="{ active: tabView === 'moveCoverage' }"><i class="bi-shield-check me-2"></i> Move Coverage</button>
@@ -46,7 +49,10 @@
       
         <div id="main">
 
-
+          <!-- Dashboard -->
+           <div id="dashboard-tab" v-if="tabView === 'dashboard'">
+            <div></div>
+           </div>
           <!-- Team Sidebar -->
           <div class="team-sidebar-container hide-md" v-if="(currentlyViewing != null && tabView === 'team') || tabView === 'typeEffectiveness' || tabView === 'moveCoverage'">
             <div v-for="(mon, index) in teamBuilder.teamList" :key="index" class="team-member" @click="toggleViewingPokemon(mon)" :class="{ 'active': viewPokemon === mon }">
@@ -462,7 +468,7 @@
                       <div v-if="mon" :class="{ 'weak': mon.FindMatchup(key) > 1, 'resist': mon.FindMatchup(key) < 1, 'immune': mon.FindMatchup(key) === 0 }">{{ mon.FindMatchup(key) || 0 || '---' }}</div>
                       <div v-else>---</div>
                     </td>
-                    <td class="cell total hide-lg" :style="{ 'font-weight': value.weaknesses > 0 ? 'bold' : ''}">{{ value.weaknesses }}</td>
+                    <td class="cell total hide-lg" :style="{ 'font-weight': value.weaknesses > 0 ? 'bold' : ''}" style="border-left: 1px solid #ccc">{{ value.weaknesses }}</td>
                     <td class="cell total hide-lg" :style="{ 'font-weight': value.resistances > 0 ? 'bold' : ''}">{{ value.resistances }}</td>
                     <td class="cell total hide-lg" :style="{ 'font-weight': value.immunities > 0 ? 'bold' : ''}">{{ value.immunities }}</td>
                     <td class="cell total hide-lg" :style="{ 'font-weight': value.total > 0 ? 'bold' : ''}">{{ value.weaknesses - value.resistances - value.immunities }}</td>
@@ -618,10 +624,7 @@
         <!-- All Abilities tab -->
         <div id="all-abilities" v-if="tabView === 'allAbilities'">
           <div class="all-abilities-header">
-            <h4 class="text-center text-primary">All Abilities</h4>
             <div class="search">
-            </div>
-            <div class="collapse show" id="filters-collapse">
               <search-dropdown :items="allAbilities" item-label="Name" v-model="abilityFilter" placeholder="Search for ability" :max-selections="3" :has-badges="true" :clearable="true"></search-dropdown>
             </div>
           </div>
@@ -648,10 +651,7 @@
         <!-- All Moves tab -->
         <div id="all-moves" v-if="tabView === 'allMoves'">
           <div class="all-moves-header">
-            <h4 class="text-center text-primary">All Moves</h4>
-            <div class="search">
-            </div>
-            <div class="collapse show" id="filters-collapse">
+            <div class="search flex-column">
               <search-dropdown :items="allMoves" item-label="Name" v-model="moveFilter" placeholder="Search for move" :max-selections="3" :has-badges="true" :clearable="true"></search-dropdown>
               <search-dropdown :items="types" item-label="Name" v-model="moveTypeFilter" placeholder="Filter by Type" :max-selections="2" :has-badges="true" :clearable="true"></search-dropdown>
             </div>

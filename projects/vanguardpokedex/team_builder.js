@@ -154,6 +154,10 @@ class TeamBuilder {
   }
 }
 
+class Dashboard {
+  
+}
+
 const app = createApp({
   setup() {
     const teamBuilder = reactive(new TeamBuilder());
@@ -181,7 +185,7 @@ const app = createApp({
     ]);
     const searching = ref(false);
     const currentlyViewing = ref(null);
-    const tabView = ref("team");
+    const tabView = ref("dashboard");
     const moveListTab = ref("levelup");
     const pokedexView = ref("");
     const sortingMethod = reactive({
