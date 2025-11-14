@@ -515,7 +515,6 @@ body:has(.modal-open) {
 
 .cell img {
     width: fit-content;
-    height: 30px;
 }
 
 .cell .pkm-cell {
@@ -525,6 +524,11 @@ body:has(.modal-open) {
     align-items: center;
     justify-content: center;
     min-width: 150px;
+
+    img {
+        height: 30px;
+        width: 30px;
+    }
 }
 .cell:has(img) {
     padding: 0px;
@@ -700,7 +704,7 @@ body:has(.modal-open) {
             border-radius: 10px;
             max-height: 600px;
             background: #f4f8ff;
-            
+
             .type {
                 font-size: 1rem;
             }

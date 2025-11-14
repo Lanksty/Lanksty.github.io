@@ -128,7 +128,7 @@
                     <td class="cell"></td>
                   </tr>
                   <tr>
-                    <td class="cell fst-italic" style="text-wrap: nowrap">Lvl {{ mon.Level }}:</td>
+                    <td class="cell fst-italic" style="text-wrap: nowrap; opacity: 0.5;">Lvl {{ mon.Level }}:</td>
                     <td class="cell">{{ mon.GetStatCalc().hp }}</td>
                     <td class="cell">{{ mon.GetStatCalc().atk }}</td>
                     <td class="cell">{{ mon.GetStatCalc().def }}</td>
@@ -555,10 +555,10 @@
                       </div>
                       <div v-else class="pkm-cell">---</div>
                     </th>
-                    <th class="cell total" style="width: 50px;">Weak</th>
-                    <th class="cell total" style="width: 50px;">Resists</th>
-                    <th class="cell total" style="width: 50px;">Immune</th>
-                    <th class="cell total" style="width: 50px;">Total</th>
+                    <th class="cell total hide-lg" style="width: 50px;">Weak</th>
+                    <th class="cell total hide-lg" style="width: 50px;">Resists</th>
+                    <th class="cell total hide-lg" style="width: 50px;">Immune</th>
+                    <th class="cell total hide-lg" style="width: 50px;">Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -568,10 +568,10 @@
                       <div v-if="mon" :class="{ 'weak': mon.FindMatchup(key) > 1, 'resist': mon.FindMatchup(key) < 1, 'immune': mon.FindMatchup(key) === 0 }">{{ mon.FindMatchup(key) || 0 || '---' }}</div>
                       <div v-else>---</div>
                     </td>
-                    <td class="cell total" :style="{ 'font-weight': value.weaknesses > 0 ? 'bold' : ''}">{{ value.weaknesses }}</td>
-                    <td class="cell total" :style="{ 'font-weight': value.resistances > 0 ? 'bold' : ''}">{{ value.resistances }}</td>
-                    <td class="cell total" :style="{ 'font-weight': value.immunities > 0 ? 'bold' : ''}">{{ value.immunities }}</td>
-                    <td class="cell total" :style="{ 'font-weight': value.total > 0 ? 'bold' : ''}">{{ value.weaknesses - value.resistances - value.immunities }}</td>
+                    <td class="cell total hide-lg" :style="{ 'font-weight': value.weaknesses > 0 ? 'bold' : ''}">{{ value.weaknesses }}</td>
+                    <td class="cell total hide-lg" :style="{ 'font-weight': value.resistances > 0 ? 'bold' : ''}">{{ value.resistances }}</td>
+                    <td class="cell total hide-lg" :style="{ 'font-weight': value.immunities > 0 ? 'bold' : ''}">{{ value.immunities }}</td>
+                    <td class="cell total hide-lg" :style="{ 'font-weight': value.total > 0 ? 'bold' : ''}">{{ value.weaknesses - value.resistances - value.immunities }}</td>
   
                   </tr>
                 </tbody>
