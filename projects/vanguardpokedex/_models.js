@@ -439,7 +439,7 @@ export function getConfigData() {
 export function fetchNatureData() {
     return fetch('./resources/data/natures.json')
     .then(response => response.json())
-    .then(data => data.sort((a, b) => a.increasedStat?.localeCompare(b.increasedStat)))
+    .then(data => data)
     .catch(error => {
         console.error('Error fetching nature data:', error);
         return [];
