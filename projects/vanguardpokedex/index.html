@@ -85,6 +85,11 @@
                       </tr>
                     </tbody>
                   </table>
+                  <div v-if="teamBuilder.teamList.length < 6" class="mb-4">
+                      <div class="empty-slot me-auto ms-auto" @click="searching = true">
+                        <i class="bi-plus" style="font-size: 2em"></i>
+                      </div>
+                    </div>
 
                 </div>
                 <div v-if="teamBuilder.teamList.length === 0" class="no-team-message d-flex flex-column align-items-center text-center" @click="searching = true">
