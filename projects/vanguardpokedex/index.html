@@ -502,6 +502,29 @@
                 </div>
               </div>
               <div class="pokemon-details">
+                <div class="input-group mb-2">
+                  <span class="input-group-text" style="width: 100px">Ability</span>
+                  <select v-model="viewPokemon.SelectedAbility" @change="teamBuilder.abilityChangeCallback(viewPokemon)"
+                    class="form-select" :title="getAbilityByName(viewPokemon.SelectedAbility)?.Description || ''">
+                    <option v-for="(ability, index) in viewPokemon.AbilitiesList" :key="index" :value="ability" class="ability-select"
+                      :title="getAbilityByName(ability)?.Description || ''">
+                      {{ getAbilityByName(ability)?.Name }}</option>
+                  </select>
+                </div>
+                <div class="input-group mb-2">
+                  <span class="input-group-text" style="width: 100px">Nature</span>
+                  <select v-model="viewPokemon.Nature" @change="teamBuilder.saveTeam()"
+                    class="form-select" 
+                    :title="viewPokemon.Nature?.description || ''"
+                    placeholder="Select a nature">
+                    <option v-for="nature in natures" :key="nature.id" :value="nature" class="nature-select"
+                      :title="nature.description || ''">
+                      {{ nature.name }} {{ nature.increased_stat != null ? '(+ ' + nature.increased_stat + ',  - ' + nature.decreased_stat + ')' : '-' }}</option>
+                  </select>
+                </div>
+                <search-dropdown :items="allItems" item-label="Name" v-model="viewPokemon.HeldItem" placeholder="Search for item"
+                  :max-selections="1" :on-update="function() { teamBuilder.saveTeam(); }" label-text="Held Item"
+                  :clearable="true" location="top" dropdown-height="20rem"></search-dropdown>
                 <div class="section-title" data-content="Weaknesses & Resistances">
                 </div>
                 <table class="type-effectiveness mb-2" style="margin:auto;">
@@ -520,29 +543,6 @@
                     </tr>
                   </tbody>
                 </table>
-                <div class="input-group mb-2">
-                  <span class="input-group-text">Ability:</span>
-                  <select v-model="viewPokemon.SelectedAbility" @change="teamBuilder.abilityChangeCallback(viewPokemon)"
-                    class="form-select" :title="getAbilityByName(viewPokemon.SelectedAbility)?.Description || ''">
-                    <option v-for="(ability, index) in viewPokemon.AbilitiesList" :key="index" :value="ability" class="ability-select"
-                      :title="getAbilityByName(ability)?.Description || ''">
-                      {{ getAbilityByName(ability)?.Name }}</option>
-                  </select>
-                </div>
-                <div class="input-group mb-2">
-                  <span class="input-group-text">Nature:</span>
-                  <select v-model="viewPokemon.Nature" @change="teamBuilder.saveTeam()"
-                    class="form-select" 
-                    :title="viewPokemon.Nature?.description || ''"
-                    placeholder="Select a nature">
-                    <option v-for="nature in natures" :key="nature.id" :value="nature" class="nature-select"
-                      :title="nature.description || ''">
-                      {{ nature.name }} {{ nature.increased_stat != null ? '(+ ' + nature.increased_stat + ',  - ' + nature.decreased_stat + ')' : '-' }}</option>
-                  </select>
-                </div>
-                <search-dropdown :items="allItems" item-label="Name" v-model="viewPokemon.HeldItem" placeholder="Search for item"
-                  :max-selections="1" :on-update="function() { teamBuilder.saveTeam(); }" label-text="Held Item:"
-                  :clearable="true" location="top" dropdown-height="20rem"></search-dropdown>
               </div>
 
           </div>
