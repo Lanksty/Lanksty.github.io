@@ -82,6 +82,7 @@
               <table class="member-table align-self-center">
                 <thead>
                   <tr>
+                    <th class="cell" style="width: 50px; max-width: 100px;">Level</th>
                     <th class="cell" style="width: 100px; max-width: 100px;">Type</th>
                     <th class="cell" style="min-width: 100px; max-width: 200px;">Ability</th>
                     <th class="cell" style="min-width: 100px; max-width: 200px;">Item</th>
@@ -89,6 +90,7 @@
                 </thead>
                 <tbody>
                   <tr>
+                    <td class="cell"> {{ mon.Level }} </td>
                     <td class="cell type-cell">
                       <img :src="`./resources/images/types/${mon.Type1.toUpperCase()}.png`" alt="" />
                       <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
@@ -162,6 +164,15 @@
                   class="member-sprite" />
                 <h3 class="member-name">
                   <strong><a href="javascript:void(0)" @click="pokedexView = viewPokemon.InternalName" title="View In PokéDex">{{ viewPokemon.Name.toTitleCase() }}</a></strong>
+                  - Lvl 
+                  <input type="number" v-model.number="viewPokemon.Level" style="width: 55px;height: 30px; display: inline-block;" min="1" max="100" class="form-control text-center" data-bs-toggle="dropdown" />
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="d-flex px-4">
+                      <span>0</span>
+                      <input type="range" min="0" :max="100" v-model.number="viewPokemon.Level" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                      <span>100</span>
+                    </div>
+                  </div>
                 </h3>
 
                 <div class="member-details text-center">
@@ -197,7 +208,7 @@
                         <td class="cell" style="text-align: left; font-weight: bold;">Ivs</td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.hp" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.hp" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -209,7 +220,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.atk" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.atk" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -221,7 +232,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.def" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.def" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -233,7 +244,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spa" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spa" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -245,7 +256,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spd" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spd" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -257,7 +268,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spe" max="31" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Ivs.spe" max="31" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -272,7 +283,7 @@
                         <td class="cell" style="text-align: left; font-weight: bold;">Evs</td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.hp" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.hp" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -284,7 +295,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.atk" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.atk" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -296,7 +307,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.def" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.def" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -308,7 +319,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spa" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spa" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -320,7 +331,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spd" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spd" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
@@ -332,7 +343,7 @@
                         </td>
                         <td class="cell">
                           <div class="dropup">
-                            <input data-bs-toggle="dropdown" class="btn btn-secondary dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spe" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 80px" v-model.number="viewPokemon.Evs.spe" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>

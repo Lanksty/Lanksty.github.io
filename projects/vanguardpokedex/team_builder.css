@@ -433,7 +433,6 @@ body:has(.modal-open) {
 
 .team-container-wrapper .team-member .member-header {
   align-self: flex-start;
-  gap: 10px;
   width: 150px;
 }
 

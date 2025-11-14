@@ -588,16 +588,17 @@ const app = createApp({
 
     watch(viewPokemon, (newVal) => {
       if(newVal != null && newVal.Name) {
-        watch(newVal.SelectedMoves, (moves) => {
-          console.log("Selected moves changed for", newVal.Name, moves);
-          teamBuilder.saveTeam();
-        }, { deep: true });
-        watch(newVal.Evs, (evs) => {
-          teamBuilder.saveTeam();
-        }, { deep: true });
-        watch(newVal.Ivs, (ivs) => {
-          teamBuilder.saveTeam();
-        }, { deep: true });
+        // watch(newVal.SelectedMoves, (moves) => {
+        //   console.log("Selected moves changed for", newVal.Name, moves);
+        //   teamBuilder.saveTeam();
+        // }, { deep: true });
+        // watch(newVal.Evs, (evs) => {
+        //   teamBuilder.saveTeam();
+        // }, { deep: true });
+        // watch(newVal.Ivs, (ivs) => {
+        //   teamBuilder.saveTeam();
+        // }, { deep: true });
+        teamBuilder.saveTeam();
       } 
       if(newVal == null) {
         currentlyViewing.value = null;
