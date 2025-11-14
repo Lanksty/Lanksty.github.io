@@ -159,6 +159,33 @@ class Dashboard {
     this.teamBuilder = teamBuilder;
   }
 
+  GetTeamWeaknesses(type) {
+    const chartData = this.teamBuilder.TeamEffectiveness;
+    return chartData.get(type)?.weaknesses || 0;
+  }
+
+  GetTeamResistances(type) {
+    const chartData = this.teamBuilder.TeamEffectiveness;
+    let resistances = chartData.get(type)?.resistances || 0;
+    let weaknesses = chartData.get(type)?.weaknesses || 0;
+    let netResistances = resistances - weaknesses;
+    return netResistances > 0 ? netResistances : 0;
+  }
+
+  GetTeamMoveCoverage(type) {
+    let teamList = this.teamBuilder.teamList;
+    let coverageData = {};
+    typeChart.forEach(t => {
+      coverageData[t.Name] = 0;
+      teamList.forEach(pokemon => {
+        if(pokemon.SelectedMoves.some(mv => t.Weaknesses?.includes(mv.Type) && mv.Category !== "Status")) {
+          coverageData[t.Name] += 1;
+        }
+      });
+    });
+    return coverageData;
+  }
+
   TypeEffectivenessChart() {
     const chartData = this.teamBuilder.TeamEffectiveness;
     const chartDataEntries = Array.from(chartData.entries());
@@ -188,7 +215,8 @@ class Dashboard {
       },
       xAxis: [
         {
-          type: 'value'
+          type: 'value',
+          interval: 1
         }
       ],
       yAxis: [
@@ -217,7 +245,11 @@ class Dashboard {
           }),
           type: 'bar',
           label: {
-            show: true
+            show: true,
+            formatter: function (param) {
+              if (param.value != 0 ) return param.value;
+              return '';
+            }
           },
           
         }
@@ -255,7 +287,8 @@ class Dashboard {
       },
       xAxis: [
         {
-          type: 'value'
+          type: 'value',
+          interval: 1
         }
       ],
       yAxis: [
@@ -283,7 +316,11 @@ class Dashboard {
           }),
           type: 'bar',
           label: {
-            show: true
+            show: true,
+            formatter: function (param) {
+              if (param.value != 0 ) return param.value;
+              return '';
+            }
           },
           
         }

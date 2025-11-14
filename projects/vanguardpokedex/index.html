@@ -52,12 +52,9 @@
           <!-- Dashboard -->
           <div id="dashboard-tab" v-if="tabView === 'dashboard'" data-grid-rows="" data-grid-columns="6">
             <div class="dashboard-container">
-
-
-              
-              <div class="dashboard-item team-summary" data-length="3" data-width="2" >
+              <div class="dashboard-item team-summary" data-height="3" data-width="2" >
                 <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
-                  <h3><i class="bi-people-fill me-2"></i> My Team</h3>
+                  <h4><i class="bi-people-fill me-2"></i> My Team</h4>
                   <button type="button" class="btn" @click="setTabView('team')"> Go to Team <i class="bi-arrow-right"></i></button>
                 </div>
                 <div class="dashboard-item-content flex-grow-1">
@@ -91,9 +88,9 @@
                   </table>
                 </div>
               </div>
-              <div class="dashboard-item" data-length="3" data-width="2">
+              <div class="dashboard-item" data-height="3" data-width="2">
                 <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
-                  <h3><i class="bi-bar-chart-fill me-2"></i> Type Matchups</h3>
+                  <h4><i class="bi-bar-chart-fill me-2"></i> Type Matchups</h4>
                   <button type="button" class="btn" @click="setTabView('typeEffectiveness')"> View Details <i class="bi-arrow-right"></i></button>
                 </div>
                 <div class="dashboard-item-content flex-grow-1" style="width: 100%; height: 100%;">
@@ -101,18 +98,63 @@
                 </div>
               </div>
               
-              <div class="dashboard-item" data-length="3" data-width="2">
+              <div class="dashboard-item" data-height="3" data-width="2">
                 <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
-                  <h3><i class="bi-bar-chart-fill me-2"></i> Move Coverage</h3>
+                  <h4><i class="bi-bar-chart-fill me-2"></i> Move Coverage</h4>
                   <button type="button" class="btn" @click="setTabView('moveCoverage')"> View Details <i class="bi-arrow-right"></i></button>
                 </div>
                 <div class="dashboard-item-content flex-grow-1" style="width: 100%; height: 100%;">
                   <div id="move-coverage-chart" v-chart="{model: dashboard, options: dashboard.MoveCoverageChart()}" style="width: 100%; height: 100%;"></div>
                 </div>
+              </div> 
+
+              <div class="dashboard-item hide-lg" data-width="3">
+                <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
+                  <h4 class="mb-0"><i class="bi-shield-fill-exclamation me-2"></i> Type Matchup Table</h4>
+                </div>
+                <div class="dashboard-item-content flex-grow-1" style="width: 100%; height: 100%;">
+                  <table class="type-effectiveness" style="margin:auto;">
+                    <thead>
+                      <tr>
+                        <th class="cell">Type</th>
+                        <th v-for="(type, index) in types" class="cell type-cell type" :key="index" :class="type.Name.toLowerCase()"><img
+                            :src="type.Sprite" alt="" /></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="cell">Weak</td>
+                        <td v-for="(type, index) in types" class="cell" :key="index">
+                          {{ dashboard.GetTeamWeaknesses(type.Name) || '1' }}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td class="cell">Resist</td>
+                        <td v-for="(type, index) in types" class="cell" :key="index">
+                          {{ dashboard.GetTeamResistances(type.Name) || '1' }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-               
+
+              <div class="dashboard-item hide-lg" data-width="3">
+                  <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
+                    <h4 class="mb-0"><i class="bi-link me-2"></i> Additional Resources</h4>
+                  </div>
+                  <div class="dashboard-item-contents flex-grow-1 w-100">
+                    <ul class="resource-list w-100 mb-0">
+                      <li><i class="bi-discord me-2"></i><a href="https://discord.gg/fVKTsxd2xR" target="_blank">Vanguard Discord</a></li>
+                      <li><i class="bi-table me-2"></i><a href="https://docs.google.com/spreadsheets/d/16Qj4CQlIfLYUKdFlZeA73Q1faOgpTJrJzGHm_x93aWs/edit?gid=0#gid=0" target="_blank">Item Location Spreadsheet</a></li>
+                      <li><i class="bi-book me-2"></i><a href="https://docs.google.com/spreadsheets/d/1D7s7XY2V1Uhqx7KjxYrlPwALvEqSzx-nMThLwb8qEGA/edit?usp=sharing" target="_blank">Wild Encounters / Monotype guide</a></li>
+                      <li><i class="bi-journal-bookmark-fill me-2"></i><a href="https://docs.google.com/spreadsheets/d/1NuX3JQDNEnc2topuPaIUzHdiKsSu_nTyVVuO8ORC7QM/edit?gid=0#gid=0" target="_blank">Expert Mode Trainer Documentation</a></li>    
+                    </ul>
+                  </div>
+              </div>
             </div>
           </div>
+          
           <!-- Team Sidebar -->
           <div class="team-sidebar-container hide-md" v-if="(currentlyViewing != null && tabView === 'team') || tabView === 'typeEffectiveness' || tabView === 'moveCoverage'">
             <div v-for="(mon, index) in teamBuilder.teamList" :key="index" class="team-member" @click="toggleViewingPokemon(mon)" :class="{ 'active': viewPokemon === mon }">
