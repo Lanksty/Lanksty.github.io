@@ -600,7 +600,7 @@ const app = createApp({
         //   console.log("Selected moves changed for", newVal.Name, moves);
         //   teamBuilder.saveTeam();
         // }, { deep: true });
-        // watch(newVal.Evs, (evs) => {
+        // watch(newVal.EVs, (evs) => {
         //   teamBuilder.saveTeam();
         // }, { deep: true });
         // watch(newVal.Ivs, (ivs) => {

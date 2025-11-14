@@ -222,16 +222,16 @@
                           </div>
                         </td>
                       </tr>
-                      <tr :class="{ 'has-error': viewPokemon.TotalEvs() > 510 }">
-                        <td class="cell" style="text-align: left; font-weight: bold;">Evs</td>
-                        <td class="cell" v-for="[ev, value] in Object.entries(viewPokemon.Evs)" :key="ev">
+                      <tr :class="{ 'has-error': viewPokemon.TotalEVs() > 510 }">
+                        <td class="cell" style="text-align: left; font-weight: bold;">EVs</td>
+                        <td class="cell" v-for="[ev, value] in Object.entries(viewPokemon.EVs)" :key="ev">
                           <div class="dropup d-flex justify-content-center">
-                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 60px; height: 35px;" v-model.number="viewPokemon.Evs[ev]" />
+                            <input data-bs-toggle="dropdown" class="form-control text-center dropdown-toggle" type="number" id="dropdownMenuButton" aria-expanded="false" style="width: 60px; height: 35px;" v-model.number="viewPokemon.EVs[ev]" />
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                               <div class="d-flex px-4">
                                 <span>0</span>
-                                <input type="range" min="0" :max="Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs[ev]))" v-model.number="viewPokemon.Evs[ev]" class="form-range" style="width: 150px; padding: 0px 10px;"/>
-                                <span>{{ Math.min(252, (510 - viewPokemon.TotalEvs() + viewPokemon.Evs[ev])) }}</span>
+                                <input type="range" min="0" :max="Math.min(252, (510 - viewPokemon.TotalEVs() + viewPokemon.EVs[ev]))" v-model.number="viewPokemon.EVs[ev]" class="form-range" style="width: 150px; padding: 0px 10px;"/>
+                                <span>{{ Math.min(252, (510 - viewPokemon.TotalEVs() + viewPokemon.EVs[ev])) }}</span>
                               </div>
                             </div>
                           </div>
