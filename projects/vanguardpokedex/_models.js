@@ -88,7 +88,6 @@ export class Pokemon {
         for (const type of this.Types) {
             matchups.push(typeChart.find(t => t.Name === type));
         }
-
         let weaknesses = matchups.filter(m => m && m.Weaknesses).flatMap(m => m.Weaknesses);
         let resistances = matchups.filter(m => m && m.Resistances).flatMap(m => m.Resistances);
         let immunities = matchups.filter(m => m && m.Immunities).flatMap(m => m.Immunities);

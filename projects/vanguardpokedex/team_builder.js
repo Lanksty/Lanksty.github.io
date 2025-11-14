@@ -45,6 +45,8 @@ class TeamBuilder {
     }
 
     this.TeamEffectiveness = computed(() => this.getTeamEffectiveness());
+    this.TeamEffectivenessChart = computed(() => this.getTeamEffectiveness(true)); // For unique type matchups
+
     watch(this.TeamEffectiveness, (newVal) => {
       console.log("Team Effectiveness Updated:", newVal);
     });
@@ -104,13 +106,18 @@ class TeamBuilder {
   }
   
   // Used in TeamEffectiveness tab to calculate overall team type matchups
-  getTeamEffectiveness() {
+  getTeamEffectiveness(unique = false) {
     let allWeaknesses = [];
     let allResistances = [];
     let allImmunities = [];
 
     this.teamList.value.forEach(pokemon => {
-      if (pokemon.TypeMatchups) {
+      if (pokemon.TypeMatchups && unique) {
+        allWeaknesses.push(...pokemon.TypeMatchups.weaknesses.unique());
+        allResistances.push(...pokemon.TypeMatchups.resistances.unique());
+        allImmunities.push(...pokemon.TypeMatchups.immunities.unique());
+      }
+      else if(pokemon.TypeMatchups) {
         allWeaknesses.push(...pokemon.TypeMatchups.weaknesses);
         allResistances.push(...pokemon.TypeMatchups.resistances);
         allImmunities.push(...pokemon.TypeMatchups.immunities);
@@ -160,15 +167,16 @@ class Dashboard {
   }
 
   GetTeamWeaknesses(type) {
-    const chartData = this.teamBuilder.TeamEffectiveness;
+    const chartData = this.teamBuilder.TeamEffectivenessChart;
     return chartData.get(type)?.weaknesses || 0;
   }
 
   GetTeamResistances(type) {
-    const chartData = this.teamBuilder.TeamEffectiveness;
+    const chartData = this.teamBuilder.TeamEffectivenessChart;
     let resistances = chartData.get(type)?.resistances || 0;
+    let immunities = chartData.get(type)?.immunities || 0;
     let weaknesses = chartData.get(type)?.weaknesses || 0;
-    let netResistances = resistances - weaknesses;
+    let netResistances = resistances + immunities - weaknesses;
     return netResistances > 0 ? netResistances : 0;
   }
 
@@ -187,7 +195,7 @@ class Dashboard {
   }
 
   TypeEffectivenessChart() {
-    const chartData = this.teamBuilder.TeamEffectiveness;
+    const chartData = this.teamBuilder.TeamEffectivenessChart;
     const chartDataEntries = Array.from(chartData.entries());
 
     let options = {
@@ -199,7 +207,7 @@ class Dashboard {
         formatter: function (params) {
           let typeName = params[0].name;
           let values = chartData.get(typeName);
-          let netEffectiveness = values.resistances - values.immunities - values.weaknesses;
+          let netEffectiveness = values.resistances + values.immunities - values.weaknesses;
           return `<strong>${typeName}</strong><br/>
                   Weaknesses: ${values.weaknesses}<br/>
                   Resistances: ${values.resistances}<br/>
@@ -234,7 +242,7 @@ class Dashboard {
       series: [
         {
           data: chartDataEntries.map(([typeName, values]) => {
-            let netEffectiveness = values.resistances - values.immunities - values.weaknesses;
+            let netEffectiveness = values.resistances + values.immunities - values.weaknesses;
             return {
               name: typeName,
               value: netEffectiveness,
