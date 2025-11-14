@@ -303,6 +303,20 @@ const app = createApp({
       moveFilter.value = [];
     };
 
+    const getPokemonTypeStyle = (pokemon, isLight = false) => {
+      let suffix = isLight ? "-type-color-light" : "-type-color";
+      if(!pokemon || !pokemon.Types || pokemon.Types.length === 0) {
+        return {
+          '--primary-color': `var(--normal${suffix})`,
+          '--secondary-color': `var(--normal${suffix})`
+        }
+      }
+      return {
+        '--primary-color': `var(--${pokemon.Types[0]?.toLowerCase()}${suffix})`,
+        '--secondary-color': pokemon.Types[1] ? `var(--${pokemon.Types[1]?.toLowerCase()}${suffix})` : `var(--${pokemon.Types[0]?.toLowerCase()}${suffix})`
+      }
+    }
+
     const viewPokemon = computed(() => {
       if(currentlyViewing.value === null) return null;
       return teamBuilder.teamList.find(p => p.InternalName === currentlyViewing.value) || null;
@@ -582,16 +596,17 @@ const app = createApp({
 
     watch(viewPokemon, (newVal) => {
       if(newVal != null && newVal.Name) {
-        watch(newVal.SelectedMoves, (moves) => {
-          console.log("Selected moves changed for", newVal.Name, moves);
-          teamBuilder.saveTeam();
-        }, { deep: true });
-        watch(newVal.EVs, (evs) => {
-          teamBuilder.saveTeam();
-        }, { deep: true });
-        watch(newVal.IVs, (ivs) => {
-          teamBuilder.saveTeam();
-        }, { deep: true });
+        // watch(newVal.SelectedMoves, (moves) => {
+        //   console.log("Selected moves changed for", newVal.Name, moves);
+        //   teamBuilder.saveTeam();
+        // }, { deep: true });
+        // watch(newVal.Evs, (evs) => {
+        //   teamBuilder.saveTeam();
+        // }, { deep: true });
+        // watch(newVal.Ivs, (ivs) => {
+        //   teamBuilder.saveTeam();
+        // }, { deep: true });
+        teamBuilder.saveTeam();
       } 
       if(newVal == null) {
         currentlyViewing.value = null;
@@ -670,6 +685,7 @@ const app = createApp({
       includeEggMoves,
       includeTMMoves,
       pageTitle,
+      getPokemonTypeStyle,
       trainerDex,
       searchQueryTrainers,
       filteredTrainers

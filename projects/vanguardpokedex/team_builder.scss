@@ -56,6 +56,8 @@
     --sound-type-color: #b3fff2;
     --sound-type-color-light: #b3fff226;
     --sound-type-text-color: #000;
+    --primary-color: #ffffff;
+    --secondary-color: #ffffff;
 }
 
 html {
@@ -386,7 +388,7 @@ body:has(.modal-open) {
     --primary-color: #f0f0f0;
     --secondary-color: #f0f0f0;
 
-        .team-member {
+    .team-member {
         background: linear-gradient(white, white) padding-box, /* Solid background for content */
                     linear-gradient(to right, var(--primary-color), var(--secondary-color)) border-box; /* Gradient for border */
         border-radius: 10px;
@@ -398,7 +400,19 @@ body:has(.modal-open) {
 
         .member-header {
             overflow: unset;
+
         }
+        .member-name {
+            text-wrap: nowrap;
+        }
+    }
+
+    .cell {
+        text-wrap: nowrap;
+    }
+
+    .member-moves {
+        width: max-content;
     }
 }
 
@@ -417,7 +431,6 @@ body:has(.modal-open) {
 
 .team-container-wrapper .team-member .member-header {
     align-self: flex-start;
-    gap: 10px;
     width: 150px;
 }
 
@@ -429,10 +442,9 @@ body:has(.modal-open) {
 .member-moves {
     flex-grow: 1;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(175px, 1fr));
     gap: 5px;
     align-content: center;
-    max-width: 300px;
 }
 
 .member-moves .move {
@@ -502,7 +514,6 @@ body:has(.modal-open) {
 
 .cell img {
     width: fit-content;
-    height: 30px;
 }
 
 .cell .pkm-cell {
@@ -512,6 +523,11 @@ body:has(.modal-open) {
     align-items: center;
     justify-content: center;
     min-width: 150px;
+
+    img {
+        height: 30px;
+        width: 30px;
+    }
 }
 .cell:has(img) {
     padding: 0px;
@@ -686,8 +702,8 @@ body:has(.modal-open) {
             border: 3px solid #006ae4;
             border-radius: 10px;
             max-height: 600px;
-            // font-size: 1.2rem;
             background: #f4f8ff;
+
             .type {
                 font-size: 1rem;
             }
@@ -869,8 +885,6 @@ body:has(.modal-open) {
         width: 100%;
         overflow-y: auto;
         position: relative;
-        --primary-color: #ffffff;
-        --secondary-color: #ffffff;
 
         .pokemon {
             background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
