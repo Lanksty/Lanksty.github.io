@@ -155,7 +155,142 @@ class TeamBuilder {
 }
 
 class Dashboard {
-  
+  constructor(teamBuilder) {
+    this.teamBuilder = teamBuilder;
+  }
+
+  TypeEffectivenessChart() {
+    const chartData = this.teamBuilder.TeamEffectiveness;
+    const chartDataEntries = Array.from(chartData.entries());
+
+    let options = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        formatter: function (params) {
+          let typeName = params[0].name;
+          let values = chartData.get(typeName);
+          let netEffectiveness = values.resistances - values.immunities - values.weaknesses;
+          return `<strong>${typeName}</strong><br/>
+                  Weaknesses: ${values.weaknesses}<br/>
+                  Resistances: ${values.resistances}<br/>
+                  Immunities: ${values.immunities}<br/>
+                  <strong>Net Effectiveness: ${netEffectiveness}</strong>`;
+        }
+      },
+      legend: {
+        show: false
+      },
+      grid: {
+        top: 0
+      },
+      xAxis: [
+        {
+          type: 'value'
+        }
+      ],
+      yAxis: [
+        {
+          type: 'category',
+          axisTick: {
+            show: false
+          },
+          data: Array.from(chartData.keys()),
+          formatter: function (value) {
+            return `<img src="./resources/images/types/${value}.png" alt="${value}" style="width:20px; height:20px; vertical-align:middle; margin-right:8px;">`;
+          }
+        }
+      ],
+      series: [
+        {
+          data: chartDataEntries.map(([typeName, values]) => {
+            let netEffectiveness = values.resistances - values.immunities - values.weaknesses;
+            return {
+              name: typeName,
+              value: netEffectiveness,
+              itemStyle: {
+                color: typeChart.find(t => t.Name === typeName)?.Colors?.main || '#888888'
+              },
+            };
+          }),
+          type: 'bar',
+          label: {
+            show: true
+          },
+          
+        }
+      ]
+    }
+
+    return options;
+  }
+
+  MoveCoverageChart() {
+    let teamList = this.teamBuilder.teamList;
+    const coverageData = {};
+    typeChart.forEach(type => {
+      coverageData[type.Name] = 0;
+      teamList.forEach(pokemon => {
+        if(pokemon.SelectedMoves.some(mv => type.Weaknesses?.includes(mv.Type) && mv.Category !== "Status")) {
+          coverageData[type.Name] += 1;
+        }
+      });
+    });  
+
+    let options = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        
+      },
+      legend: {
+        show: false
+      },
+      grid: {
+        top: 0
+      },
+      xAxis: [
+        {
+          type: 'value'
+        }
+      ],
+      yAxis: [
+        {
+          type: 'category',
+          axisTick: {
+            show: false
+          },
+          data: Object.keys(coverageData),
+          formatter: function (value) {
+            return `<img src="./resources/images/types/${value}.png" alt="${value}" style="width:20px; height:20px; vertical-align:middle; margin-right:8px;">`;
+          }
+        }
+      ],
+      series: [
+        {
+          data: Object.entries(coverageData).map(([typeName, value]) => {
+            return {
+              name: typeName,
+              value: value,
+              itemStyle: {
+                color: typeChart.find(t => t.Name === typeName)?.Colors?.main || '#888888'
+              },
+            };
+          }),
+          type: 'bar',
+          label: {
+            show: true
+          },
+          
+        }
+      ]
+    }
+    return options;
+  }
 }
 
 const app = createApp({
@@ -177,6 +312,8 @@ const app = createApp({
     const moveCategoryFilter = ref([]);
     const includeEggMoves = ref(false);
     const includeTMMoves = ref(false);
+    const dashboard = reactive(new Dashboard(teamBuilder));
+    dashboard.MoveCoverageChart();
 
     const moveCategories = reactive([
       { Name: "Physical" },
@@ -591,7 +728,9 @@ const app = createApp({
     const pageTitle = computed(() => {
       let title = "Vanguard Pokédex";
       let currentTab = tabView.value;
-
+      if(currentTab === "dashboard") {
+        return title + " - Dashboard";
+      }
       if(currentTab === "team") {
         return title + " - Team Builder";
       }
@@ -688,12 +827,63 @@ const app = createApp({
       pageTitle,
       getPokemonTypeStyle,
       filterCurrentlyViewingMoveList,
-      currentlyViewingMoveSearchQuery
+      currentlyViewingMoveSearchQuery,
+      dashboard
     };
   }
 });
 
 app.component('search-dropdown', comp.SearchDropdown);
+
+// Apache Echart directive for app
+app.directive('chart', {
+  beforeMount(el, binding, vnode, prevVnode) {
+    console.log('Directive bound:', binding.value);
+
+    const myChart = echarts.init(el);
+    const options = binding.value.options;
+    myChart.setOption(options);
+
+    // set chart to element for later access
+    el._echart_instance = myChart;
+
+    window.addEventListener('resize', () => {
+      myChart.resize();
+    });
+
+    myChart.resize();
+
+    console.log('Echart options on mount:', options);
+  },
+
+  mounted(el, binding) {
+    console.log('Element mounted');
+    el._echart_instance.resize();
+  },
+
+  beforeUpdate(el, binding) {
+    console.log('Before update');
+  },
+
+  updated(el, binding) {
+    console.log('Element updated:', binding.value);
+    el.style.backgroundColor = binding.value || 'yellow';
+    const options = binding.value.options;
+    const myChart = el._echart_instance;
+    myChart.setOption(options);
+
+    myChart.resize();
+    console.log('Echart options:', options);
+  },
+
+  beforeUnmount(el, binding) {
+    console.log('Before unmount');
+  },
+
+  unmounted(el, binding) {
+    console.log('Directive unbound');
+  }
+});
 
 app.mount("#app");
 

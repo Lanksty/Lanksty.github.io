@@ -77,7 +77,6 @@ body:has(.modal-open) {
 }
 
 #main {
-  border: 3px solid #006ae4;
   display: grid;
   grid-template-columns: auto 1fr;
   box-sizing: border-box;

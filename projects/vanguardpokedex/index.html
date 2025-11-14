@@ -50,9 +50,69 @@
         <div id="main">
 
           <!-- Dashboard -->
-           <div id="dashboard-tab" v-if="tabView === 'dashboard'">
-            <div></div>
-           </div>
+          <div id="dashboard-tab" v-if="tabView === 'dashboard'" data-grid-rows="" data-grid-columns="6">
+            <div class="dashboard-container">
+
+
+              
+              <div class="dashboard-item team-summary" data-length="3" data-width="2" >
+                <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
+                  <h3><i class="bi-people-fill me-2"></i> My Team</h3>
+                  <button type="button" class="btn" @click="setTabView('team')"> Go to Team <i class="bi-arrow-right"></i></button>
+                </div>
+                <div class="dashboard-item-content flex-grow-1">
+                  <table class="table team-overview-table">
+                    <thead>
+                      <tr>
+                        <th class="cell">#</th>
+                        <th class="cell text-start">Pokémon</th>
+                        <th class="cell">Level</th>
+                        <th class="cell">Type(s)</th>
+                        <th class="cell">Ability</th>
+                      </tr>
+                    </thead>
+                    <tbody style="vertical-align: middle;">
+                      <tr v-for="(mon, index) in teamBuilder.teamList" :key="index" @click="toggleViewingPokemon(mon)" :class="{ 'active': viewPokemon === mon }" @click="toggleViewingPokemon(mon)">
+                        <td class="cell">{{ index + 1 }}</td>
+                        <td class="cell text-start">
+                          <img :src="mon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
+                          class="member-sprite-small me-2" />
+                          {{ mon.Name.toTitleCase() }}
+                        </td>
+                        <td class="cell">{{ mon.Level }}</td>
+                        <td class="cell type-cell">
+                          <img :src="`./resources/images/types/${mon.Type1.toUpperCase()}.png`" alt="" />
+                          <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
+                        </td>
+                        <td class="cell">{{ getAbilityByName(mon.SelectedAbility)?.Name }}</td>
+                        
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="dashboard-item" data-length="3" data-width="2">
+                <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
+                  <h3><i class="bi-bar-chart-fill me-2"></i> Type Matchups</h3>
+                  <button type="button" class="btn" @click="setTabView('typeEffectiveness')"> View Details <i class="bi-arrow-right"></i></button>
+                </div>
+                <div class="dashboard-item-content flex-grow-1" style="width: 100%; height: 100%;">
+                  <div id="type-effectiveness-chart" v-chart="{model: dashboard, options: dashboard.TypeEffectivenessChart()}" style="width: 100%; height: 100%;"></div>
+                </div>
+              </div>
+              
+              <div class="dashboard-item" data-length="3" data-width="2">
+                <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
+                  <h3><i class="bi-bar-chart-fill me-2"></i> Move Coverage</h3>
+                  <button type="button" class="btn" @click="setTabView('moveCoverage')"> View Details <i class="bi-arrow-right"></i></button>
+                </div>
+                <div class="dashboard-item-content flex-grow-1" style="width: 100%; height: 100%;">
+                  <div id="move-coverage-chart" v-chart="{model: dashboard, options: dashboard.MoveCoverageChart()}" style="width: 100%; height: 100%;"></div>
+                </div>
+              </div>
+               
+            </div>
+          </div>
           <!-- Team Sidebar -->
           <div class="team-sidebar-container hide-md" v-if="(currentlyViewing != null && tabView === 'team') || tabView === 'typeEffectiveness' || tabView === 'moveCoverage'">
             <div v-for="(mon, index) in teamBuilder.teamList" :key="index" class="team-member" @click="toggleViewingPokemon(mon)" :class="{ 'active': viewPokemon === mon }">
@@ -66,6 +126,7 @@
                       <img v-if="mon.Type2" :src="`./resources/images/types/${mon.Type2.toUpperCase()}.png`" alt="" />
                     </div>
                 </div>
+                
 
             </div>
             <div v-if="teamBuilder.teamList.length < 6" class="team-member">
@@ -468,7 +529,7 @@
                       <div v-if="mon" :class="{ 'weak': mon.FindMatchup(key) > 1, 'resist': mon.FindMatchup(key) < 1, 'immune': mon.FindMatchup(key) === 0 }">{{ mon.FindMatchup(key) || 0 || '---' }}</div>
                       <div v-else>---</div>
                     </td>
-                    <td class="cell total hide-lg" :style="{ 'font-weight': value.weaknesses > 0 ? 'bold' : ''}" style="border-left: 1px solid #ccc">{{ value.weaknesses }}</td>
+                    <td class="cell total hide-lg" :style="{ 'font-weight': value.weaknesses > 0 ? 'bold' : ''}" style="border-left: 1px solid #dfdfdf">{{ value.weaknesses }}</td>
                     <td class="cell total hide-lg" :style="{ 'font-weight': value.resistances > 0 ? 'bold' : ''}">{{ value.resistances }}</td>
                     <td class="cell total hide-lg" :style="{ 'font-weight': value.immunities > 0 ? 'bold' : ''}">{{ value.immunities }}</td>
                     <td class="cell total hide-lg" :style="{ 'font-weight': value.total > 0 ? 'bold' : ''}">{{ value.weaknesses - value.resistances - value.immunities }}</td>
