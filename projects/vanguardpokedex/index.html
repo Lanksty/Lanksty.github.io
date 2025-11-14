@@ -129,13 +129,13 @@
                       <tr>
                         <td class="cell">Weak</td>
                         <td v-for="(type, index) in types" class="cell" :key="index">
-                          {{ dashboard.GetTeamWeaknesses(type.Name) || '1' }}
+                          {{ dashboard.GetTeamWeaknesses(type.Name) }}
                         </td>
                       </tr>
                       <tr>
                         <td class="cell">Resist</td>
                         <td v-for="(type, index) in types" class="cell" :key="index">
-                          {{ dashboard.GetTeamResistances(type.Name) || '1' }}
+                          {{ dashboard.GetTeamResistances(type.Name) }}
                         </td>
                       </tr>
                     </tbody>
