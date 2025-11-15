@@ -702,6 +702,30 @@ body:has(.modal-open) {
             border-radius: 10px;
             max-height: 600px;
             background: #f4f8ff;
+            position: relative;
+
+
+            .shiny-checkbox {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                font-size: 1rem;
+
+                .form-check-input {
+                    cursor: pointer;
+                }
+
+                .form-check-label {
+                    cursor: pointer;
+                    opacity: 0.7;
+                }
+            }
+
+            .back-to-team {
+                position: absolute;
+                top: 15px;
+                left: 15px;
+            }
 
             .type {
                 font-size: 1rem;

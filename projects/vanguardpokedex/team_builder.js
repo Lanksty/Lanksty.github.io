@@ -503,7 +503,8 @@ const app = createApp({
 
     const viewPokemon = computed(() => {
       if(currentlyViewing.value === null) return null;
-      return teamBuilder.teamList.find(p => p.InternalName === currentlyViewing.value) || null;
+      let mon = teamBuilder.teamList.find(p => p.InternalName === currentlyViewing.value) || null;
+      return mon;
     });
 
     const getAbilityByName = (name) => {
@@ -512,10 +513,14 @@ const app = createApp({
     
     const toggleViewingPokemon = (pokemon) => {
       moveListTab.value = "levelup";
-      if(viewPokemon.value && pokemon.InternalName === viewPokemon.value.InternalName) {
+      if(pokemon != null && viewPokemon.value && pokemon.InternalName === viewPokemon.value.InternalName) {
         currentlyViewing.value = null;
-      } else {
+      } else if(pokemon != null) {
         currentlyViewing.value = pokemon.InternalName;
+        tabView.value = "team";
+      }
+      else {
+        currentlyViewing.value = null;
         tabView.value = "team";
       }
     }
@@ -784,16 +789,6 @@ const app = createApp({
 
     watch(viewPokemon, (newVal) => {
       if(newVal != null && newVal.Name) {
-        // watch(newVal.SelectedMoves, (moves) => {
-        //   console.log("Selected moves changed for", newVal.Name, moves);
-        //   teamBuilder.saveTeam();
-        // }, { deep: true });
-        // watch(newVal.Evs, (evs) => {
-        //   teamBuilder.saveTeam();
-        // }, { deep: true });
-        // watch(newVal.Ivs, (ivs) => {
-        //   teamBuilder.saveTeam();
-        // }, { deep: true });
         teamBuilder.saveTeam();
       } 
       if(newVal == null) {
@@ -873,7 +868,7 @@ const app = createApp({
       getPokemonTypeStyle,
       filterCurrentlyViewingMoveList,
       currentlyViewingMoveSearchQuery,
-      dashboard
+      dashboard,
     };
   }
 });

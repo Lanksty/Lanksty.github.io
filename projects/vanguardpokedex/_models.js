@@ -27,7 +27,8 @@ export class Pokemon {
         this.MoveList = (data.MoveList || []).map(m => new Move(m)); // Ensure MoveList is an array of Move instances
         this.AbilitiesList = data.Abilities.split(',').map(a => a.trim());
         this.AbilitiesList.push(data.HiddenAbility); // Add "None" option for abilities
-        this.Sprite = `./resources/images/front/${data.InternalName}.png`;
+        this.IsShiny = data.IsShiny || false;
+        this.Sprite = data.IsShiny ? `./resources/images/front_shiny/${data.InternalName}.png` : `./resources/images/front/${data.InternalName}.png`; // Use shiny sprite if IsShiny is true
         this.TypeMatchups = data.TypeMatchups ?? null; // To be populated by GetTypeMatchups
         this.SelectedMoves = data.SelectedMoves ?? []; // To be populated by user selection. ToDo: add vue watcher to ensure max 4 moves // Move to main app?
         this.SelectedAbility = data.SelectedAbility ?? this.AbilitiesList[0]; // To be populated by user selection. ToDo: add vue watcher to ensure max 1 ability // Move to main app?
@@ -62,6 +63,11 @@ export class Pokemon {
         this.TotalEvs = function() {
             return Object.values(this.Evs).reduce((a, b) => a + b, 0);
         };
+    }
+
+    ToggleShiny() {
+        this.IsShiny = !this.IsShiny;
+        this.Sprite = this.IsShiny ? `./resources/images/front_shiny/${this.InternalName}.png` : `./resources/images/front/${this.InternalName}.png`;
     }
 
     GetTypeMatchups(typeChart) {
