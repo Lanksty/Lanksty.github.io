@@ -586,7 +586,7 @@ const app = createApp({
 
     const pokemon = computed(() => {
       console.log("Pokedex view changed to:", pokedexView.value);
-
+      
       if (pokedexView.value === "" || pokedexView.value === null) {
         // Reset URL param if no mon selected
         const url = new URL(window.location);
@@ -616,7 +616,10 @@ const app = createApp({
       if(!pokemon.TMMoves || pokemon.TMMoves.length === 0) {
         let list = TMList.filter(tm => pokemon.TutorMoves?.includes(tm.Move) );
         list = moveList.filter(mv => list.some(t => t.Move === mv.Name));
-        pokemon.ParseTMMoves(list);
+        
+        if(list.length > 0) { // Only parse if there are TM moves available, otherwise causes issues (recursion)
+          pokemon.ParseTMMoves(list);
+        }
       }
 
       console.log("Viewing Pokémon:", pokemon);
@@ -752,7 +755,7 @@ const app = createApp({
     const getEggMoves = (pokemon) => {
       if(!pokemon.EggMovesList || pokemon.EggMovesList.length === 0) {
         pokemon = pokemon.GetEvolutions(allPokemon)[0];
-        if(!pokemon) return [];
+        if(!pokemon || !pokemon.EggMovesList || pokemon.EggMovesList.length === 0) return [];
         
         return pokemon.EggMovesList.length ? pokemon.EggMovesList : pokemon.GetEggMoves(allMoves);
       }

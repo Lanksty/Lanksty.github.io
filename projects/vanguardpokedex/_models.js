@@ -189,6 +189,11 @@ export class Pokemon {
     }
 
     ParseTMMoves(TMList) {
+        if(!TMList || TMList.length === 0) {
+            console.warn('TM list is empty or not provided.');
+            this.TMMoves = [];
+            return this.TMMoves;
+        }
         this.TMMoves = TMList.map(tm => new Move(tm));
         return this.TMMoves;
     }
