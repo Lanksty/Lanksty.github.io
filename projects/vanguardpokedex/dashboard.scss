@@ -8,8 +8,8 @@
     --dashboard-columns: repeat(auto-fill, var(--component-width));
     --component-width-multiplier: 1;
     --component-length-multiplier: 1;
-    --grid-rows: attr(data-grid-rows number);
-    --grid-columns: attr(data-grid-columns number);
+    --grid-columns: 6;
+    --grid-rows: 4;
     --dashboard-bg: #fafcff;
     grid-column: 1/3;
     overflow-y: auto;
@@ -53,19 +53,23 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            --item-width: 1;
+            --item-height: 1;
+            --column-start: 1;
+            --row-start: 1;
 
             // size based on data attributes
-            width: calc(var(--component-width) * attr(data-width number) + (attr(data-width number) - 1) * var(--dashboard-gap));
-            height: calc(var(--component-length) * attr(data-height number) + (attr(data-height number) - 1) * var(--dashboard-gap));
+            width: calc(var(--component-width) * var(--item-width) + (var(--item-width) - 1) * var(--dashboard-gap));
+            height: calc(var(--component-length) * var(--item-height) + (var(--item-height) - 1) * var(--dashboard-gap));
 
             // column and row span based on data attributes
-            grid-column: span attr(data-width number);
-            grid-row: span attr(data-height number);
+            grid-column: span var(--item-width);
+            grid-row: span var(--item-height);
 
             
             &.pos-override {
-                grid-column-start: attr(data-column-start number);
-                grid-row-start: attr(data-row-start number);
+                grid-column-start: var(--column-start);
+                grid-row-start: var(--row-start);
             }
 
             .dashboard-item-header {
