@@ -901,9 +901,9 @@
                     <div class="d-flex flex-column align-items-center flex-grow-1">
                       <img :src="pokemon.Sprite" onerror="this.onerror=null; this.src='./resources/images/missing.png'" alt=""
                         class="member-sprite" />
-                        <p><span :class="pokemon.Type1.toLowerCase()" class="type"> <img
-                        :src="`./resources/images/types/${pokemon.Type1.toUpperCase()}.png`" alt="" />{{ pokemon.Type1 }}</span><span v-if="pokemon.Type2"> / <span :class="pokemon.Type2.toLowerCase()" class="type"> <img
-                          :src="`./resources/images/types/${pokemon.Type2.toUpperCase()}.png`" alt="" />{{ pokemon.Type2 }}</span></span></p>
+                        <p><span :class="pokemon.Type1?.toLowerCase()" class="type"> <img
+                        :src="`./resources/images/types/${pokemon.Type1?.toUpperCase()}.png`" alt="" />{{ pokemon.Type1 }}</span><span v-if="pokemon.Type2"> / <span :class="pokemon.Type2?.toLowerCase()" class="type"> <img
+                          :src="`./resources/images/types/${pokemon.Type2?.toUpperCase()}.png`" alt="" />{{ pokemon.Type2 }}</span></span></p>
                           <div class="shiny-checkbox form-check form-switch ">
                             <input name="" id="shiny-toggle"  class="form-check-input" type="checkbox" role="switch" :checked="pokemon.IsShiny" @change="pokemon.ToggleShiny()" />
                             <label class="form-check-label" for="shiny-toggle">Shiny</label>
@@ -938,7 +938,7 @@
                   <table class="type-effectiveness">
                     <thead>
                       <tr>
-                        <th v-for="(type, index) in types" class="cell type-cell type" :key="index" :class="type.Name.toLowerCase()"><img :src="type.Sprite" alt="" /></th>
+                        <th v-for="(type, index) in types" class="cell type-cell type" :key="index" :class="type.Name?.toLowerCase()"><img :src="type.Sprite" alt="" /></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -955,7 +955,7 @@
                   <table class="type-effectiveness">
                     <thead>
                       <tr>
-                        <th v-for="(type, index) in types" class="cell type-cell type" :key="index" :class="type.Name.toLowerCase()"><img :src="type.Sprite" alt="" /></th>
+                        <th v-for="(type, index) in types" class="cell type-cell type" :key="index" :class="type.Name?.toLowerCase()"><img :src="type.Sprite" alt="" /></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -986,7 +986,7 @@
                       <strong>Weight</strong>
                       <p> {{ pokemon.Weight }} kg</p>
                       <strong>Locations</strong>
-                      <p> {{ pokemon.Encounters.length ? pokemon.Encounters.join(', ') : 'Not found in the wild' }}</p>
+                      <p> {{ pokemon?.Encounters.length ? pokemon.Encounters?.join(', ') : 'Not found in the wild' }}</p>
                       <strong>Egg Group</strong>
                       <p> {{ pokemon.Compatibility }} </p>
                       <strong>Pokedex Entry</strong>

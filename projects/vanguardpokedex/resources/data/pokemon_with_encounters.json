@@ -138389,7 +138389,7 @@
   {
     "InternalName": "SPRIGATITO",
     "Name": "SPRIGATITO",
-    "Type2": "POISON",
+    "Type1": "POISON",
     "BaseStats": [
       "40",
       "45",
@@ -138522,7 +138522,7 @@
   {
     "InternalName": "FLORAGATO",
     "Name": "FLORAGATO",
-    "Type2": "POISON",
+    "Type1": "POISON",
     "BaseStats": [
       "61",
       "55",
