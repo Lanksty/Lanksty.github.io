@@ -299,7 +299,7 @@
                 <h3 class="member-name">
                   <strong><a href="javascript:void(0)" @click="pokedexView = viewPokemon.InternalName" title="View In PokéDex">{{ viewPokemon.Name.toTitleCase() }}</a></strong>
                   - Lvl 
-                  <input type="number" v-model.number="viewPokemon.Level" style="width: 55px;height: 30px; display: inline-block;" min="1" max="100" class="form-control text-center" data-bs-toggle="dropdown" />
+                  <input type="number" v-model.number="viewPokemon.Level" style="width: 55px;height: 30px; display: inline-block;" min="1" max="100" class="form-control text-center number-input" data-bs-toggle="dropdown" />
                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                     <div class="d-flex px-4">
                       <span>0</span>

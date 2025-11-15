@@ -1020,6 +1020,10 @@ body:has(.modal-open) {
           appearance: none;
 }
 
+input[type=number], .number-input {
+  -moz-appearance: textfield;
+}
+
 @media (max-width: 1600px) {
   .hide-lg {
     display: none !important;

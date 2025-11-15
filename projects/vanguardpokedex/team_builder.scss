@@ -1136,6 +1136,10 @@ body:has(.modal-open) {
     appearance: none;
 }
 
+input[type=number], .number-input {
+    -moz-appearance:textfield;
+}
+
 //
 // Media queries
 //
