@@ -86,11 +86,11 @@ class TeamLoader {
 
     let builderId = team.Id || team.Name;
     let existingIndex = this.SavedTeams.findIndex(t => t.Id === builderId || t.Name === builderId);
-    if(existingIndex >= 0) {
-      this.SavedTeams[existingIndex] = team;
-    } else {
-      this.SavedTeams.push(team);
-    }
+    // if(existingIndex >= 0) {
+    //   this.SavedTeams[existingIndex] = team;
+    // } else {
+    //   this.SavedTeams.push(team);
+    // }
     localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
   }
 
@@ -107,7 +107,8 @@ class TeamLoader {
     return team;
   }
 
-  NewTeam(name = "New Team") {
+  NewTeam(name) {
+    if(!name) name = "New #" + (this.SavedTeams.length + 1);
     let team = new Team({ Name: name });
     this.SavedTeams.push(team);
     localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
@@ -158,19 +159,15 @@ class TeamBuilder {
     this.team = this.Loader.GetTeam();
     this.teamList = this.team?.PokemonList || reactive(new Array(0));
 
-    this.TeamEffectiveness = computed(() => this.getTeamEffectiveness());
-    this.TeamEffectivenessChart = computed(() => this.getTeamEffectiveness(true)); // For unique type matchups
-
-    watch(this.TeamEffectiveness, (newVal) => {
-      console.log("Team Effectiveness Updated:", newVal);
-    });
+    this.TeamEffectiveness = this.getTeamEffectiveness();
+    this.TeamEffectivenessChart = this.getTeamEffectiveness(true); // For unique type matchups
 
     // Ensure the team always has 6 slots (filled with null if less than 6)
     this.filteredTeam = computed(() => {
-      if(this.teamList.value.length < 6) {
-        return [...this.teamList.value, ...new Array(6 - this.teamList.value.length).fill(null)];
+      if(this.teamList.length < 6) {
+        return [...this.teamList, ...new Array(6 - this.teamList.length).fill(null)];
       }
-      return this.teamList.value;
+      return this.teamList;
     });
   }
 
@@ -202,15 +199,15 @@ class TeamBuilder {
 
       console.log("Adding Pokémon to team:", pokemon, "with TeamIndex:", pokemon.TeamIndex);
       this.teamList.push(pokemon);
-      localStorage.setItem('savedTeam', JSON.stringify(this.teamList));
     } else {
       console.log("Team is full!");
     }
   }
 
   removePokemon(pokemon) {
-    this.teamList = this.teamList.filter(p => p.TeamIndex != pokemon.TeamIndex);
-    
+    this.team.PokemonList = this.team?.PokemonList.filter(p => p.TeamIndex != pokemon.TeamIndex) || reactive(new Array(0));
+    this.teamList = this.team.PokemonList;
+
     // Reassign TeamIndex values
     this.teamList.forEach((p, index) => {
       p.TeamIndex = index + 1;
@@ -274,7 +271,6 @@ class TeamBuilder {
 
   saveTeam() {
     this.Loader.SaveTeam(this.team);
-    // localStorage.setItem('savedTeam', JSON.stringify(this.teamList));
     localStorage.setItem('lastUsedTeamId', this.team.Id);
   }
 
@@ -283,21 +279,42 @@ class TeamBuilder {
       return;
     }
     this.team = team;
+    this.teamList = team.PokemonList;
     localStorage.setItem('lastUsedTeamId', team.Id);
   }
 
   deleteTeam(team) {
-    this.team = null;
-    this.teamList = reactive(new Array(0));
     this.Loader.DeleteTeam(team);
+    this.teamList = reactive(new Array(0));
+    this.team = null;
     localStorage.removeItem('lastUsedTeamId');
+  }
 
+  newTeam(name) { 
+    let team = this.Loader.NewTeam(name);
+    this.team = team;
+    this.teamList = team.PokemonList;
   }
 }
 
 class Dashboard {
   constructor(teamBuilder) {
     this.teamBuilder = teamBuilder;
+
+    // this.effectivenessChartOptions = ref(this.TypeEffectivenessChart());
+    
+    // watch(this.teamBuilder, (newVal) => {
+    //   console.log("Team changed, updating effectiveness chart.");
+    //   this.teamBuilder.TeamEffectiveness = this.teamBuilder.getTeamEffectiveness();
+    //   this.teamBuilder.TeamEffectivenessChart = this.teamBuilder.getTeamEffectiveness(true);
+    //   this.effectivenessChartOptions = this.TypeEffectivenessChart();
+    // })
+    this.effectivenessChartOptions = computed(() => {
+      return this.TypeEffectivenessChart();
+    });
+    this.moveCoverageChartOptions = computed(() => {
+      return this.MoveCoverageChart();
+    });
   }
 
   GetTeamWeaknesses(type) {
@@ -329,7 +346,7 @@ class Dashboard {
   }
 
   TypeEffectivenessChart() {
-    const chartData = this.teamBuilder.TeamEffectivenessChart;
+    const chartData = this.teamBuilder.getTeamEffectiveness(true); // Unique type matchups
     const chartDataEntries = Array.from(chartData.entries());
 
     let options = {
@@ -402,7 +419,7 @@ class Dashboard {
   }
 
   MoveCoverageChart() {
-    let teamList = this.teamBuilder.teamList;
+    let teamList = this.teamBuilder.getTeam();
     const coverageData = {};
     typeChart.forEach(type => {
       coverageData[type.Name] = 0;
@@ -1039,8 +1056,9 @@ app.directive('chart', {
 
   updated(el, binding) {
     el.style.backgroundColor = binding.value || 'yellow';
-    const options = binding.value.options;
-    const myChart = el._echart_instance;
+    let options = binding.value.options;
+    let  myChart = el._echart_instance;
+
     myChart.setOption(options);
 
     myChart.resize();
