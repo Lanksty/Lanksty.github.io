@@ -33,7 +33,7 @@
         grid-template-rows: var(--dashboard-rows);
         grid-template-columns: var(--dashboard-columns);
         gap: var(--dashboard-gap);
-        padding: 25px 15px;
+        padding: 15px;
         width: 100%;
         box-sizing: border-box;
         max-width: calc(var(--grid-columns) * var(--component-width) + calc(var(--grid-columns) + 1) * var(--dashboard-gap));
