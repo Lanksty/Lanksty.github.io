@@ -60,8 +60,41 @@
         <div id="main">
 
           <!-- Dashboard -->
-          <div id="dashboard-tab" v-if="tabView === 'dashboard'" style="--grid-columns: 6" data-grid-columns="6">
+          <div id="dashboard-tab" v-if="tabView === 'dashboard'" style="--grid-columns: 7" data-grid-columns="7">
             <div class="dashboard-container">
+                <div class="dashboard-item d-flex flex-column gap-3 justify-content-center" style="--item-width: 1">
+                  <button type="button" class="btn-rounded bg-primary-gradient text-white"><i class="bi-plus me-3 fs-5"></i> New Team</button>
+                  <button type="button" class="btn-rounded outline-primary"><i class="bi-plus me-3 fs-5"></i> New Team</button>
+                </div>
+
+
+                <div class="dashboard-item" style="--item-width: 1; --item-height: 2; grid-row-end: 4">
+                  <div class="dashboard-item-header">
+                    <h4><i class="bi-archive-fill me-2"></i> Saved Teams</h4>
+                  </div>
+                  <!-- placeholder -->
+                   <div class="dashboard-item-content dashboard-saved-teams" v-for="loader in [teamBuilder.Loader]">
+                    <div  class="team-item" 
+                          v-for="team in loader.SavedTeams" 
+                          :key="team.Id" 
+                          v-if="loader.SavedTeams.length > 0"
+                          @click="teamBuilder.loadTeam(team)"
+                          :class="{'active': teamBuilder.team.Id === team.Id}">
+                      <div class="team-name mb-0 ps-1" v-if="team.EditingName == false">{{ team.Name }}</div>
+                      <div v-else class="input-group">
+                        <input type="text" class="form-control" v-model="team.Name" @keyup.enter="team.toggleEditingName()" @blur="team.toggleEditingName()" />
+                      </div>
+                      <span>
+                        <button class="btn btn-sm" @click.stop="team.toggleEditingName()" v-if="!team.EditingName"><i class="bi-pencil"></i></button>
+                        <button class="btn btn-sm text-danger" @click.stop="teamBuilder.deleteTeam(team)"><i class="bi-trash"></i></button>
+                      </span>
+                    </div>
+                    
+                    <p class="text-center fst-italic" style="opacity: 0.5;" v-if="loader.SavedTeams.length === 0">No saved teams yet.</p>
+                   </div>
+
+                </div>
+
               <div class="dashboard-item team-summary" style="--item-height: 3; --item-width: 2;" data-height="3" data-width="2" >
                 <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
                   <h4><i class="bi-people-fill me-2"></i> My Team</h4>
@@ -158,7 +191,7 @@
                 </div>
               </div>
 
-              <div class="dashboard-item hide-lg" style="--item-width: 3;" data-width="3">
+              <div class="dashboard-item hide-lg" style="--item-width: 2;">
                   <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
                     <h4 class="mb-0"><i class="bi-link me-2"></i> Additional Resources</h4>
                   </div>
@@ -170,7 +203,9 @@
                       <li><i class="bi-journal-bookmark-fill me-2"></i><a href="https://docs.google.com/spreadsheets/d/1NuX3JQDNEnc2topuPaIUzHdiKsSu_nTyVVuO8ORC7QM/edit?gid=0#gid=0" target="_blank">Ceranrya's Expert Mode Trainer Documentation</a></li>    
                     </ul>
                   </div>
-              </div>
+
+                </div>
+                <div class="dashboard-item" style="--item-width: 1"></div>
             </div>
           </div>
           

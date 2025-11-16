@@ -27,22 +27,136 @@ const TMList = itemList
     }
   });
 
+class TeamLoader {
+  constructor() {
+    // Handle old team format
+    let team = localStorage.getItem('savedTeam');
+    if (typeof team === "string" && team.length > 0 && team !== "undefined" && team !== "null") {
+      try {
+        let oldList = JSON.parse(team);
+        let newTeam = new Team({ Name: "New Team", PokemonList: oldList });
+        this.SavedTeams = reactive([newTeam]);
+        this.SaveTeam(newTeam); // Save in new format
+        localStorage.removeItem('savedTeam'); // Remove old format
+        console.log("Converted old team format to new format:", newTeam);
+      } catch (error) {
+        console.error('Error parsing old team format:', error);
+      }
+    }
+
+    // Get teams from local storage
+    let savedTeams = localStorage.getItem('savedTeams');
+    if (typeof savedTeams === "string" && savedTeams.length > 0 && savedTeams !== "undefined" && savedTeams !== "null") {
+      try {
+        let teams = JSON.parse(savedTeams);
+        teams = teams.map(t => {
+          if(t instanceof Array) {
+            // Handling old format where only PokemonList was saved
+            return new Team({ Name: "Unnamed Team", PokemonList: t });
+          }
+          return new Team(t);
+        });
+
+        this.SavedTeams = reactive(teams);
+        console.log("Loaded saved teams:", this.SavedTeams);
+      } catch (error) {
+        console.error('Error parsing saved teams:', error);
+      }
+    }
+    else {
+      this.SavedTeams = [];
+    }
+
+    console.log("Loading team:", this.SavedTeams);
+
+    watch(this.SavedTeams, (newVal) => {
+      localStorage.setItem('savedTeams', JSON.stringify(newVal));
+    }, { deep: true });
+  }
+
+  SaveTeam(team) {
+    if(!team) team = new Team();
+    if(team instanceof Array) {
+      team = new Team({ Name: "Unnamed Team"}, ...team);
+    }
+    if(!team instanceof Team) {
+      console.error("Invalid teamBuilder instance provided to SaveTeam.");
+      return;
+    }
+
+    let builderId = team.Id || team.Name;
+    let existingIndex = this.SavedTeams.findIndex(t => t.Id === builderId || t.Name === builderId);
+    if(existingIndex >= 0) {
+      this.SavedTeams[existingIndex] = team;
+    } else {
+      this.SavedTeams.push(team);
+    }
+    localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
+  }
+
+  GetTeam(identifier) {
+    if(identifier === undefined || identifier === null) {
+      let teamId = localStorage.getItem('lastUsedTeamId');
+      if(teamId) {
+        identifier = teamId;
+      }
+      else return this.SavedTeams[0] || null; // return first team if still no identifier
+    }
+    let team = this.SavedTeams.find(t => t.Id === identifier || t.Name === identifier);
+    team = team || this.SavedTeams[0] || null; // Fallback to first team if not found
+    return team;
+  }
+
+  NewTeam(name = "New Team") {
+    let team = new Team({ Name: name });
+    this.SavedTeams.push(team);
+    localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
+    return team;
+  }
+
+  DeleteTeam(team) {
+    this.SavedTeams = this.SavedTeams.filter(t => t.Id !== team.Id);
+    localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
+    console.log("Deleted team:", team);
+  }
+}
+
+class Team{
+  constructor(data) {
+    Object.assign(this, data);
+    if(data.PokemonList) {
+      // Edge case to handle old format where only PokemonList was saved
+      this.PokemonList = reactive(pkmn.ParsePokemonList(data.PokemonList) || new Array(0));
+    }
+    else {
+      this.PokemonList = reactive(new Array(0));
+    }
+    
+    this.EditingName = ref(false);
+    
+    if(!this.Id) {
+      this.Id = this.generateId();
+    }
+  }
+
+  generateId() {
+    return 'team-' + Math.random().toString(36).substr(2, 9);
+  }
+
+  getList() {
+    return [...this];
+  }
+
+  toggleEditingName() {
+    this.EditingName = !this.EditingName;
+  }
+}
+
 class TeamBuilder {
   constructor() {
-    let savedTeam = localStorage.getItem('savedTeam');
-    if (typeof savedTeam === "string" && savedTeam.length > 0 && savedTeam !== "undefined" && savedTeam !== "null") {
-      try {
-        let parsedTeam = JSON.parse(savedTeam);
-        console.log("Loaded saved team:", parsedTeam);
-        parsedTeam = pkmn.ParsePokemonList(parsedTeam);
-        this.teamList = ref(parsedTeam);
-      } catch (error) {
-        console.error('Error parsing saved team:', error);
-        this.teamList = ref(new Array(0)); // Initialize as a reactive reference to an array
-      }
-    } else {
-      this.teamList = ref(new Array(0)); // Initialize as a reactive reference to an array
-    }
+    this.Loader = new TeamLoader();
+    this.team = this.Loader.GetTeam();
+    this.teamList = this.team?.PokemonList || reactive(new Array(0));
 
     this.TeamEffectiveness = computed(() => this.getTeamEffectiveness());
     this.TeamEffectivenessChart = computed(() => this.getTeamEffectiveness(true)); // For unique type matchups
@@ -61,6 +175,11 @@ class TeamBuilder {
   }
 
   addPokemon(pokemon) {
+    if(!this.team) {
+      this.team = this.Loader.NewTeam();
+      this.teamList = this.team.PokemonList;
+    }
+
     if(!pokemon.TypeMatchups) {
       pokemon.GetTypeMatchups(typeChart); // Fetch and populate type matchups if not already done
     }
@@ -96,9 +215,6 @@ class TeamBuilder {
     this.teamList.forEach((p, index) => {
       p.TeamIndex = index + 1;
     });
-    localStorage.setItem('savedTeam', JSON.stringify(this.teamList));
-
-    console.log(this.parent);
   }
 
   getTeam() {
@@ -111,7 +227,7 @@ class TeamBuilder {
     let allResistances = [];
     let allImmunities = [];
 
-    this.teamList.value.forEach(pokemon => {
+    this.teamList.forEach(pokemon => {
       if (pokemon.TypeMatchups && unique) {
         allWeaknesses.push(...pokemon.TypeMatchups.weaknesses.unique());
         allResistances.push(...pokemon.TypeMatchups.resistances.unique());
@@ -157,7 +273,25 @@ class TeamBuilder {
   }
 
   saveTeam() {
-    localStorage.setItem('savedTeam', JSON.stringify(this.teamList));
+    this.Loader.SaveTeam(this.team);
+    // localStorage.setItem('savedTeam', JSON.stringify(this.teamList));
+    localStorage.setItem('lastUsedTeamId', this.team.Id);
+  }
+
+  loadTeam(team) {
+    if(team == null || !(team instanceof Team)) {
+      return;
+    }
+    this.team = team;
+    localStorage.setItem('lastUsedTeamId', team.Id);
+  }
+
+  deleteTeam(team) {
+    this.team = null;
+    this.teamList = reactive(new Array(0));
+    this.Loader.DeleteTeam(team);
+    localStorage.removeItem('lastUsedTeamId');
+
   }
 }
 
