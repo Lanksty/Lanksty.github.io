@@ -309,14 +309,6 @@ class Dashboard {
   constructor(teamBuilder) {
     this.teamBuilder = teamBuilder;
 
-    // this.effectivenessChartOptions = ref(this.TypeEffectivenessChart());
-    
-    // watch(this.teamBuilder, (newVal) => {
-    //   console.log("Team changed, updating effectiveness chart.");
-    //   this.teamBuilder.TeamEffectiveness = this.teamBuilder.getTeamEffectiveness();
-    //   this.teamBuilder.TeamEffectivenessChart = this.teamBuilder.getTeamEffectiveness(true);
-    //   this.effectivenessChartOptions = this.TypeEffectivenessChart();
-    // })
     this.effectivenessChartOptions = computed(() => {
       return this.TypeEffectivenessChart();
     });
@@ -335,7 +327,7 @@ class Dashboard {
     let resistances = chartData.get(type)?.resistances || 0;
     let immunities = chartData.get(type)?.immunities || 0;
     let weaknesses = chartData.get(type)?.weaknesses || 0;
-    let netResistances = resistances + immunities - weaknesses;
+    let netResistances = resistances + immunities;
     return netResistances > 0 ? netResistances : 0;
   }
 
