@@ -70,6 +70,32 @@ export class Pokemon {
         this.Sprite = this.IsShiny ? `./resources/images/front_shiny/${this.InternalName}.png` : `./resources/images/front/${this.InternalName}.png`;
     }
 
+    // For use in pokedex to verify if the pokemon has an ability that grants immunity
+    HasAbilityWithImmunity() {
+        let ability = this.SelectedAbility.normalizeName().toUpperCase();
+        let abilityImmunities = config.AbilityTypeImmunities || {}; // e.g. { "LEVITATE": ["GROUND"], ... }
+
+        // Normalize keys (all ability names are single word upper case)
+        for(const [key, value] of Object.entries(abilityImmunities)) {
+            abilityImmunities[key.normalizeName().toUpperCase()] = value;
+        }
+
+        let immunityFromAbility = Object.keys(abilityImmunities).find(ab => this.AbilitiesList.includes(ab)) || [];
+        
+        return immunityFromAbility.length > 0 ? immunityFromAbility : null;
+    }
+
+    // For use in pokedex to toggle between abilities that grant immunity
+    ToggleAbilityImmunity() {
+        let immunityAbility = this.HasAbilityWithImmunity();
+        if (!immunityAbility) {
+            console.warn('No ability with immunity found.');
+            return;
+        }
+        this.SelectedAbility = this.SelectedAbility === immunityAbility ? this.AbilitiesList.filter(a => a !== immunityAbility)[0] : immunityAbility;
+        return;
+    }
+
     GetTypeMatchups(typeChart) {
         typeChart = typeChart ?? fetchTypeData(); // If not parsed in then fetch it
         

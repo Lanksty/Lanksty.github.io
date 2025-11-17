@@ -326,12 +326,12 @@ class Dashboard {
   }
 
   GetTeamWeaknesses(type) {
-    const chartData = this.teamBuilder.TeamEffectivenessChart;
+    const chartData = this.teamBuilder.getTeamEffectiveness(true);
     return chartData.get(type)?.weaknesses || 0;
   }
 
   GetTeamResistances(type) {
-    const chartData = this.teamBuilder.TeamEffectivenessChart;
+    const chartData = this.teamBuilder.getTeamEffectiveness(true);
     let resistances = chartData.get(type)?.resistances || 0;
     let immunities = chartData.get(type)?.immunities || 0;
     let weaknesses = chartData.get(type)?.weaknesses || 0;
@@ -537,13 +537,22 @@ const app = createApp({
     });
     const pokedexTab = ref("info");
     const currentlyViewingMoveSearchQuery = ref("");
-
+    
     // Check URL params for pokemon to view
     let urlParams = new URLSearchParams(window.location.search);
     let pokemonParam = urlParams.get('pokemon');
     if(pokemonParam) {
-        pokedexView.value = pokemonParam;
+      pokedexView.value = pokemonParam;
     }
+    
+    // Used in pokedex to toggle ability immunity effects
+    // E.g. Wonder Guard ability
+    // Needed because typechart must be given to the pokemon to recalculate matchups
+    const toggleAbilityImmunity = (pokemon) => {
+      if(!pokemon) return;
+      pokemon.ToggleAbilityImmunity();
+      pokemon.GetTypeMatchups(types);
+    };
 
     // Filter for mons based on search and selected filters in pokedex
     const filteredPokemon = computed(() => {
@@ -1032,7 +1041,8 @@ const app = createApp({
       filterCurrentlyViewingMoveList,
       currentlyViewingMoveSearchQuery,
       dashboard,
-      darkMode
+      darkMode,
+      toggleAbilityImmunity
     };
   }
 });

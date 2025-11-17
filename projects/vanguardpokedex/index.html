@@ -977,6 +977,10 @@
                 <div class="pokemon-details">
                   <div class="section-title" data-content="Weaknesses & Resistances">
                   </div>
+                  <div class="btn-group text-center mx-auto" v-if="pokemon.HasAbilityWithImmunity()">
+                    <input type="checkbox" class="btn-check me-2" id="stab-toggle" @click="toggleAbilityImmunity(pokemon)" :checked="pokemon.SelectedAbility === pokemon.HasAbilityWithImmunity()" />
+                    <label class="btn btn-outline-primary px-5" for="stab-toggle" >{{ getAbilityByName(pokemon.HasAbilityWithImmunity())?.Name }}</label>
+                  </div>
                   <table class="type-effectiveness">
                     <thead>
                       <tr>
@@ -1035,16 +1039,6 @@
                       <p> {{ pokemon.Pokedex }}</p>
                     </div>
                   </div>
-                  <!-- <div>
-                    <strong>Locations</strong>
-                    <p> {{ pokemon.Encounters.length ? pokemon.Encounters.join(', ') : 'Not found in the wild' }}</p>
-                    <strong>Weight</strong>
-                    <p> {{ pokemon.Weight }} kg</p>
-                    <strong>Height</strong>
-                    <p> {{ pokemon.Height }} m</p>
-                    <strong>Pokedex Entry</strong>
-                    <p> {{ pokemon.Pokedex }}</p>
-                  </div> -->
                 </div>
 
 
