@@ -64,8 +64,8 @@
             <div class="dashboard-container">
                 <div class="dashboard-item d-flex flex-column gap-3 justify-content-center" style="--item-width: 1">
                   <div>
-                    <input v-model="darkMode" type="checkbox" class="btn-check" id="darkModeToggle" autocomplete="off" title="Enable Dark Mode">
-                    <label for="darkModeToggle" class="btn btn-outline-dark" title="Enable dark mode"><i class="bi-lightbulb-fill" v-if="!darkMode"></i><i class="bi-lightbulb-off-fill" v-else></i></label>
+                    <input v-model="darkMode" type="checkbox" class="btn-check" id="darkModeToggle" autocomplete="off" title="Enable Dark Mode" disabled>
+                    <label for="darkModeToggle" class="btn btn-outline-dark" title="Enable dark mode" disabled><i class="bi-lightbulb-fill" v-if="!darkMode"></i><i class="bi-lightbulb-off-fill" v-else></i></label>
                     <button class="btn btn-outline-dark ms-2" disabled ><i class="bi-gear-fill"></i></button>
                   </div>
                   <button type="button" class="btn-rounded bg-primary-gradient text-white" @click="teamBuilder.newTeam()"><i class="bi-plus me-3 fs-5"></i> New Team</button>
