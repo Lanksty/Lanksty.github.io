@@ -1095,6 +1095,12 @@ input[type=number], .number-input {
     grid-area: 2/1;
   }
 }
+.btn.icon-btn {
+  background-color: #ccc;
+  color: white;
+  border: none;
+}
+
 @media (max-width: 700px) {
   .team-container {
     grid-template-columns: 300px;

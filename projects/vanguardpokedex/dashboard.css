@@ -124,6 +124,7 @@
   align-items: center;
   justify-content: space-between;
   border-radius: 5px;
+  position: relative;
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams .team-item:last-child {
   border-bottom: none;
@@ -143,5 +144,15 @@
   background-color: #e0e0e0;
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams .team-item.active {
-  background-color: #eafdff;
+  background-color: #ebebeb;
+}
+#dashboard-tab .dashboard-container .dashboard-saved-teams .team-item.active::after {
+  content: "active";
+  position: absolute;
+  left: 25%;
+  bottom: 0;
+  font-size: 0.8rem;
+  color: #bebebe;
+  font-style: italic;
+  transform: translateX(-50%);
 }

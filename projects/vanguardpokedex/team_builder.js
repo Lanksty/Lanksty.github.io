@@ -150,6 +150,14 @@ class Team{
 
   toggleEditingName() {
     this.EditingName = !this.EditingName;
+
+    // Focus input if entering edit mode
+    setTimeout(() => {
+      let inputElement = document.querySelector(`#${this.Id} input`);
+      if (this.EditingName && inputElement) {
+        inputElement.focus();
+      }
+    }, 50);
   }
 }
 
@@ -285,8 +293,8 @@ class TeamBuilder {
 
   deleteTeam(team) {
     this.Loader.DeleteTeam(team);
-    this.teamList = reactive(new Array(0));
-    this.team = null;
+    this.team = this.Loader.GetTeam();
+    this.teamList = this.team?.PokemonList || reactive(new Array(0));
     localStorage.removeItem('lastUsedTeamId');
   }
 
@@ -491,6 +499,7 @@ class Dashboard {
 
 const app = createApp({
   setup() {
+    const darkMode = ref(false);
     const teamBuilder = reactive(new TeamBuilder());
     const allPokemon = reactive([]);
     const allItems = reactive([]);
@@ -1023,6 +1032,7 @@ const app = createApp({
       filterCurrentlyViewingMoveList,
       currentlyViewingMoveSearchQuery,
       dashboard,
+      darkMode
     };
   }
 });

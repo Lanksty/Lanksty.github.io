@@ -24,10 +24,10 @@
         <title>Vanguard Pokedex | Team Builder</title>
     </head>
     <body>
-      <div id="app" class="app-container" v-cloak >
-        <h1 style="text-align:center" id="page-heading" class="section-title" :data-content="pageTitle"></h1>
+      <div id="app" class="app-container" v-cloak>
+        <h1 style="text-align:center" id="page-heading" class="section-title" :data-content="pageTitle" :class="{ 'dark-mode': darkMode }"></h1>
 
-        <div class="header-nav mt-5">
+        <div class="header-nav mt-5" :class="{ 'dark-mode': darkMode }">
           <div class="navigation d-flex justify-content-center align-items-center w-100">
             <span class="btn-group">
               <button type="button" class="btn btn-primary" @click="setTabView('dashboard')" :class="{ active: tabView === 'dashboard' }"><i class="bi-house me-2"></i> Dashboard</button>
@@ -39,7 +39,7 @@
               </button>
               <ul class="dropdown-menu">
                 <li>
-                <button type="button" class="dropdown-item" @click="setTabView('allPokemon')" :class="{ active: tabView === 'allPokemon' }"><i class="bi-journal-text me-2"></i> Pokémon</button>
+                <button type="button" class="dropdown-item" @click="setTabView('allPokemon')" :class="{ active: tabView === 'allPokemon' }"><img src="./resources/images/svg/pokeball.svg" alt="" style="width: 17px; height: 17px;" class="me-2"> Pokémon</button>
                 </li>
                 <li>
                 <button type="button" class="dropdown-item" @click="setTabView('allAbilities')" :class="{ active: tabView === 'allAbilities' }"><i class="bi-journal-text me-2"></i> AbilityDex</button>
@@ -57,12 +57,17 @@
         </div>
 
       
-        <div id="main">
+        <div id="main" :class="{ 'dark-mode': darkMode }">
 
           <!-- Dashboard -->
           <div id="dashboard-tab" v-if="tabView === 'dashboard'" style="--grid-columns: 7" data-grid-columns="7">
             <div class="dashboard-container">
                 <div class="dashboard-item d-flex flex-column gap-3 justify-content-center" style="--item-width: 1">
+                  <div>
+                    <input v-model="darkMode" type="checkbox" class="btn-check" id="darkModeToggle" autocomplete="off" title="Enable Dark Mode">
+                    <label for="darkModeToggle" class="btn btn-outline-dark" title="Enable dark mode"><i class="bi-lightbulb-fill" v-if="!darkMode"></i><i class="bi-lightbulb-off-fill" v-else></i></label>
+                    <button class="btn btn-outline-dark ms-2" disabled ><i class="bi-gear-fill"></i></button>
+                  </div>
                   <button type="button" class="btn-rounded bg-primary-gradient text-white" @click="teamBuilder.newTeam()"><i class="bi-plus me-3 fs-5"></i> New Team</button>
                   <!-- <button type="button" class="btn-rounded outline-primary"><i class="bi-plus me-3 fs-5"></i> New Team</button> -->
                 </div>
@@ -72,17 +77,17 @@
                   <div class="dashboard-item-header">
                     <h4><i class="bi-archive-fill me-2"></i> Saved Teams</h4>
                   </div>
-                  <!-- placeholder -->
                    <div class="dashboard-item-content dashboard-saved-teams" v-for="loader in [teamBuilder.Loader]">
                     <div  class="team-item" 
                           v-for="team in loader.SavedTeams" 
                           :key="team.Id" 
                           v-if="loader.SavedTeams.length > 0"
                           @click="teamBuilder.loadTeam(team)"
-                          :class="{'active': teamBuilder.team === team}">
+                          :class="{'active': teamBuilder.team === team}"
+                          :id="team.Id">
                       <div class="team-name mb-0 ps-1" v-if="team.EditingName == false">{{ team.Name }}</div>
                       <div v-else class="input-group">
-                        <input type="text" class="form-control" v-model="team.Name" @blur="team.EditingName = false" @keyup.enter="team.EditingName = false" />
+                        <input type="text" class="form-control" v-model="team.Name" @blur="team.EditingName = false" @keyup.enter="team.EditingName = false" @click.stop/>
                       </div>
                       <span>
                         <button class="btn btn-sm" @click.stop="team.toggleEditingName()" v-if="!team.EditingName"><i class="bi-pencil"></i></button>
@@ -160,6 +165,9 @@
                 </div>
               </div> 
 
+              <div class="dashboard-item" style="--item-width: 1; visibility: hidden;"></div>
+
+
               <div class="dashboard-item hide-lg" data-width="3" style="--item-width: 3;">
                 <div class="dashboard-item-header d-flex justify-content-between align-items-center w-100 px-3">
                   <h4 class="mb-0"><i class="bi-shield-fill-exclamation me-2"></i> Type Matchup Table</h4>
@@ -205,7 +213,6 @@
                   </div>
 
                 </div>
-                <div class="dashboard-item" style="--item-width: 1"></div>
             </div>
           </div>
           
