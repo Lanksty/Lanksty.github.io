@@ -66,7 +66,7 @@ html {
 }
 
 body {
-    background: linear-gradient(135deg, #e0e7ef 0%, #e0e7ef 50%, #b3c6e7 100%);
+    background: linear-gradient(131deg,rgba(242, 247, 255, 1) 0%, rgba(235, 243, 255, 1) 100%);
     min-height: 100vh;
     margin: 0;
     padding-top: 2rem;
@@ -96,7 +96,7 @@ body:has(.modal-open) {
     overflow: hidden;
     
     &:not(:has(#dashboard-tab)) {
-        background: linear-gradient(131deg,rgba(242, 247, 255, 1) 0%, rgba(235, 243, 255, 1) 100%);
+        background: #fafcff;
     }
 }
 
@@ -112,7 +112,7 @@ body:has(.modal-open) {
     &.section-title {
         &:after {
             font-size: 2rem;
-            background-color: #e0e7ef;
+            background-color: #eff5ff;
         }
     }
 }
@@ -547,14 +547,14 @@ body:has(.modal-open) {
 
         tr {
             &:hover {
-                background-color: #fafcff;
+                background-color: #f1f1f1;
             }
         }
 
         thead {
             .cell {
                 padding: 10px;
-                background-color: #f1f7ff;
+                background-color: #fff;
                 border-bottom: 1px solid #dfdfdf;
             }
         }

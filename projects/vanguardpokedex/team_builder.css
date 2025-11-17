@@ -61,7 +61,7 @@
 }
 
 body {
-  background: linear-gradient(135deg, #e0e7ef 0%, #e0e7ef 50%, #b3c6e7 100%);
+  background: linear-gradient(131deg, rgb(242, 247, 255) 0%, rgb(235, 243, 255) 100%);
   min-height: 100vh;
   margin: 0;
   padding-top: 2rem;
@@ -89,7 +89,7 @@ body:has(.modal-open) {
   overflow: hidden;
 }
 #main:not(:has(#dashboard-tab)) {
-  background: linear-gradient(131deg, rgb(242, 247, 255) 0%, rgb(235, 243, 255) 100%);
+  background: #fafcff;
 }
 
 #page-heading {
@@ -103,7 +103,7 @@ body:has(.modal-open) {
 }
 #page-heading.section-title:after {
   font-size: 2rem;
-  background-color: #e0e7ef;
+  background-color: #eff5ff;
 }
 
 .has-error {
@@ -544,11 +544,11 @@ body:has(.modal-open) {
   border-collapse: collapse;
 }
 .team-effectiveness table tr:hover, .move-coverage table tr:hover {
-  background-color: #fafcff;
+  background-color: #f1f1f1;
 }
 .team-effectiveness table thead .cell, .move-coverage table thead .cell {
   padding: 10px;
-  background-color: #f1f7ff;
+  background-color: #fff;
   border-bottom: 1px solid #dfdfdf;
 }
 .team-effectiveness .has-move, .move-coverage .has-move {
