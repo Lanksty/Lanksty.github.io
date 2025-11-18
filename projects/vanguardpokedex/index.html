@@ -274,11 +274,11 @@
                   <div class="move" v-for="(move, index) in mon.SelectedMoves" :key="index">{{ move.Name }}</div>
                   <div class="move" v-for="n in 4 - mon.SelectedMoves.length" :key="n" class="empty-move">---</div>
               </div>
-              <table class="member-table">
+              <table class="member-table align-self-center">
                 <thead>
                   <tr>
 
-                    <th class="cell"></th>
+                    <!-- <th class="cell"></th> -->
                     <th class="cell" style="width: 80px; max-width: 80px;">HP</th>
                     <th class="cell" style="width: 100px; max-width: 100px;">Atk</th>
                     <th class="cell" style="width: 100px; max-width: 100px;">Def</th>
@@ -289,7 +289,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  <!-- <tr>
                     <td class="cell fst-italic" style="text-wrap: nowrap; opacity: 0.5;">Base:</td>
                     <td class="cell">{{ mon.Stats.hp }}</td>
                     <td class="cell">{{ mon.Stats.atk }}</td>
@@ -298,9 +298,9 @@
                     <td class="cell">{{ mon.Stats.spd }}</td>
                     <td class="cell">{{ mon.Stats.spe }}</td>
                     <td class="cell"></td>
-                  </tr>
+                  </tr> -->
                   <tr>
-                    <td class="cell fst-italic" style="text-wrap: nowrap; opacity: 0.5;">Lvl {{ mon.Level }}:</td>
+                    <!-- <td class="cell fst-italic" style="text-wrap: nowrap; opacity: 0.5;">Lvl {{ mon.Level }}:</td> -->
                     <td class="cell">{{ mon.GetStatCalc().hp }}</td>
                     <td class="cell">{{ mon.GetStatCalc().atk }}</td>
                     <td class="cell">{{ mon.GetStatCalc().def }}</td>

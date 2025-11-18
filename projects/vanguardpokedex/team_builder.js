@@ -916,7 +916,7 @@ const app = createApp({
     const getEggMoves = (pokemon) => {
       if(!pokemon.EggMovesList || pokemon.EggMovesList.length === 0) {
         pokemon = pokemon.GetEvolutions(allPokemon)[0];
-        if(!pokemon || !pokemon.EggMovesList || pokemon.EggMovesList.length === 0) return [];
+        if(!pokemon || !pokemon.EggMoves || pokemon.EggMoves.length === 0) return [];
         
         return pokemon.EggMovesList.length ? pokemon.EggMovesList : pokemon.GetEggMoves(allMoves);
       }
