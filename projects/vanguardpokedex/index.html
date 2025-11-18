@@ -25,7 +25,57 @@
     </head>
     <body>
       <div id="app" class="app-container" v-cloak>
-        <h1 style="text-align:center" id="page-heading" class="section-title" :data-content="pageTitle" :class="{ 'dark-mode': darkMode }"></h1>
+        <div class="app-sidebar-container">
+          <div class="app-sidebar">
+            <div class="sidebar-header d-flex flex-column align-items-center py-4">
+              <img src="./resources/images/svg/vanguard-logo.svg" alt="Vanguard Logo" class="sidebar-logo mb-3" />
+              <h2 class="sidebar-title text-center">Vanguard PokéDex</h2>
+            </div>
+            <nav class="sidebar-nav flex-grow-1">
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <span @click="setTabView('dashboard')" class="nav-link" role="button"><i class="bi-house me-2"></i> Dashboard</span>
+                </li>
+                <li class="nav-item navbar-collapse">
+                  <span class="nav-link dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#teamBuilderMenu" role="button" aria-expanded="false" aria-controls="teamBuilderMenu">
+                    <i class="bi-people-fill me-2"></i> Team Builder
+                  </span>
+                  <ul class="navbar-collapse collapse show" id="teamBuilderMenu">
+                    <li class="nav-item">
+                      <span @click="setTabView('team')" class="nav-link" :class="{ active: tabView === 'team' }" role="button"><i class="bi-window-sidebar me-2"></i> Team Builder</span>
+                    </li>
+                    <li class="nav-item">
+                      <span @click="setTabView('typeEffectiveness')" class="nav-link" :class="{ active: tabView === 'typeEffectiveness' }" role="button"><i class="bi-table me-2"></i> Type Effectiveness</span>
+                    </li>
+                    <li class="nav-item">
+                      <span @click="setTabView('moveCoverage')" class="nav-link" :class="{ active: tabView === 'moveCoverage' }" role="button"><i class="bi-shield-check me-2"></i> Move Coverage</span>
+                    </li>
+                  </ul>
+                </li>
+                <li class="nav-item navbar-collapse">
+                  <span class="nav-link dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#pokedexMenu" role="button" aria-expanded="false" aria-controls="pokedexMenu">
+                    <i class="bi-journal-text me-2"></i> PokéDex
+                  </span>
+                  <ul class="navbar-collapse collapse show" id="pokedexMenu">
+                    <li class="nav-item">
+                      <span @click="setTabView('allPokemon')" class="nav-link" :class="{ active: tabView === 'allPokemon' }" role="button"><i class="bi-journal-text me-2"></i> PokéDex</span>
+                    </li>
+                    <li class="nav-item">
+                      <span @click="setTabView('allAbilities')" class="nav-link" :class="{ active: tabView === 'allAbilities' }" role="button"><i class="bi-journal-text me-2"></i> AbilityDex</span>
+                    </li>
+                    <li class="nav-item">
+                      <span @click="setTabView('allMoves')" class="nav-link" :class="{ active: tabView === 'allMoves' }" role="button"><i class="bi-journal-text me-2"></i> MoveDex</span>
+                    </li>
+                    <li class="nav-item">
+                      <span @click="setTabView('typeChart')" class="nav-link" :class="{ active: tabView === 'typeChart' }" role="button"><i class="bi-table me-2"></i> Type Chart</span>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <!-- <h1 style="text-align:center" id="page-heading" class="section-title" :data-content="pageTitle" :class="{ 'dark-mode': darkMode }"></h1>
 
         <div class="header-nav mt-5" :class="{ 'dark-mode': darkMode }">
           <div class="navigation d-flex justify-content-center align-items-center w-100">
@@ -51,10 +101,9 @@
                 <button type="button" class="dropdown-item" @click="setTabView('typeChart')" :class="{ active: tabView === 'typeChart' }"><i class="bi-table me-2"></i> Type Chart</button>
                 </li>
               </ul>
-              <!-- <button type="button" class="btn btn-primary" @click="setTabView('allItems')" :class="{ active: tabView === 'allItems' }">All Items</button> -->
             </span>
           </div>
-        </div>
+        </div> -->
 
       
         <div id="main" :class="{ 'dark-mode': darkMode }">

@@ -69,7 +69,6 @@ body {
     background: linear-gradient(131deg,rgba(242, 247, 255, 1) 0%, rgba(235, 243, 255, 1) 100%);
     min-height: 100vh;
     margin: 0;
-    padding-top: 2rem;
 }
 
 body:has(.modal-open) {
@@ -77,12 +76,21 @@ body:has(.modal-open) {
     height: 100vh;
 }
 
-  [v-cloak] {
-    display: none;
-  }
+[v-cloak] {
+display: none;
+}
+
+#app {
+    display: flex;
+}
+
+.app-sidebar-container {
+    width: 250px;
+    background: #fafcff;
+    border-right: 1px solid #ccc;
+}
 
 #main {
-    // border: 3px solid #006ae4;
     display: grid;
     grid-template-columns: auto 1fr;
     box-sizing: border-box;
@@ -91,9 +99,10 @@ body:has(.modal-open) {
     margin: 1% auto;
     font-family: Arial, sans-serif;
     border-radius: 25px;
-    // box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-    height: 1005px;
+    height: -moz-max-content;
+    height: max-content;
     overflow: hidden;
+    min-height: 980px;
     
     &:not(:has(#dashboard-tab)) {
         background: #fafcff;
