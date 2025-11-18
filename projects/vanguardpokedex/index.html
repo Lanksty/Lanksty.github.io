@@ -632,7 +632,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="[key, value] in teamBuilder.TeamEffectiveness" :key="key" style="text-align: center;">
+                  <tr v-for="[key, value] in teamBuilder.getTeamEffectiveness(true)" :key="key" style="text-align: center;">
                     <td :class="key.toLowerCase()" class="type cell" :title="key"><img :src="`./resources/images/types/${key}.png`" alt="" /></td>
                     <td class="cell" v-for="(mon, index) in teamBuilder.filteredTeam" :key="index">
                       <div v-if="mon" :class="{ 'weak': mon.FindMatchup(key) > 1, 'resist': mon.FindMatchup(key) < 1, 'immune': mon.FindMatchup(key) === 0 }">{{ mon.FindMatchup(key) || 0 || '---' }}</div>

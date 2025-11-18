@@ -85,8 +85,10 @@ body:has(.modal-open) {
   margin: 1% auto;
   font-family: Arial, sans-serif;
   border-radius: 25px;
-  height: 1005px;
+  height: -moz-max-content;
+  height: max-content;
   overflow: hidden;
+  min-height: 980px;
 }
 #main:not(:has(#dashboard-tab)) {
   background: #fafcff;

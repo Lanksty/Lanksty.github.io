@@ -92,8 +92,9 @@ body:has(.modal-open) {
     font-family: Arial, sans-serif;
     border-radius: 25px;
     // box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-    height: 1005px;
+    height: max-content;
     overflow: hidden;
+    min-height: 980px;
     
     &:not(:has(#dashboard-tab)) {
         background: #fafcff;

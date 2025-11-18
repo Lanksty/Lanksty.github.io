@@ -31,7 +31,7 @@ export class Pokemon {
         this.Sprite = data.IsShiny ? `./resources/images/front_shiny/${data.InternalName}.png` : `./resources/images/front/${data.InternalName}.png`; // Use shiny sprite if IsShiny is true
         this.TypeMatchups = data.TypeMatchups ?? null; // To be populated by GetTypeMatchups
         this.SelectedMoves = data.SelectedMoves ?? []; // To be populated by user selection. ToDo: add vue watcher to ensure max 4 moves // Move to main app?
-        this.SelectedAbility = data.SelectedAbility ?? this.AbilitiesList[0]; // To be populated by user selection. ToDo: add vue watcher to ensure max 1 ability // Move to main app?
+        this.SelectedAbility = data.SelectedAbility ?? this.HasAbilityWithImmunity() ?? this.AbilitiesList[0]; // To be populated by user selection. ToDo: add vue watcher to ensure max 1 ability // Move to main app?
         this.HeldItem = data.HeldItem ?? null; // To be populated by user selection
         this.id = id; // Unique identifier for the Pokemon instance
         this.TMMoves = (data.TMMoves || []).map(m => new Move(m)); // List of TM moves available to this Pokémon
@@ -72,15 +72,15 @@ export class Pokemon {
 
     // For use in pokedex to verify if the pokemon has an ability that grants immunity
     HasAbilityWithImmunity() {
-        let ability = this.SelectedAbility.normalizeName().toUpperCase();
+        let ability = this.SelectedAbility?.normalizeName().toUpperCase();
         let abilityImmunities = config.AbilityTypeImmunities || {}; // e.g. { "LEVITATE": ["GROUND"], ... }
 
         // Normalize keys (all ability names are single word upper case)
         for(const [key, value] of Object.entries(abilityImmunities)) {
-            abilityImmunities[key.normalizeName().toUpperCase()] = value;
+            abilityImmunities[key?.normalizeName().toUpperCase()] = value;
         }
 
-        let immunityFromAbility = Object.keys(abilityImmunities).find(ab => this.AbilitiesList.includes(ab)) || [];
+        let immunityFromAbility = Object.keys(abilityImmunities)?.find(ab => this.AbilitiesList.includes(ab)) || [];
         
         return immunityFromAbility.length > 0 ? immunityFromAbility : null;
     }
