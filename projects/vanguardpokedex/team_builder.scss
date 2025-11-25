@@ -487,6 +487,8 @@ display: none;
 
         &:hover {
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(var(--highlight-color), var(--highlight-color)) padding-box, /* Solid background for content */
+            linear-gradient(to right, var(--primary-color), var(--secondary-color)) border-box; /* Gradient for border */
         }
 
         .member-header {

@@ -854,6 +854,12 @@ const app = createApp({
       tabView.value = tabName;
       sortingMethod.method = "number";
       sortingMethod.ascending = true;
+
+      let urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('tab', tabName);
+      const url = new URL(window.location);
+      url.search = urlParams.toString();
+      window.history.replaceState({}, '', url.toString());
     }
 
     const showPokemonInSearch = (filter, filterType) => {
@@ -993,6 +999,12 @@ const app = createApp({
         darkMode.value = true;
       } else {
         darkMode.value = false;
+      }
+
+      let urlParams = new URLSearchParams(window.location.search);
+      let tabParam = urlParams.get('tab');
+      if(tabParam) {
+        setTabView(tabParam);
       }
     });
 

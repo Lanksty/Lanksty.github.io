@@ -479,6 +479,7 @@ body:has(.modal-open) {
 }
 .team-container-wrapper .team-member:hover {
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(var(--highlight-color), var(--highlight-color)) padding-box, linear-gradient(to right, var(--primary-color), var(--secondary-color)) border-box; /* Gradient for border */
 }
 .team-container-wrapper .team-member .member-header {
   overflow: unset;
