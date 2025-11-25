@@ -28,10 +28,11 @@ export class Pokemon {
         this.MoveList = (data.MoveList || []).map(m => new Move(m)); // Ensure MoveList is an array of Move instances
         this.AbilitiesList = data.Abilities.split(',').map(a => a.trim());
         this.AbilitiesList.push(data.HiddenAbility); // Add "None" option for abilities
-        this.Sprite = `./resources/images/front/${data.InternalName}.png`;
+        this.IsShiny = data.IsShiny || false;
+        this.Sprite = data.IsShiny ? `./resources/images/front_shiny/${data.InternalName}.png` : `./resources/images/front/${data.InternalName}.png`; // Use shiny sprite if IsShiny is true
         this.TypeMatchups = data.TypeMatchups ?? null; // To be populated by GetTypeMatchups
         this.SelectedMoves = data.SelectedMoves ?? []; // To be populated by user selection. ToDo: add vue watcher to ensure max 4 moves // Move to main app?
-        this.SelectedAbility = data.SelectedAbility ?? this.AbilitiesList[0]; // To be populated by user selection. ToDo: add vue watcher to ensure max 1 ability // Move to main app?
+        this.SelectedAbility = data.SelectedAbility ?? this.HasAbilityWithImmunity() ?? this.AbilitiesList[0]; // To be populated by user selection. ToDo: add vue watcher to ensure max 1 ability // Move to main app?
         this.HeldItem = data.HeldItem ?? null; // To be populated by user selection
         this.id = id; // Unique identifier for the Pokemon instance
         this.TMMoves = (data.TMMoves || []).map(m => new Move(m)); // List of TM moves available to this Pokémon
@@ -65,6 +66,37 @@ export class Pokemon {
         };
     }
 
+    ToggleShiny() {
+        this.IsShiny = !this.IsShiny;
+        this.Sprite = this.IsShiny ? `./resources/images/front_shiny/${this.InternalName}.png` : `./resources/images/front/${this.InternalName}.png`;
+    }
+
+    // For use in pokedex to verify if the pokemon has an ability that grants immunity
+    HasAbilityWithImmunity() {
+        let ability = this.SelectedAbility?.normalizeName().toUpperCase();
+        let abilityImmunities = config.AbilityTypeImmunities || {}; // e.g. { "LEVITATE": ["GROUND"], ... }
+
+        // Normalize keys (all ability names are single word upper case)
+        for(const [key, value] of Object.entries(abilityImmunities)) {
+            abilityImmunities[key?.normalizeName().toUpperCase()] = value;
+        }
+
+        let immunityFromAbility = Object.keys(abilityImmunities)?.find(ab => this.AbilitiesList.includes(ab)) || [];
+        
+        return immunityFromAbility.length > 0 ? immunityFromAbility : null;
+    }
+
+    // For use in pokedex to toggle between abilities that grant immunity
+    ToggleAbilityImmunity() {
+        let immunityAbility = this.HasAbilityWithImmunity();
+        if (!immunityAbility) {
+            console.warn('No ability with immunity found.');
+            return;
+        }
+        this.SelectedAbility = this.SelectedAbility === immunityAbility ? this.AbilitiesList.filter(a => a !== immunityAbility)[0] : immunityAbility;
+        return;
+    }
+
     GetTypeMatchups(typeChart) {
         typeChart = typeChart ?? fetchTypeData(); // If not parsed in then fetch it
         
@@ -89,7 +121,6 @@ export class Pokemon {
         for (const type of this.Types) {
             matchups.push(typeChart.find(t => t.Name === type));
         }
-
         let weaknesses = matchups.filter(m => m && m.Weaknesses).flatMap(m => m.Weaknesses);
         let resistances = matchups.filter(m => m && m.Resistances).flatMap(m => m.Resistances);
         let immunities = matchups.filter(m => m && m.Immunities).flatMap(m => m.Immunities);
@@ -185,6 +216,11 @@ export class Pokemon {
     }
 
     ParseTMMoves(TMList) {
+        if(!TMList || TMList.length === 0) {
+            console.warn('TM list is empty or not provided.');
+            this.TMMoves = [];
+            return this.TMMoves;
+        }
         this.TMMoves = TMList.map(tm => new Move(tm));
         return this.TMMoves;
     }

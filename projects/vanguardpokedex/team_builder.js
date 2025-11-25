@@ -29,38 +29,166 @@ const TMList = itemList
 
   const trainerList = await pkmn.fetchTrainerData();
 
-class TeamBuilder {
+class TeamLoader {
   constructor() {
-    let savedTeam = localStorage.getItem('savedTeam');
-    if (typeof savedTeam === "string" && savedTeam.length > 0 && savedTeam !== "undefined" && savedTeam !== "null") {
+    // Handle old team format
+    let team = localStorage.getItem('savedTeam');
+    if (typeof team === "string" && team.length > 0 && team !== "undefined" && team !== "null") {
       try {
-        let parsedTeam = JSON.parse(savedTeam);
-        console.log("Loaded saved team:", parsedTeam);
-        parsedTeam = pkmn.ParsePokemonList(parsedTeam);
-        this.teamList = ref(parsedTeam);
+        let oldList = JSON.parse(team);
+        let newTeam = new Team({ Name: "New Team", PokemonList: oldList });
+        this.SavedTeams = reactive([newTeam]);
+        this.SaveTeam(newTeam); // Save in new format
+        localStorage.removeItem('savedTeam'); // Remove old format
+        console.log("Converted old team format to new format:", newTeam);
       } catch (error) {
-        console.error('Error parsing saved team:', error);
-        this.teamList = ref(new Array(0)); // Initialize as a reactive reference to an array
+        console.error('Error parsing old team format:', error);
       }
-    } else {
-      this.teamList = ref(new Array(0)); // Initialize as a reactive reference to an array
     }
 
-    this.TeamEffectiveness = computed(() => this.getTeamEffectiveness());
-    watch(this.TeamEffectiveness, (newVal) => {
-      console.log("Team Effectiveness Updated:", newVal);
-    });
+    // Get teams from local storage
+    let savedTeams = localStorage.getItem('savedTeams');
+    if (typeof savedTeams === "string" && savedTeams.length > 0 && savedTeams !== "undefined" && savedTeams !== "null") {
+      try {
+        let teams = JSON.parse(savedTeams);
+        teams = teams.map(t => {
+          if(t instanceof Array) {
+            // Handling old format where only PokemonList was saved
+            return new Team({ Name: "Unnamed Team", PokemonList: t });
+          }
+          return new Team(t);
+        });
+
+        this.SavedTeams = reactive(teams);
+        console.log("Loaded saved teams:", this.SavedTeams);
+      } catch (error) {
+        console.error('Error parsing saved teams:', error);
+      }
+    }
+    else {
+      this.SavedTeams = [];
+    }
+
+    console.log("Loading team:", this.SavedTeams);
+
+    watch(this.SavedTeams, (newVal) => {
+      localStorage.setItem('savedTeams', JSON.stringify(newVal));
+    }, { deep: true });
+  }
+
+  SaveTeam(team) {
+    if(!team) team = new Team();
+    if(team instanceof Array) {
+      team = new Team({ Name: "Unnamed Team"}, ...team);
+    }
+    if(!team instanceof Team) {
+      console.error("Invalid teamBuilder instance provided to SaveTeam.");
+      return;
+    }
+
+    let builderId = team.Id || team.Name;
+    let existingIndex = this.SavedTeams.findIndex(t => t.Id === builderId || t.Name === builderId);
+    // if(existingIndex >= 0) {
+    //   this.SavedTeams[existingIndex] = team;
+    // } else {
+    //   this.SavedTeams.push(team);
+    // }
+    localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
+  }
+
+  GetTeam(identifier) {
+    if(identifier === undefined || identifier === null) {
+      let teamId = localStorage.getItem('lastUsedTeamId');
+      if(teamId) {
+        identifier = teamId;
+      }
+      else return this.SavedTeams[0] || null; // return first team if still no identifier
+    }
+    let team = this.SavedTeams.find(t => t.Id === identifier || t.Name === identifier);
+    team = team || this.SavedTeams[0] || null; // Fallback to first team if not found
+    return team;
+  }
+
+  NewTeam(name) {
+    if(!name) name = "New #" + (this.SavedTeams.length + 1);
+    let team = new Team({ Name: name });
+    this.SavedTeams.push(team);
+    localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
+    return team;
+  }
+
+  DeleteTeam(team) {
+    let confirm = window.confirm(`Are you sure you want to delete the team "${team.Name}"? This action cannot be undone.`);
+    if (!confirm) return;
+    this.SavedTeams = this.SavedTeams.filter(t => t.Id !== team.Id);
+    localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
+    console.log("Deleted team:", team);
+  }
+}
+
+class Team{
+  constructor(data) {
+    Object.assign(this, data);
+    if(data.PokemonList) {
+      // Edge case to handle old format where only PokemonList was saved
+      this.PokemonList = reactive(pkmn.ParsePokemonList(data.PokemonList) || new Array(0));
+    }
+    else {
+      this.PokemonList = reactive(new Array(0));
+    }
+    
+    this.EditingName = ref(false);
+    
+    if(!this.Id) {
+      this.Id = this.generateId();
+    }
+  }
+
+  generateId() {
+    return 'team-' + Math.random().toString(36).substr(2, 9);
+  }
+
+  getList() {
+    return [...this];
+  }
+
+  toggleEditingName() {
+    this.EditingName = !this.EditingName;
+
+    // Focus input if entering edit mode
+    setTimeout(() => {
+      let inputElement = document.querySelector(`#${this.Id} input`);
+      if (this.EditingName && inputElement) {
+        inputElement.focus();
+      }
+    }, 50);
+  }
+}
+
+class TeamBuilder {
+  constructor() {
+    this.Loader = new TeamLoader();
+    this.team = this.Loader.GetTeam();
+    this.teamList = this.team?.PokemonList || reactive(new Array(0));
+
+    this.TeamEffectiveness = this.getTeamEffectiveness();
+    this.TeamEffectivenessChart = this.getTeamEffectiveness(true); // For unique type matchups
 
     // Ensure the team always has 6 slots (filled with null if less than 6)
     this.filteredTeam = computed(() => {
-      if(this.teamList.value.length < 6) {
-        return [...this.teamList.value, ...new Array(6 - this.teamList.value.length).fill(null)];
+      if(this.teamList.length < 6) {
+        return [...this.teamList, ...new Array(6 - this.teamList.length).fill(null)];
       }
-      return this.teamList.value;
+      return this.teamList;
     });
   }
 
   addPokemon(pokemon) {
+    if(!this.team) {
+      this.team = this.Loader.NewTeam();
+      this.teamList = this.team.PokemonList;
+    }
+
     if(!pokemon.TypeMatchups) {
       pokemon.GetTypeMatchups(typeChart); // Fetch and populate type matchups if not already done
     }
@@ -83,22 +211,19 @@ class TeamBuilder {
 
       console.log("Adding Pokémon to team:", pokemon, "with TeamIndex:", pokemon.TeamIndex);
       this.teamList.push(pokemon);
-      localStorage.setItem('savedTeam', JSON.stringify(this.teamList));
     } else {
       console.log("Team is full!");
     }
   }
 
   removePokemon(pokemon) {
-    this.teamList = this.teamList.filter(p => p.TeamIndex != pokemon.TeamIndex);
-    
+    this.team.PokemonList = this.team?.PokemonList.filter(p => p.TeamIndex != pokemon.TeamIndex) || reactive(new Array(0));
+    this.teamList = this.team.PokemonList;
+
     // Reassign TeamIndex values
     this.teamList.forEach((p, index) => {
       p.TeamIndex = index + 1;
     });
-    localStorage.setItem('savedTeam', JSON.stringify(this.teamList));
-
-    console.log(this.parent);
   }
 
   getTeam() {
@@ -106,13 +231,18 @@ class TeamBuilder {
   }
   
   // Used in TeamEffectiveness tab to calculate overall team type matchups
-  getTeamEffectiveness() {
+  getTeamEffectiveness(unique = false) {
     let allWeaknesses = [];
     let allResistances = [];
     let allImmunities = [];
 
-    this.teamList.value.forEach(pokemon => {
-      if (pokemon.TypeMatchups) {
+    this.teamList.forEach(pokemon => {
+      if (pokemon.TypeMatchups && unique) {
+        allWeaknesses.push(...pokemon.TypeMatchups.weaknesses.unique());
+        allResistances.push(...pokemon.TypeMatchups.resistances.unique());
+        allImmunities.push(...pokemon.TypeMatchups.immunities.unique());
+      }
+      else if(pokemon.TypeMatchups) {
         allWeaknesses.push(...pokemon.TypeMatchups.weaknesses);
         allResistances.push(...pokemon.TypeMatchups.resistances);
         allImmunities.push(...pokemon.TypeMatchups.immunities);
@@ -152,12 +282,224 @@ class TeamBuilder {
   }
 
   saveTeam() {
-    localStorage.setItem('savedTeam', JSON.stringify(this.teamList));
+    this.Loader.SaveTeam(this.team);
+    localStorage.setItem('lastUsedTeamId', this.team.Id);
+  }
+
+  loadTeam(team) {
+    if(team == null || !(team instanceof Team)) {
+      return;
+    }
+    this.team = team;
+    this.teamList = team.PokemonList;
+    localStorage.setItem('lastUsedTeamId', team.Id);
+  }
+
+  deleteTeam(team) {
+    this.Loader.DeleteTeam(team);
+    this.team = this.Loader.GetTeam();
+    this.teamList = this.team?.PokemonList || reactive(new Array(0));
+    localStorage.removeItem('lastUsedTeamId');
+  }
+
+  newTeam(name) { 
+    let team = this.Loader.NewTeam(name);
+    this.team = team;
+    this.teamList = team.PokemonList;
+  }
+}
+
+class Dashboard {
+  constructor(teamBuilder) {
+    this.teamBuilder = teamBuilder;
+
+    this.effectivenessChartOptions = computed(() => {
+      return this.TypeEffectivenessChart();
+    });
+    this.moveCoverageChartOptions = computed(() => {
+      return this.MoveCoverageChart();
+    });
+  }
+
+  GetTeamWeaknesses(type) {
+    const chartData = this.teamBuilder.getTeamEffectiveness(true);
+    return chartData.get(type)?.weaknesses || 0;
+  }
+
+  GetTeamResistances(type) {
+    const chartData = this.teamBuilder.getTeamEffectiveness(true);
+    let resistances = chartData.get(type)?.resistances || 0;
+    let immunities = chartData.get(type)?.immunities || 0;
+    let weaknesses = chartData.get(type)?.weaknesses || 0;
+    let netResistances = resistances + immunities;
+    return netResistances > 0 ? netResistances : 0;
+  }
+
+  GetTeamMoveCoverage(type) {
+    let teamList = this.teamBuilder.teamList;
+    let coverageData = {};
+    typeChart.forEach(t => {
+      coverageData[t.Name] = 0;
+      teamList.forEach(pokemon => {
+        if(pokemon.SelectedMoves.some(mv => t.Weaknesses?.includes(mv.Type) && mv.Category !== "Status")) {
+          coverageData[t.Name] += 1;
+        }
+      });
+    });
+    return coverageData;
+  }
+
+  TypeEffectivenessChart() {
+    const chartData = this.teamBuilder.getTeamEffectiveness(true); // Unique type matchups
+    const chartDataEntries = Array.from(chartData.entries());
+
+    let options = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        formatter: function (params) {
+          let typeName = params[0].name;
+          let values = chartData.get(typeName);
+          let netEffectiveness = values.resistances + values.immunities - values.weaknesses;
+          return `<strong>${typeName}</strong><br/>
+                  Weaknesses: ${values.weaknesses}<br/>
+                  Resistances: ${values.resistances}<br/>
+                  Immunities: ${values.immunities}<br/>
+                  <strong>Net Effectiveness: ${netEffectiveness}</strong>`;
+        }
+      },
+      legend: {
+        show: false
+      },
+      grid: {
+        top: 0
+      },
+      xAxis: [
+        {
+          type: 'value',
+          interval: 1
+        }
+      ],
+      yAxis: [
+        {
+          type: 'category',
+          axisTick: {
+            show: false
+          },
+          data: Array.from(chartData.keys()),
+          formatter: function (value) {
+            return `<img src="./resources/images/types/${value}.png" alt="${value}" style="width:20px; height:20px; vertical-align:middle; margin-right:8px;">`;
+          }
+        }
+      ],
+      series: [
+        {
+          data: chartDataEntries.map(([typeName, values]) => {
+            let netEffectiveness = values.resistances + values.immunities - values.weaknesses;
+            return {
+              name: typeName,
+              value: netEffectiveness,
+              itemStyle: {
+                color: typeChart.find(t => t.Name === typeName)?.Colors?.main || '#888888'
+              },
+            };
+          }),
+          type: 'bar',
+          label: {
+            show: true,
+            formatter: function (param) {
+              if (param.value != 0 ) return param.value;
+              return '';
+            }
+          },
+          
+        }
+      ]
+    }
+
+    return options;
+  }
+
+  MoveCoverageChart() {
+    let teamList = this.teamBuilder.getTeam();
+    const coverageData = {};
+    typeChart.forEach(type => {
+      coverageData[type.Name] = 0;
+      teamList.forEach(pokemon => {
+        if(pokemon.SelectedMoves.some(mv => type.Weaknesses?.includes(mv.Type) && mv.Category !== "Status")) {
+          coverageData[type.Name] += 1;
+        }
+      });
+    });  
+
+    let options = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'shadow'
+        },
+        
+      },
+      legend: {
+        show: false
+      },
+      grid: {
+        top: 0
+      },
+      xAxis: [
+        {
+          type: 'value',
+          interval: 1
+        }
+      ],
+      yAxis: [
+        {
+          type: 'category',
+          axisTick: {
+            show: false
+          },
+          data: Object.keys(coverageData),
+          formatter: function (value) {
+            return `<img src="./resources/images/types/${value}.png" alt="${value}" style="width:20px; height:20px; vertical-align:middle; margin-right:8px;">`;
+          }
+        }
+      ],
+      series: [
+        {
+          data: Object.entries(coverageData).map(([typeName, value]) => {
+            return {
+              name: typeName,
+              value: value,
+              itemStyle: {
+                color: typeChart.find(t => t.Name === typeName)?.Colors?.main || '#888888'
+              },
+            };
+          }),
+          type: 'bar',
+          label: {
+            show: true,
+            formatter: function (param) {
+              if (param.value != 0 ) return param.value;
+              return '';
+            }
+          },
+          
+        }
+      ]
+    }
+    return options;
+  }
+
+  GetTeamStatsChartOptions() {
+    // To be implemented
   }
 }
 
 const app = createApp({
   setup() {
+    const darkMode = ref(false);
     const teamBuilder = reactive(new TeamBuilder());
     const allPokemon = reactive([]);
     const allItems = reactive([]);
@@ -175,6 +517,8 @@ const app = createApp({
     const moveCategoryFilter = ref([]);
     const includeEggMoves = ref(false);
     const includeTMMoves = ref(false);
+    const dashboard = reactive(new Dashboard(teamBuilder));
+    dashboard.MoveCoverageChart();
     var trainerDex = reactive(new pkmn.TrainerDex()); // Initialise once mounted
 
     const moveCategories = reactive([
@@ -184,7 +528,7 @@ const app = createApp({
     ]);
     const searching = ref(false);
     const currentlyViewing = ref(null);
-    const tabView = ref("team");
+    const tabView = ref("dashboard");
     const moveListTab = ref("levelup");
     const pokedexView = ref("");
     const sortingMethod = reactive({
@@ -193,13 +537,23 @@ const app = createApp({
       ascending: true
     });
     const pokedexTab = ref("info");
-
+    const currentlyViewingMoveSearchQuery = ref("");
+    
     // Check URL params for pokemon to view
     let urlParams = new URLSearchParams(window.location.search);
     let pokemonParam = urlParams.get('pokemon');
     if(pokemonParam) {
-        pokedexView.value = pokemonParam;
+      pokedexView.value = pokemonParam;
     }
+    
+    // Used in pokedex to toggle ability immunity effects
+    // E.g. Wonder Guard ability
+    // Needed because typechart must be given to the pokemon to recalculate matchups
+    const toggleAbilityImmunity = (pokemon) => {
+      if(!pokemon) return;
+      pokemon.ToggleAbilityImmunity();
+      pokemon.GetTypeMatchups(types);
+    };
 
     // Filter for mons based on search and selected filters in pokedex
     const filteredPokemon = computed(() => {
@@ -303,6 +657,11 @@ const app = createApp({
       moveFilter.value = [];
     };
 
+    const toggleDarkMode = () => {
+      darkMode.value = !darkMode.value;
+      localStorage.setItem('darkMode', darkMode.value ? 'true' : 'false');
+    }
+
     const getPokemonTypeStyle = (pokemon, isLight = false) => {
       let suffix = isLight ? "-type-color-light" : "-type-color";
       if(!pokemon || !pokemon.Types || pokemon.Types.length === 0) {
@@ -319,7 +678,8 @@ const app = createApp({
 
     const viewPokemon = computed(() => {
       if(currentlyViewing.value === null) return null;
-      return teamBuilder.teamList.find(p => p.InternalName === currentlyViewing.value) || null;
+      let mon = teamBuilder.teamList.find(p => p.InternalName === currentlyViewing.value) || null;
+      return mon;
     });
 
     const searchQueryTrainers = ref("");
@@ -333,12 +693,23 @@ const app = createApp({
     
     const toggleViewingPokemon = (pokemon) => {
       moveListTab.value = "levelup";
-      if(viewPokemon.value && pokemon.InternalName === viewPokemon.value.InternalName) {
+      if(pokemon != null && viewPokemon.value && pokemon.InternalName === viewPokemon.value.InternalName) {
         currentlyViewing.value = null;
-      } else {
+      } else if(pokemon != null) {
         currentlyViewing.value = pokemon.InternalName;
         tabView.value = "team";
       }
+      else {
+        currentlyViewing.value = null;
+        tabView.value = "team";
+      }
+    }
+
+    const filterCurrentlyViewingMoveList = (moveList) => {
+      if(!currentlyViewingMoveSearchQuery.value || currentlyViewingMoveSearchQuery.value.length === 0) {
+        return moveList;
+      }
+      return moveList.filter(mv => mv.Name.toLowerCase().includes(currentlyViewingMoveSearchQuery.value.toLowerCase()));
     }
 
     const buildEvolutionChain = (pokemon) => {
@@ -395,7 +766,7 @@ const app = createApp({
 
     const pokemon = computed(() => {
       console.log("Pokedex view changed to:", pokedexView.value);
-
+      
       if (pokedexView.value === "" || pokedexView.value === null) {
         // Reset URL param if no mon selected
         const url = new URL(window.location);
@@ -425,7 +796,10 @@ const app = createApp({
       if(!pokemon.TMMoves || pokemon.TMMoves.length === 0) {
         let list = TMList.filter(tm => pokemon.TutorMoves?.includes(tm.Move) );
         list = moveList.filter(mv => list.some(t => t.Move === mv.Name));
-        pokemon.ParseTMMoves(list);
+        
+        if(list.length > 0) { // Only parse if there are TM moves available, otherwise causes issues (recursion)
+          pokemon.ParseTMMoves(list);
+        }
       }
 
       console.log("Viewing Pokémon:", pokemon);
@@ -489,7 +863,11 @@ const app = createApp({
       sortingMethod.method = "number";
       sortingMethod.ascending = true;
 
-      document.querySelector(".header-nav .dropdown-menu").classList.remove("show");
+      let urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('tab', tabName);
+      const url = new URL(window.location);
+      url.search = urlParams.toString();
+      window.history.replaceState({}, '', url.toString());
     }
 
     const showPokemonInSearch = (filter, filterType) => {
@@ -561,7 +939,7 @@ const app = createApp({
     const getEggMoves = (pokemon) => {
       if(!pokemon.EggMovesList || pokemon.EggMovesList.length === 0) {
         pokemon = pokemon.GetEvolutions(allPokemon)[0];
-        if(!pokemon) return [];
+        if(!pokemon || !pokemon.EggMoves || pokemon.EggMoves.length === 0) return [];
         
         return pokemon.EggMovesList.length ? pokemon.EggMovesList : pokemon.GetEggMoves(allMoves);
       }
@@ -587,7 +965,9 @@ const app = createApp({
     const pageTitle = computed(() => {
       let title = "Vanguard Pokédex";
       let currentTab = tabView.value;
-
+      if(currentTab === "dashboard") {
+        return title + " - Dashboard";
+      }
       if(currentTab === "team") {
         return title + " - Team Builder";
       }
@@ -596,16 +976,6 @@ const app = createApp({
 
     watch(viewPokemon, (newVal) => {
       if(newVal != null && newVal.Name) {
-        // watch(newVal.SelectedMoves, (moves) => {
-        //   console.log("Selected moves changed for", newVal.Name, moves);
-        //   teamBuilder.saveTeam();
-        // }, { deep: true });
-        // watch(newVal.EVs, (evs) => {
-        //   teamBuilder.saveTeam();
-        // }, { deep: true });
-        // watch(newVal.Ivs, (ivs) => {
-        //   teamBuilder.saveTeam();
-        // }, { deep: true });
         teamBuilder.saveTeam();
       } 
       if(newVal == null) {
@@ -632,7 +1002,20 @@ const app = createApp({
       allAbilities.push(...await abilitiesList);
       natures.push(...await naturesList);
 
-      console.log(types);
+      let mode = localStorage.getItem('darkMode');
+      if(mode === 'true') {
+        darkMode.value = true;
+      } else {
+        darkMode.value = false;
+      }
+
+      let urlParams = new URLSearchParams(window.location.search);
+      let tabParam = urlParams.get('tab');
+      if(tabParam) {
+        setTabView(tabParam);
+      }
+
+      // Initialize TrainerDex
       trainerDex.AssignLists(trainerList, allPokemon, allMoves, allItems);
       await trainerDex.ParseTrainerData();
       console.log("TrainerDex initialized:", trainerDex);
@@ -688,12 +1071,60 @@ const app = createApp({
       getPokemonTypeStyle,
       trainerDex,
       searchQueryTrainers,
-      filteredTrainers
+      filteredTrainers,
+      filterCurrentlyViewingMoveList,
+      currentlyViewingMoveSearchQuery,
+      dashboard,
+      darkMode,
+      toggleAbilityImmunity,
+      toggleDarkMode
     };
   }
 });
 
 app.component('search-dropdown', comp.SearchDropdown);
+
+// Apache Echart directive for app
+app.directive('chart', {
+  beforeMount(el, binding, vnode, prevVnode) {
+    const myChart = echarts.init(el);
+    const options = binding.value.options;
+    myChart.setOption(options);
+
+    // set chart to element for later access
+    el._echart_instance = myChart;
+
+    window.addEventListener('resize', () => {
+      myChart.resize();
+    });
+
+    myChart.resize();
+
+  },
+
+  mounted(el, binding) {
+    el._echart_instance.resize();
+  },
+
+  beforeUpdate(el, binding) {
+  },
+
+  updated(el, binding) {
+    el.style.backgroundColor = binding.value || 'yellow';
+    let options = binding.value.options;
+    let  myChart = el._echart_instance;
+
+    myChart.setOption(options);
+
+    myChart.resize();
+  },
+
+  beforeUnmount(el, binding) {
+  },
+
+  unmounted(el, binding) {
+  }
+});
 
 app.mount("#app");
 

@@ -1,15 +1,107 @@
 [
     {
-        "Name": "NORMAL",
+        "Name": "BUG",
+        "Colors": {
+            "light": "#B8C26A",
+            "main": "#91A119",
+            "dark": "#5E6910"
+        },
         "Weaknesses": [
+            "FLYING",
+            "ROCK",
+            "FIRE"
+        ],
+        "Resistances": [
+            "FIGHTING",
+            "GROUND",
+            "GRASS",
+            "SOUND"
+        ]
+    },
+    {
+        "Name": "DARK",
+        "Colors": {
+            "light": "#998B8C",
+            "main": "#624D4E",
+            "dark": "#403233"
+        },
+        "Weaknesses": [
+            "FIGHTING",
+            "BUG",
+            "FAIRY"
+        ],
+        "Resistances": [
+            "GHOST",
+            "DARK"
+        ],
+        "Immunities": [
+            "PSYCHIC"
+        ]
+    },
+    {
+        "Name": "DRAGON",
+        "Colors": {
+            "light": "#8D98EC",
+            "main": "#5060E1",
+            "dark": "#343E92"
+        },
+        "Weaknesses": [
+            "ICE",
+            "DRAGON",
+            "FAIRY"
+        ],
+        "Resistances": [
+            "FIRE",
+            "WATER",
+            "GRASS",
+            "ELECTRIC"
+        ]
+    },
+    {
+        "Name": "ELECTRIC",
+        "Colors": {
+            "light": "#FCD659",
+            "main": "#FAC000",
+            "dark": "#A37D00"
+        },
+        "Weaknesses": [
+            "GROUND"
+        ],
+        "Resistances": [
+            "FLYING",
+            "STEEL",
+            "ELECTRIC",
+            "SOUND"
+        ]
+    },
+    {
+        "Name": "FAIRY",
+        "Colors": {
+            "light": "#F5A2F5",
+            "main": "#EF70EF",
+            "dark": "#9B499B"
+        },
+        "Weaknesses": [
+            "POISON",
+            "STEEL",
+            "SOUND"
+        ],
+        "Resistances": [
+            "BUG",
+            "DARK",
             "FIGHTING"
         ],
         "Immunities": [
-            "GHOST"
+            "DRAGON"
         ]
     },
     {
         "Name": "FIGHTING",
+        "Colors": {
+            "light": "#FFAC59",
+            "main": "#FF8000",
+            "dark": "#A65300"
+        },
         "Weaknesses": [
             "FLYING",
             "PSYCHIC",
@@ -22,7 +114,34 @@
         ]
     },
     {
+        "Name": "FIRE",
+        "Colors": {
+            "light": "#EF7374",
+            "main": "#E62829",
+            "dark": "#961A1B"
+        },
+        "Weaknesses": [
+            "GROUND",
+            "ROCK",
+            "WATER",
+            "SOUND"
+        ],
+        "Resistances": [
+            "BUG",
+            "STEEL",
+            "FIRE",
+            "GRASS",
+            "ICE",
+            "FAIRY"
+        ]
+    },
+    {
         "Name": "FLYING",
+        "Colors": {
+            "light": "#ADD2F5",
+            "main": "#81B9EF",
+            "dark": "#54789B"
+        },
         "Weaknesses": [
             "ROCK",
             "ELECTRIC",
@@ -38,21 +157,54 @@
         ]
     },
     {
-        "Name": "POISON",
+        "Name": "GHOST",
+        "Colors": {
+            "light": "#A284A2",
+            "main": "#704170",
+            "dark": "#492A49"
+        },
         "Weaknesses": [
-            "GROUND",
-            "PSYCHIC"
+            "GHOST",
+            "DARK"
         ],
         "Resistances": [
-            "FIGHTING",
+            "POISON",
+            "BUG"
+        ],
+        "Immunities": [
+            "NORMAL",
+            "FIGHTING"
+        ]
+    },
+    {
+        "Name": "GRASS",
+        "Colors": {
+            "light": "#82C274",
+            "main": "#3FA129",
+            "dark": "#29691B"
+        },
+        "Weaknesses": [
+            "FLYING",
             "POISON",
             "BUG",
+            "FIRE",
+            "ICE"
+        ],
+        "Resistances": [
+            "GROUND",
+            "WATER",
             "GRASS",
-            "FAIRY"
+            "ELECTRIC",
+            "SOUND"
         ]
     },
     {
         "Name": "GROUND",
+        "Colors": {
+            "light": "#B88E6F",
+            "main": "#915121",
+            "dark": "#5E3515"
+        },
         "Weaknesses": [
             "WATER",
             "GRASS",
@@ -67,7 +219,84 @@
         ]
     },
     {
+        "Name": "ICE",
+        "Colors": {
+            "light": "#81DFF7",
+            "main": "#3DCEF3",
+            "dark": "#28869E"
+        },
+        "Weaknesses": [
+            "FIGHTING",
+            "ROCK",
+            "STEEL",
+            "FIRE"
+        ],
+        "Resistances": [
+            "ICE",
+            "SOUND"
+        ]
+    },
+    {
+        "Name": "NORMAL",
+        "Colors": {
+            "light": "#C1C2C1",
+            "main": "#9FA19F",
+            "dark": "#676967"
+        },
+        "Weaknesses": [
+            "FIGHTING"
+        ],
+        "Immunities": [
+            "GHOST"
+        ]
+    },
+    {
+        "Name": "POISON",
+        "Colors": {
+            "light": "#B884DD",
+            "main": "#9141CB",
+            "dark": "#5E2A84"
+        },
+        "Weaknesses": [
+            "GROUND",
+            "PSYCHIC"
+        ],
+        "Resistances": [
+            "FIGHTING",
+            "POISON",
+            "BUG",
+            "GRASS",
+            "FAIRY"
+        ]
+    },
+    {
+        "Name": "PSYCHIC",
+        "Colors": {
+            "light": "#F584A8",
+            "main": "#EF4179",
+            "dark": "#9B2A4F"
+
+        },
+        "Weaknesses": [
+            "BUG",
+            "GHOST",
+            "DARK"
+        ],
+        "Resistances": [
+            "FIGHTING",
+            "PSYCHIC"
+        ],
+        "Immunities": [
+            "SOUND"
+        ]
+    },
+    {
         "Name": "ROCK",
+        "Colors": {
+            "light": "#CBC7AD",
+            "main": "#AFA981",
+            "dark": "#726E54"
+        },
         "Weaknesses": [
             "FIGHTING",
             "GROUND",
@@ -84,36 +313,12 @@
         ]
     },
     {
-        "Name": "BUG",
-        "Weaknesses": [
-            "FLYING",
-            "ROCK",
-            "FIRE"
-        ],
-        "Resistances": [
-            "FIGHTING",
-            "GROUND",
-            "GRASS",
-            "SOUND"
-        ]
-    },
-    {
-        "Name": "GHOST",
-        "Weaknesses": [
-            "GHOST",
-            "DARK"
-        ],
-        "Resistances": [
-            "POISON",
-            "BUG"
-        ],
-        "Immunities": [
-            "NORMAL",
-            "FIGHTING"
-        ]
-    },
-    {
         "Name": "STEEL",
+        "Colors": {
+            "light": "#98C2D1",
+            "main": "#60A1B8",
+            "dark": "#3E6978"
+        },
         "Weaknesses": [
             "FIGHTING",
             "GROUND",
@@ -137,27 +342,12 @@
         ]
     },
     {
-        "Name": "???"
-    },
-    {
-        "Name": "FIRE",
-        "Weaknesses": [
-            "GROUND",
-            "ROCK",
-            "WATER",
-            "SOUND"
-        ],
-        "Resistances": [
-            "BUG",
-            "STEEL",
-            "FIRE",
-            "GRASS",
-            "ICE",
-            "FAIRY"
-        ]
-    },
-    {
         "Name": "WATER",
+        "Colors": {
+            "light": "#74ACF5",
+            "main": "#2980EF",
+            "dark": "#1B539B"
+        },
         "Weaknesses": [
             "GRASS",
             "ELECTRIC",
@@ -168,112 +358,15 @@
             "FIRE",
             "WATER",
             "ICE"
-        ]
-    },
-    {
-        "Name": "GRASS",
-        "Weaknesses": [
-            "FLYING",
-            "POISON",
-            "BUG",
-            "FIRE",
-            "ICE"
-        ],
-        "Resistances": [
-            "GROUND",
-            "WATER",
-            "GRASS",
-            "ELECTRIC",
-            "SOUND"
-        ]
-    },
-    {
-        "Name": "ELECTRIC",
-        "Weaknesses": [
-            "GROUND"
-        ],
-        "Resistances": [
-            "FLYING",
-            "STEEL",
-            "ELECTRIC",
-            "SOUND"
-        ]
-    },
-    {
-        "Name": "PSYCHIC",
-        "Weaknesses": [
-            "BUG",
-            "GHOST",
-            "DARK"
-        ],
-        "Resistances": [
-            "FIGHTING",
-            "PSYCHIC"
-        ],
-        "Immunities": [
-            "SOUND"
-        ]
-    },
-    {
-        "Name": "ICE",
-        "Weaknesses": [
-            "FIGHTING",
-            "ROCK",
-            "STEEL",
-            "FIRE"
-        ],
-        "Resistances": [
-            "ICE",
-            "SOUND"
-        ]
-    },
-    {
-        "Name": "DRAGON",
-        "Weaknesses": [
-            "ICE",
-            "DRAGON",
-            "FAIRY"
-        ],
-        "Resistances": [
-            "FIRE",
-            "WATER",
-            "GRASS",
-            "ELECTRIC"
-        ]
-    },
-    {
-        "Name": "DARK",
-        "Weaknesses": [
-            "FIGHTING",
-            "BUG",
-            "FAIRY"
-        ],
-        "Resistances": [
-            "GHOST",
-            "DARK"
-        ],
-        "Immunities": [
-            "PSYCHIC"
-        ]
-    },
-    {
-        "Name": "FAIRY",
-        "Weaknesses": [
-            "POISON",
-            "STEEL",
-            "SOUND"
-        ],
-        "Resistances": [
-            "BUG",
-            "DARK",
-            "FIGHTING"
-        ],
-        "Immunities": [
-            "DRAGON"
         ]
     },
     {
         "Name": "SOUND",
+        "Colors": {
+            "light": "#F5D674",
+            "main": "#b3fff2",
+            "dark": "#9B7E1A"
+        },
         "Weaknesses": [
             "ELECTRIC",
             "ICE",
@@ -288,6 +381,7 @@
     },
     {
         "Name": "TYPELESS",
+        "Colors": null,
         "Weaknesses": [
             "FIGHTING"
         ],

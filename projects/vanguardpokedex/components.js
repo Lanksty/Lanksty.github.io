@@ -289,7 +289,7 @@ export const SearchDropdown = Vue.defineComponent({
         };
     },
     template: `
-        <div class="mb-2" ref="container" :class="{
+        <div class="mb-2 flex-grow-1" ref="container" :class="{
             'dropup': location === 'top',
             'dropdown': location === 'bottom' || location === '',
             'dropend': location === 'right',
