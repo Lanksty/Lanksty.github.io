@@ -116,6 +116,8 @@ class TeamLoader {
   }
 
   DeleteTeam(team) {
+    let confirm = window.confirm(`Are you sure you want to delete the team "${team.Name}"? This action cannot be undone.`);
+    if (!confirm) return;
     this.SavedTeams = this.SavedTeams.filter(t => t.Id !== team.Id);
     localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
     console.log("Deleted team:", team);
