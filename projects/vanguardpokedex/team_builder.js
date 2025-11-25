@@ -116,6 +116,8 @@ class TeamLoader {
   }
 
   DeleteTeam(team) {
+    let confirm = window.confirm(`Are you sure you want to delete the team "${team.Name}"? This action cannot be undone.`);
+    if (!confirm) return;
     this.SavedTeams = this.SavedTeams.filter(t => t.Id !== team.Id);
     localStorage.setItem('savedTeams', JSON.stringify(this.SavedTeams));
     console.log("Deleted team:", team);
@@ -486,6 +488,10 @@ class Dashboard {
       ]
     }
     return options;
+  }
+
+  GetTeamStatsChartOptions() {
+    // To be implemented
   }
 }
 
@@ -916,7 +922,7 @@ const app = createApp({
     const getEggMoves = (pokemon) => {
       if(!pokemon.EggMovesList || pokemon.EggMovesList.length === 0) {
         pokemon = pokemon.GetEvolutions(allPokemon)[0];
-        if(!pokemon || !pokemon.EggMovesList || pokemon.EggMovesList.length === 0) return [];
+        if(!pokemon || !pokemon.EggMoves || pokemon.EggMoves.length === 0) return [];
         
         return pokemon.EggMovesList.length ? pokemon.EggMovesList : pokemon.GetEggMoves(allMoves);
       }
