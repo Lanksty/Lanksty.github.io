@@ -138,6 +138,9 @@ body:has(.modal-open) {
 .app-sidebar-container .app-sidebar .navbar-collapse .nav-link {
   padding-left: 35px;
 }
+.app-sidebar-container.dark-mode .nav-item img {
+  filter: brightness(0) invert(1);
+}
 
 #main {
   display: grid;
