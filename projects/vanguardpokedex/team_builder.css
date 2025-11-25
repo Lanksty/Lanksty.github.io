@@ -917,7 +917,7 @@ body:has(.modal-open) {
   border-radius: 10px;
   position: relative;
 }
-#all-pokemon #filters-collapse:after, #all-abilities #filters-collapse:after, #all-moves #filters-collapse:after {
+#all-pokemon #filters-collapse:after, #all-abilities #filters-collapse:after, #all-moves #filters-collapse:after, #trainer-dex #filters-collapse:after {
   position: absolute;
   left: -40px;
   top: 50%;
@@ -946,7 +946,7 @@ body:has(.modal-open) {
 #all-pokemon .pokemon-list table tbody tr, #all-pokemon .ability-list table tbody tr, #all-pokemon .move-list table tbody tr, #all-abilities .pokemon-list table tbody tr, #all-abilities .ability-list table tbody tr, #all-abilities .move-list table tbody tr, #all-moves .pokemon-list table tbody tr, #all-moves .ability-list table tbody tr, #all-moves .move-list table tbody tr, #trainer-dex .pokemon-list table tbody tr, #trainer-dex .ability-list table tbody tr, #trainer-dex .move-list table tbody tr {
   border-bottom: 1px solid #ccc;
 }
-#all-pokemon .pokemon-list table tbody tr:hover, #all-pokemon .ability-list table tbody tr:hover, #all-pokemon .move-list table tbody tr:hover, #all-abilities .pokemon-list table tbody tr:hover, #all-abilities .ability-list table tbody tr:hover, #all-abilities .move-list table tbody tr:hover, #all-moves .pokemon-list table tbody tr:hover, #all-moves .ability-list table tbody tr:hover, #all-moves .move-list table tbody tr:hover {
+#all-pokemon .pokemon-list table tbody tr:hover, #all-pokemon .ability-list table tbody tr:hover, #all-pokemon .move-list table tbody tr:hover, #all-abilities .pokemon-list table tbody tr:hover, #all-abilities .ability-list table tbody tr:hover, #all-abilities .move-list table tbody tr:hover, #all-moves .pokemon-list table tbody tr:hover, #all-moves .ability-list table tbody tr:hover, #all-moves .move-list table tbody tr:hover, #trainer-dex .pokemon-list table tbody tr:hover, #trainer-dex .ability-list table tbody tr:hover, #trainer-dex .move-list table tbody tr:hover {
   background-color: var(--highlight-color);
   cursor: pointer;
 }
@@ -1143,6 +1143,47 @@ input[type=number], .number-input {
 
 .btn.bg-primary-gradient:hover, .btn-rounded.bg-primary-gradient:hover {
   background: linear-gradient(-150deg, var(--secondary-color) 0%, var(--primary-color) 70%);
+}
+
+.trainer-dex-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  overflow: auto;
+}
+.trainer-dex-list .trainer-card {
+  width: 150px;
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #6c757d;
+  position: relative;
+}
+.trainer-dex-list .trainer-card img {
+  width: 100px;
+  height: 100px;
+}
+.trainer-dex-list .trainer-card .trainer-name {
+  margin-top: 10px;
+  font-weight: 100;
+  font-style: italic;
+  text-align: center;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+.trainer-dex-list .trainer-card .badge {
+  position: absolute;
+  bottom: 0;
+  transform: translateY(50%);
+}
+.trainer-dex-list .trainer-card:hover {
+  cursor: pointer;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 1600px) {
