@@ -24,8 +24,8 @@
         <title>Vanguard Pokedex | Team Builder</title>
     </head>
     <body>
-      <div id="app" class="app-container" v-cloak>
-        <div class="app-sidebar-container">
+      <div id="app" class="app-container" v-cloak >
+        <div class="app-sidebar-container" :class="{ 'dark-mode': darkMode }" :data-bs-theme="darkMode ? 'dark' : 'light'">
           <div class="app-sidebar">
             <div class="sidebar-header d-flex flex-column align-items-center py-4">
               <img src="./resources/images/vanguard_logo_big.png" alt="Vanguard Logo" class="sidebar-logo mb-3" />
@@ -75,7 +75,7 @@
           </div>
         </div>
       
-        <div id="main" :class="{ 'dark-mode': darkMode }">
+        <div id="main" :class="{ 'dark-mode': darkMode }" :data-bs-theme="darkMode ? 'dark' : 'light'">
 
           <!-- Dashboard -->
           <div id="dashboard-tab" v-if="tabView === 'dashboard'" style="--grid-columns: 7" data-grid-columns="7">
@@ -85,8 +85,8 @@
                 </div> -->
                 <div class="dashboard-item d-flex flex-column gap-3 justify-content-center" style="--item-width: 1">
                   <div>
-                    <input v-model="darkMode" type="checkbox" class="btn-check" id="darkModeToggle" autocomplete="off" title="Enable Dark Mode" disabled>
-                    <label for="darkModeToggle" class="btn btn-outline-dark" title="Enable dark mode" disabled><i class="bi-lightbulb-fill" v-if="!darkMode"></i><i class="bi-lightbulb-off-fill" v-else></i></label>
+                    <input v-model="darkMode" type="checkbox" class="btn-check" id="darkModeToggle" autocomplete="off" title="Enable Dark Mode" @click="toggleDarkMode()" />
+                    <label for="darkModeToggle" class="btn btn-outline-dark" title="Enable dark mode" id="darkModeToggleLable"><i class="bi-lightbulb-fill" v-if="!darkMode"></i><i class="bi-lightbulb-off-fill" v-else></i></label>
                     <button class="btn btn-outline-dark ms-2" disabled ><i class="bi-gear-fill"></i></button>
                   </div>
                   <button type="button" class="btn-rounded bg-primary-gradient text-white" @click="teamBuilder.newTeam()"><i class="bi-plus me-3 fs-5"></i> New Team</button>
@@ -431,7 +431,7 @@
                           </div>
                         </td>
                       </tr>
-                      <tr style="background: #ffffff;
+                      <tr style="background: var(--panel-color);
                                  box-shadow: -1px 4px 7px 0px rgb(0 0 0 / 9%);">
                         <td class="cell" style="text-align: left; font-weight: bold;">Final</td>
                         <td class="cell">{{ viewPokemon.GetStatCalc().hp }}</td>

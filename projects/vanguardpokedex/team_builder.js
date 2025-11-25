@@ -654,6 +654,11 @@ const app = createApp({
       moveFilter.value = [];
     };
 
+    const toggleDarkMode = () => {
+      darkMode.value = !darkMode.value;
+      localStorage.setItem('darkMode', darkMode.value ? 'true' : 'false');
+    }
+
     const getPokemonTypeStyle = (pokemon, isLight = false) => {
       let suffix = isLight ? "-type-color-light" : "-type-color";
       if(!pokemon || !pokemon.Types || pokemon.Types.length === 0) {
@@ -983,7 +988,12 @@ const app = createApp({
       allAbilities.push(...await abilitiesList);
       natures.push(...await naturesList);
 
-      console.log(types);
+      let mode = localStorage.getItem('darkMode');
+      if(mode === 'true') {
+        darkMode.value = true;
+      } else {
+        darkMode.value = false;
+      }
     });
 
 
@@ -1038,7 +1048,8 @@ const app = createApp({
       currentlyViewingMoveSearchQuery,
       dashboard,
       darkMode,
-      toggleAbilityImmunity
+      toggleAbilityImmunity,
+      toggleDarkMode
     };
   }
 });

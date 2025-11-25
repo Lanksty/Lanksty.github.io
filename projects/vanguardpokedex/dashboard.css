@@ -9,7 +9,7 @@
   --component-length-multiplier: 1;
   --grid-columns: 6;
   --grid-rows: 4;
-  --dashboard-bg: #fafcff;
+  --dashboard-bg: var(--background-color);
   grid-column: 1/3;
   overflow-y: auto;
   height: 100%;
@@ -43,7 +43,8 @@
   flex-grow: 1;
 }
 #dashboard-tab .dashboard-container .dashboard-item {
-  background-color: #fff;
+  background-color: var(--panel-color);
+  color: var(--text-color);
   border-radius: 10px;
   box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
   padding: 10px 15px;
@@ -82,7 +83,7 @@
   height: 30px;
 }
 #dashboard-tab .dashboard-container .team-summary tbody tr:hover {
-  background-color: #fafafa;
+  background-color: var(--highlight-color);
   cursor: pointer;
 }
 #dashboard-tab .dashboard-container .team-summary tbody tr .cell {
@@ -93,7 +94,11 @@
   flex-grow: 1;
 }
 #dashboard-tab .dashboard-container .team-summary .no-team-message:hover {
-  background-color: #fafafa;
+  background-color: var(--highlight-color);
+}
+#dashboard-tab .dashboard-container #darkModeToggleLable:hover {
+  background-color: var(--highlight-color);
+  cursor: pointer;
 }
 #dashboard-tab .dashboard-container .resource-list a {
   text-decoration: none;
@@ -105,14 +110,14 @@
   list-style: none;
 }
 #dashboard-tab .dashboard-container .resource-list li:hover {
-  background-color: #fafafa;
+  background-color: var(--highlight-color);
   cursor: pointer;
 }
 #dashboard-tab .dashboard-container .resource-list li:hover a {
   text-decoration: underline;
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams {
-  background: #fafafa;
+  background: var(--background-color);
   width: 100%;
   padding: 10px;
   border-radius: 10px;
@@ -121,7 +126,6 @@
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams .team-item {
   padding: 10px 0px;
-  border-bottom: 1px solid #e0e0e0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -132,7 +136,7 @@
   border-bottom: none;
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams .team-item:hover {
-  background-color: #f0f0f0;
+  background-color: var(--highlight-color);
   cursor: pointer;
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams .team-item .team-name {
@@ -143,10 +147,10 @@
   white-space: nowrap;
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams .team-item .btn:hover {
-  background-color: #e0e0e0;
+  background-color: var(--highlight-color);
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams .team-item.active {
-  background-color: #ebebeb;
+  background-color: var(--highlight-color);
 }
 #dashboard-tab .dashboard-container .dashboard-saved-teams .team-item.active::after {
   content: "active";

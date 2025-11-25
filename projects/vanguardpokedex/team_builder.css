@@ -56,14 +56,36 @@
   --sound-type-color: #b3fff2;
   --sound-type-color-light: #b3fff226;
   --sound-type-text-color: #000;
+}
+
+:root {
+  --highlight-color: #e6f0ff;
+  --highlight-text-color: black;
+  --background-color: #fafcff;
+  --background-gradient: linear-gradient(131deg,rgba(242, 247, 255, 1) 0%, rgba(235, 243, 255, 1) 100%);
+  --panel-color: white;
+  --text-color: #464646;
   --primary-color: #0300be;
   --secondary-color: #0060b9;
 }
 
+body:has(.dark-mode) {
+  --highlight-color: #003366;
+  --highlight-text-color: white;
+  --background-color: #121212;
+  --background-gradient: linear-gradient(131deg, rgba(18, 18, 18, 1) 0%, rgba(34, 34, 34, 1) 100%);
+  --panel-color: #1e1e1e;
+  --text-color: #e0e0e0;
+  --primary-color: #0d47a1;
+  --secondary-color: #1976d2;
+}
+
 body {
-  background: #fafcff;
+  background: var(--background-color) !important;
   min-height: 100vh;
   margin: 0;
+  --bs-body-color: var(--text-color);
+  color: var(--text-color);
 }
 
 body:has(.modal-open) {
@@ -100,8 +122,8 @@ body:has(.modal-open) {
   font-weight: 500;
 }
 .app-sidebar-container .app-sidebar .nav-item .active, .app-sidebar-container .app-sidebar .nav-item.active, .app-sidebar-container .app-sidebar .nav-item .nav-link:hover {
-  background-color: #e6f0ff;
-  color: black;
+  background-color: var(--highlight-color);
+  color: var(--highlight-text-color);
 }
 .app-sidebar-container .app-sidebar .nav-item .active img, .app-sidebar-container .app-sidebar .nav-item.active img, .app-sidebar-container .app-sidebar .nav-item .nav-link:hover img {
   opacity: 1;
@@ -130,7 +152,7 @@ body:has(.modal-open) {
   overflow: hidden;
   min-height: 980px;
   box-shadow: -5px -1px 4px rgba(0, 0, 0, 0.06);
-  background: linear-gradient(131deg, rgb(242, 247, 255) 0%, rgb(235, 243, 255) 100%);
+  background: var(--background-gradient);
   border-radius: 25px;
   height: calc(100vh - 20px);
 }
@@ -150,7 +172,7 @@ body:has(.modal-open) {
 }
 
 .team-container-wrapper, #type-effectiveness, #move-effectiveness, #currently-viewing {
-  background: #fafcff;
+  background: var(--background-color);
   padding: 15px;
   border-radius: 10px;
 }
@@ -166,7 +188,7 @@ body:has(.modal-open) {
 
 .results-container {
   border: 1px solid #ccc;
-  background-color: #f9f9f9;
+  background-color: var(--panel-color);
   border-radius: 20px;
   padding: 10px;
 }
@@ -176,7 +198,7 @@ body:has(.modal-open) {
   min-width: 300px;
   min-height: 300px;
   padding: 20px 50px;
-  background: white;
+  background: var(--panel-color);
   border-radius: 20px;
   position: relative;
 }
@@ -225,7 +247,7 @@ body:has(.modal-open) {
 }
 
 .search-results .result:hover {
-  background-color: #dbdbdb;
+  background-color: var(--highlight-color);
 }
 
 .search-sprite {
@@ -368,7 +390,7 @@ body:has(.modal-open) {
   justify-self: center;
   border-radius: 10px;
   padding: 10px;
-  background-color: white;
+  background-color: var(--panel-color);
   width: 100%;
   box-sizing: border-box;
   position: relative;
@@ -410,7 +432,7 @@ body:has(.modal-open) {
   border: 1px solid #ccc;
   font-size: 1em;
   box-sizing: border-box;
-  color: #464646;
+  color: var(--text-color);
 }
 
 .close-btn {
@@ -444,12 +466,14 @@ body:has(.modal-open) {
   overflow: hidden;
   height: -moz-fit-content;
   height: fit-content;
+  min-height: 960px;
+  min-width: 980px;
   grid-column: 1/3;
   --primary-color: #f0f0f0;
   --secondary-color: #f0f0f0;
 }
 .team-container-wrapper .team-member {
-  background: linear-gradient(white, white) padding-box, linear-gradient(to right, var(--primary-color), var(--secondary-color)) border-box; /* Gradient for border */
+  background: linear-gradient(var(--panel-color), var(--panel-color)) padding-box, linear-gradient(to right, var(--primary-color), var(--secondary-color)) border-box; /* Gradient for border */
   border-radius: 10px;
   border: 4px solid transparent;
 }
@@ -479,7 +503,7 @@ body:has(.modal-open) {
 }
 
 .team-container-wrapper .team-member:hover, .team-sidebar-container .team-member:not(.active):hover {
-  background-color: #f0f0f0;
+  background-color: var(--highlight-color);
   cursor: pointer;
 }
 
@@ -507,7 +531,7 @@ body:has(.modal-open) {
   border: 1px solid #ccc;
   text-align: center;
   font-size: 0.9em;
-  background-color: #f9f9f9;
+  background-color: var(--panel-color);
 }
 
 .member-table {
@@ -541,13 +565,13 @@ body:has(.modal-open) {
   border: 2px dashed #ccc;
   border-radius: 10px;
   background-color: #f9f9f9;
-  color: #999;
+  color: var(--text-color);
   font-style: italic;
   width: 100%;
 }
 
 .empty-slot:hover {
-  background-color: #f0f0f0;
+  background-color: var(--highlight-color);
   cursor: pointer;
 }
 
@@ -598,11 +622,11 @@ body:has(.modal-open) {
   border-collapse: collapse;
 }
 .team-effectiveness table tr:hover, .move-coverage table tr:hover {
-  background-color: #f1f1f1;
+  background-color: var(--highlight-color);
 }
 .team-effectiveness table thead .cell, .move-coverage table thead .cell {
   padding: 10px;
-  background-color: #fff;
+  background-color: var(--panel-color);
   border-bottom: 1px solid #dfdfdf;
 }
 .team-effectiveness .has-move, .move-coverage .has-move {
@@ -675,15 +699,19 @@ body:has(.modal-open) {
 }
 
 .modal-content {
-  background-color: white;
+  background-color: var(--panel-color);
   border-radius: 20px;
   padding: 30px;
   min-width: 50%;
   max-width: 2100px;
   max-height: 90%;
+  min-height: 90%;
   overflow-y: auto;
   box-sizing: border-box;
   position: relative;
+}
+.modal-content .section-title:after {
+  background-color: var(--bs-modal-bg);
 }
 
 .member-button {
@@ -719,7 +747,7 @@ body:has(.modal-open) {
   background: none;
 }
 #currently-viewing .team-member .section-title::after {
-  background-color: #fafcff;
+  background-color: var(--background-color);
 }
 #currently-viewing .team-member .member-header {
   padding: 20px;
@@ -769,7 +797,7 @@ body:has(.modal-open) {
   left: -45px;
   top: 47%;
   transform: rotate(-90deg);
-  background: #fafcff;
+  background: var(--background-color);
   font-size: 1.3rem;
   padding: 0px 10px;
   color: #006ae4;
@@ -779,13 +807,12 @@ body:has(.modal-open) {
   padding: 10px;
   border-radius: 10px;
   border: 2px solid #006ae4;
-  background-color: #e6f0ff;
   font-weight: bold;
   height: 60px;
   overflow: hidden;
 }
 #currently-viewing .team-member .member-moves .move:hover {
-  background-color: #cce0ff;
+  background-color: var(--highlight-color);
   cursor: pointer;
 }
 #currently-viewing .team-member .member-moves .move .cell {
@@ -845,7 +872,7 @@ body:has(.modal-open) {
 #currently-viewing .member-move-list table thead {
   position: sticky;
   top: 0;
-  background: #fafcff;
+  background: var(--background-color);
   z-index: 1;
 }
 #currently-viewing .member-move-list .move {
@@ -854,7 +881,7 @@ body:has(.modal-open) {
   border-bottom: 2px solid #006ae4;
 }
 #currently-viewing .member-move-list .move:hover {
-  background-color: #cce0ff;
+  background-color: var(--highlight-color);
   cursor: pointer;
 }
 #currently-viewing .member-move-list .move .cell {
@@ -909,14 +936,14 @@ body:has(.modal-open) {
 #all-pokemon .pokemon-list table thead, #all-pokemon .ability-list table thead, #all-pokemon .move-list table thead, #all-abilities .pokemon-list table thead, #all-abilities .ability-list table thead, #all-abilities .move-list table thead, #all-moves .pokemon-list table thead, #all-moves .ability-list table thead, #all-moves .move-list table thead {
   position: sticky;
   top: 0;
-  background: #f1f7ff;
+  background: var(--background-color);
   z-index: 1;
 }
 #all-pokemon .pokemon-list table tbody tr, #all-pokemon .ability-list table tbody tr, #all-pokemon .move-list table tbody tr, #all-abilities .pokemon-list table tbody tr, #all-abilities .ability-list table tbody tr, #all-abilities .move-list table tbody tr, #all-moves .pokemon-list table tbody tr, #all-moves .ability-list table tbody tr, #all-moves .move-list table tbody tr {
   border-bottom: 1px solid #ccc;
 }
 #all-pokemon .pokemon-list table tbody tr:hover, #all-pokemon .ability-list table tbody tr:hover, #all-pokemon .move-list table tbody tr:hover, #all-abilities .pokemon-list table tbody tr:hover, #all-abilities .ability-list table tbody tr:hover, #all-abilities .move-list table tbody tr:hover, #all-moves .pokemon-list table tbody tr:hover, #all-moves .ability-list table tbody tr:hover, #all-moves .move-list table tbody tr:hover {
-  background-color: #f0f0f0;
+  background-color: var(--highlight-color);
   cursor: pointer;
 }
 #all-pokemon .pokemon-list table .cell.sprite-cell img, #all-pokemon .ability-list table .cell.sprite-cell img, #all-pokemon .move-list table .cell.sprite-cell img, #all-abilities .pokemon-list table .cell.sprite-cell img, #all-abilities .ability-list table .cell.sprite-cell img, #all-abilities .move-list table .cell.sprite-cell img, #all-moves .pokemon-list table .cell.sprite-cell img, #all-moves .ability-list table .cell.sprite-cell img, #all-moves .move-list table .cell.sprite-cell img {
@@ -929,7 +956,7 @@ body:has(.modal-open) {
   border-radius: 10px;
   border-bottom-left-radius: 0;
   border-top-right-radius: 0;
-  background-color: #b7d5f8;
+  background-color: var(--highlight-color);
   box-shadow: -1px 3px 6px 1px rgba(0, 0, 0, 0.12);
   position: relative;
   margin-bottom: 10px;
@@ -946,18 +973,18 @@ body:has(.modal-open) {
   position: absolute;
   right: 106%;
   top: 10px;
-  color: #8f8f8f;
+  color: var(--text-color);
+  opacity: 0.8;
 }
 
 #view-pokemon-modal .modal-content {
   min-width: 700px;
-  max-width: 750px;
   width: -moz-fit-content;
   width: fit-content;
   cursor: auto;
 }
 #view-pokemon-modal .pokemon-details {
-  max-width: 100%;
+  max-width: 850px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -965,12 +992,10 @@ body:has(.modal-open) {
 }
 #view-pokemon-modal .pokemon-details .header {
   padding: 20px;
-  border: 3px solid #006ae4;
   border-radius: 10px;
   max-height: -moz-fit-content;
   max-height: fit-content;
   font-size: 1.2rem;
-  background: #f4f8ff;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1018,7 +1043,7 @@ body:has(.modal-open) {
 .section-title:after {
   content: attr(data-content);
   position: absolute;
-  background-color: white;
+  background-color: var(--panel-color);
   transform: translate(-50%, -50%);
   left: 50%;
   padding: 0px 10px;
@@ -1045,10 +1070,10 @@ body:has(.modal-open) {
 #type-chart .type-chart-table {
   border-collapse: collapse;
   position: relative;
-  background-color: white;
+  background-color: var(--panel-color);
 }
 #type-chart .type-chart-table tbody tr:hover {
-  background-color: #f0f0f0;
+  background-color: var(--highlight-color);
 }
 #type-chart .type-chart-table .cell {
   text-align: center;
