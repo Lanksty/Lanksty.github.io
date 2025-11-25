@@ -61,7 +61,7 @@
 }
 
 body {
-  background: linear-gradient(131deg, rgb(242, 247, 255) 0%, rgb(235, 243, 255) 100%);
+  background: #fafcff;
   min-height: 100vh;
   margin: 0;
 }
@@ -75,14 +75,46 @@ body:has(.modal-open) {
   display: none;
 }
 
-#app {
+#app:not([v-cloak]) {
   display: flex;
 }
 
 .app-sidebar-container {
-  width: 250px;
-  background: #fafcff;
-  border-right: 1px solid #ccc;
+  min-width: 250px;
+  position: relative;
+}
+.app-sidebar-container .sidebar-logo {
+  width: 225px;
+  max-height: 95px;
+  height: -moz-fit-content;
+  height: fit-content;
+}
+.app-sidebar-container .app-sidebar {
+  position: sticky;
+  top: 0;
+  padding-left: 10px;
+}
+.app-sidebar-container .app-sidebar .nav-item .nav-link {
+  color: #999999;
+  transition: all 0.1s ease-in-out;
+  font-weight: 500;
+}
+.app-sidebar-container .app-sidebar .nav-item .active, .app-sidebar-container .app-sidebar .nav-item.active, .app-sidebar-container .app-sidebar .nav-item .nav-link:hover {
+  background-color: #e6f0ff;
+  color: black;
+}
+.app-sidebar-container .app-sidebar .nav-item .active img, .app-sidebar-container .app-sidebar .nav-item.active img, .app-sidebar-container .app-sidebar .nav-item .nav-link:hover img {
+  opacity: 1;
+}
+.app-sidebar-container .app-sidebar .nav-item img {
+  opacity: 0.5;
+  transition: all 0.1s ease-in-out;
+}
+.app-sidebar-container .app-sidebar .navbar-collapse {
+  padding: 0px;
+}
+.app-sidebar-container .app-sidebar .navbar-collapse .nav-link {
+  padding-left: 35px;
 }
 
 #main {
@@ -90,17 +122,17 @@ body:has(.modal-open) {
   grid-template-columns: auto 1fr;
   box-sizing: border-box;
   width: 100%;
-  max-width: 2100px;
-  margin: 1% auto;
+  margin: 10px 10px 10px 0px;
   font-family: Arial, sans-serif;
   border-radius: 25px;
   height: -moz-max-content;
-  height: max-content;
+  height: 100%;
   overflow: hidden;
   min-height: 980px;
-}
-#main:not(:has(#dashboard-tab)) {
-  background: #fafcff;
+  box-shadow: -5px -1px 4px rgba(0, 0, 0, 0.06);
+  background: linear-gradient(131deg, rgb(242, 247, 255) 0%, rgb(235, 243, 255) 100%);
+  border-radius: 25px;
+  height: calc(100vh - 20px);
 }
 
 #page-heading {
@@ -115,6 +147,16 @@ body:has(.modal-open) {
 #page-heading.section-title:after {
   font-size: 2rem;
   background-color: #eff5ff;
+}
+
+.team-container-wrapper, #type-effectiveness, #move-effectiveness, #currently-viewing {
+  background: #fafcff;
+  padding: 15px;
+  border-radius: 10px;
+}
+
+.team-container-wrapper {
+  margin: auto;
 }
 
 .has-error {
@@ -400,7 +442,8 @@ body:has(.modal-open) {
   grid-template-rows: repeat(auto-fill, 150px);
   row-gap: 10px;
   overflow: hidden;
-  height: 100%;
+  height: -moz-fit-content;
+  height: fit-content;
   grid-column: 1/3;
   --primary-color: #f0f0f0;
   --secondary-color: #f0f0f0;
@@ -673,13 +716,15 @@ body:has(.modal-open) {
   grid-template-rows: repeat(auto-fill, minmax(auto, 600px));
   gap: 25px;
   height: 100%;
+  background: none;
+}
+#currently-viewing .team-member .section-title::after {
+  background-color: #fafcff;
 }
 #currently-viewing .team-member .member-header {
   padding: 20px;
-  border: 3px solid #006ae4;
   border-radius: 10px;
   max-height: 600px;
-  background: #f4f8ff;
   position: relative;
 }
 #currently-viewing .team-member .member-header .shiny-checkbox {
@@ -714,6 +759,9 @@ body:has(.modal-open) {
   padding: 20px;
   border-radius: 10px;
   position: relative;
+  flex-grow: 0;
+  height: -moz-fit-content;
+  height: fit-content;
 }
 #currently-viewing .team-member .member-moves:after {
   content: "Moves";
@@ -721,7 +769,7 @@ body:has(.modal-open) {
   left: -45px;
   top: 47%;
   transform: rotate(-90deg);
-  background: #ffffff;
+  background: #fafcff;
   font-size: 1.3rem;
   padding: 0px 10px;
   color: #006ae4;
@@ -780,6 +828,8 @@ body:has(.modal-open) {
 }
 #currently-viewing .move-select {
   grid-area: 1/2/3/3;
+  display: flex;
+  flex-direction: column;
 }
 #currently-viewing .member-move-list {
   grid-area: 2/1/3/3;
@@ -787,6 +837,7 @@ body:has(.modal-open) {
   height: 500px;
   width: 100%;
   position: relative;
+  flex-grow: 1;
 }
 #currently-viewing .member-move-list table {
   width: 100%;
@@ -794,7 +845,7 @@ body:has(.modal-open) {
 #currently-viewing .member-move-list table thead {
   position: sticky;
   top: 0;
-  background: white;
+  background: #fafcff;
   z-index: 1;
 }
 #currently-viewing .member-move-list .move {

@@ -66,7 +66,7 @@ html {
 }
 
 body {
-    background: linear-gradient(131deg,rgba(242, 247, 255, 1) 0%, rgba(235, 243, 255, 1) 100%);
+    background: #fafcff;
     min-height: 100vh;
     margin: 0;
 }
@@ -80,14 +80,57 @@ body:has(.modal-open) {
 display: none;
 }
 
-#app {
+#app:not([v-cloak]) {
     display: flex;
 }
 
 .app-sidebar-container {
-    width: 250px;
-    background: #fafcff;
-    border-right: 1px solid #ccc;
+    min-width: 250px;
+    position: relative;
+
+    .sidebar-logo {
+        width: 225px;
+        max-height: 95px;
+        height: fit-content;
+    }
+
+    .app-sidebar {
+        position: sticky;
+        top: 0;
+
+        padding-left: 10px;
+
+        
+        .nav-item {
+            .nav-link {
+                color: #999999;
+
+                transition: all 0.1s ease-in-out;
+                font-weight: 500;
+            }
+            .active, &.active, .nav-link:hover {
+                background-color: #e6f0ff;
+                color: black;
+                img {
+                    opacity: 1; 
+                    
+                }
+            }
+            
+            img {
+                opacity: 0.5;
+                transition: all 0.1s ease-in-out;
+            }
+        }
+
+        .navbar-collapse {
+            padding: 0px;
+            
+            .nav-link {
+                padding-left: 35px;
+            }
+        }
+    }
 }
 
 #main {
@@ -95,18 +138,22 @@ display: none;
     grid-template-columns: auto 1fr;
     box-sizing: border-box;
     width: 100%;
-    max-width: 2100px;
-    margin: 1% auto;
+    // max-width: 2100px;
+    margin: 10px 10px 10px 0px;
     font-family: Arial, sans-serif;
     border-radius: 25px;
     height: -moz-max-content;
-    height: max-content;
+    height: 100%;
     overflow: hidden;
     min-height: 980px;
+    box-shadow: -5px -1px 4px rgba(0 0 0 / 6%);
+    background: linear-gradient(131deg,rgba(242, 247, 255, 1) 0%, rgba(235, 243, 255, 1) 100%);
+    border-radius: 25px;
+    height: calc(100vh - 20px);
     
-    &:not(:has(#dashboard-tab)) {
-        background: #fafcff;
-    }
+    // &:not(:has(#dashboard-tab)) {
+    //     background: #fafcff;
+    // }
 }
 
 #page-heading {
@@ -124,6 +171,16 @@ display: none;
             background-color: #eff5ff;
         }
     }
+}
+
+.team-container-wrapper, #type-effectiveness, #move-effectiveness, #currently-viewing  { 
+    background: #fafcff;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.team-container-wrapper {
+    margin: auto;
 }
 
 .has-error {
@@ -392,7 +449,7 @@ display: none;
     grid-template-rows: repeat(auto-fill, 150px);
     row-gap: 10px;
     overflow: hidden;
-    height: 100%;
+    height: fit-content;
     grid-column: 1 / 3;
 
     --primary-color: #f0f0f0;
@@ -706,13 +763,18 @@ display: none;
         grid-template-rows: repeat(auto-fill, minmax(auto, 600px));
         gap: 25px;
         height: 100%;
+        background: none;
+
+        .section-title::after {
+            background-color: #fafcff;
+        }
 
         .member-header {
             padding: 20px;
-            border: 3px solid #006ae4;
+            // border: 3px solid #006ae4;
             border-radius: 10px;
             max-height: 600px;
-            background: #f4f8ff;
+            // background: #f4f8ff;
             position: relative;
 
 
@@ -754,6 +816,8 @@ display: none;
             padding: 20px;
             border-radius: 10px;
             position: relative;
+            flex-grow: 0;
+            height: fit-content;
 
             &:after {
                 content: "Moves";
@@ -761,7 +825,7 @@ display: none;
                 left: -45px;
                 top: 47%;
                 transform: rotate(-90deg);
-                background: #ffffff;
+                background: #fafcff;
                 font-size: 1.3rem;
                 padding: 0px 10px;
                 color: #006ae4;
@@ -837,6 +901,8 @@ display: none;
     }
     .move-select {
             grid-area: 1 / 2 / 3 / 3;
+            display: flex;
+            flex-direction: column;
     }
 
     .member-move-list {
@@ -845,14 +911,14 @@ display: none;
         height: 500px;
         width: 100%;
         position: relative;
-
+        flex-grow: 1;
         table {
             width: 100%;
 
             thead {
                 position: sticky;
                 top: 0;
-                background: white;
+                background: #fafcff;
                 z-index: 1;
             }
         }
