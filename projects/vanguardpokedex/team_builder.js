@@ -489,6 +489,10 @@ class Dashboard {
     }
     return options;
   }
+
+  GetTeamStatsChartOptions() {
+    // To be implemented
+  }
 }
 
 const app = createApp({
